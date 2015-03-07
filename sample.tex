@@ -1,0 +1,1792 @@
+%% 使用 njuthesis 文档类生成南京大学学位论文的示例文档
+%%
+%% 作者：胡海星，starfish (at) gmail (dot) com
+%% 项目主页: http://haixing-hu.github.io/nju-thesis/
+%%
+%% 本样例文档中用到了吕琦同学的博士论文的提高和部分内容，在此对他表示感谢。
+%%
+\documentclass[master]{njuthesis}
+%% njuthesis 文档类的可选参数有：
+%%   nobackinfo 取消封二页导师签名信息。注意，按照南大的规定，是需要签名页的。
+%%   phd/master/bachelor 选择博士/硕士/学士论文
+
+% 使用 blindtext 宏包自动生成章节文字
+% 这仅仅是用于生成样例文档，正式论文中一般用不到该宏包
+\usepackage[math]{blindtext}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 设置《国家图书馆封面》的内容，仅博士论文才需要填写
+
+% 设置论文按照《中国图书资料分类法》的分类编号
+\classification{0175.2}
+% 论文的密级。需按照GB/T 7156-2003标准进行设置。预定义的值包括：
+% - \openlevel，表示公开级：此级别的文献可在国内外发行和交换。
+% - \controllevel，表示限制级：此级别的文献内容不涉及国家秘密，但在一定时间内
+%   限制其交流和使用范围。
+% - \confidentiallevel，表示秘密级：此级别的文献内容涉及一般国家秘密。
+% - \clasifiedlevel，表示机密级：此级别的文献内容涉及重要的国家秘密 。
+% - \mostconfidentiallevel，表示绝密级：此级别的文献内容涉及最重要的国家秘密。
+% 此属性可选，默认为\openlevel，即公开级。
+\securitylevel{\controllevel}
+% 设置论文按照《国际十进分类法UDC》的分类编号
+% 该编号可在下述网址查询：http://www.udcc.org/udcsummary/php/index.php?lang=chi
+\udc{004.72}
+% 国家图书馆封面上的论文标题第一行，不可换行。此属性可选，默认值为通过\title设置的标题。
+\nlctitlea{数据中心}
+% 国家图书馆封面上的论文标题第二行，不可换行。此属性可选，默认值为空白。
+\nlctitleb{网络模型研究}
+% 国家图书馆封面上的论文标题第三行，不可换行。此属性可选，默认值为空白。
+\nlctitlec{}
+% 导师的单位名称及地址
+\supervisorinfo{南京大学计算机科学与技术系~~南京市汉口路22号~~210093}
+% 答辩委员会主席
+\chairman{张三丰~~教授}
+% 第一位评阅人
+\reviewera{阳顶天~~教授}
+% 第二位评阅人
+\reviewerb{张无忌~~副教授}
+% 第三位评阅人
+\reviewerc{黄裳~~教授}
+% 第四位评阅人
+\reviewerd{郭靖~~研究员}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 设置论文的中文封面
+
+% 论文标题，不可换行
+\title{数据中心网络模型研究}
+% 论文作者姓名
+\author{邹远航}
+% 论文作者联系电话
+\telphone{15850725926}
+% 论文作者电子邮件地址
+\email{zouyh@nlp.nju.edu.cn}
+% 论文作者学生证号
+\studentnum{MF1233059}
+% 论文作者入学年份（年级）
+\grade{2012}
+% 导师姓名职称
+\supervisor{戴新宇~~副教授}
+% 导师的联系电话
+\supervisortelphone{13671607471}
+% 论文作者的学科与专业方向
+\major{计算机技术}
+% 论文作者的研究方向
+\researchfield{自然语言处理}
+% 论文作者所在院系的中文名称
+\department{计算机科学与技术系}
+% 论文作者所在学校或机构的名称。此属性可选，默认值为``南京大学''。
+\institute{南京大学}
+% 论文的提交日期，需设置年、月、日。
+\submitdate{2013年5月10日}
+% 论文的答辩日期，需设置年、月、日。
+\defenddate{2013年6月1日}
+% 论文的定稿日期，需设置年、月、日。此属性可选，默认值为最后一次编译时的日期，精确到日。
+%% \date{2013年5月1日}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 设置论文的英文封面
+
+% 论文的英文标题，不可换行
+\englishtitle{A Research on Network Infrastructures for Data Centers}
+% 论文作者姓名的拼音
+\englishauthor{ZOU Yuan-Hang}
+% 导师姓名职称的英文
+\englishsupervisor{Professor Dai Xin-Yu}
+% 论文作者学科与专业的英文名
+\englishmajor{Computer Software and Theory}
+% 论文作者所在院系的英文名称
+\englishdepartment{Department of Computer Science and Technology}
+% 论文作者所在学校或机构的英文名称。此属性可选，默认值为``Nanjing University''。
+\englishinstitute{Nanjing University}
+% 论文完成日期的英文形式，它将出现在英文封面下方。需设置年、月、日。日期格式使用美国的日期
+% 格式，即``Month day, year''，其中``Month''为月份的英文名全称，首字母大写；``day''为
+% 该月中日期的阿拉伯数字表示；``year''为年份的四位阿拉伯数字表示。此属性可选，默认值为最后
+% 一次编译时的日期。
+\englishdate{May 1, 2013}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 设置论文的中文摘要
+
+% 设置中文摘要页面的论文标题及副标题的第一行。
+% 此属性可选，其默认值为使用|\title|命令所设置的论文标题
+% \abstracttitlea{数据中心网络模型研究}
+% 设置中文摘要页面的论文标题及副标题的第二行。
+% 此属性可选，其默认值为空白
+% \abstracttitleb{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 设置论文的英文摘要
+
+% 设置英文摘要页面的论文标题及副标题的第一行。
+% 此属性可选，其默认值为使用|\englishtitle|命令所设置的论文标题
+\englishabstracttitlea{A Research on Network Infrastructures}
+% 设置英文摘要页面的论文标题及副标题的第二行。
+% 此属性可选，其默认值为空白
+\englishabstracttitleb{for Data Centers}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% 制作国家图书馆封面（博士学位论文才需要）
+\makenlctitle
+% 制作中文封面
+\maketitle
+% 制作英文封面
+\makeenglishtitle
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 开始前言部分
+\frontmatter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 论文的中文摘要
+\begin{abstract}
+复杂网络的研究可上溯到20世纪60年代对ER网络的研究。90年后代随着Internet
+的发展，以及对人类社会、通信网络、生物网络、社交网络等各领域研究的深入，
+发现了小世界网络和无尺度现象等普适现象与方法。对复杂网络的定性定量的科
+学理解和分析，已成为如今网络时代科学研究的一个重点课题。
+
+在此背景下，由于云计算时代的到来，本文针对面向云计算的数据中心网络基础
+设施设计中的若干问题，进行了几方面的研究。………………
+% 中文关键词。关键词之间用中文全角分号隔开，末尾无标点符号。
+\keywords{小世界理论；网络模型；数据中心}
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 论文的英文摘要
+\begin{englishabstract}
+\blindtext
+% 英文关键词。关键词之间用英文半角逗号隔开，末尾无符号。
+\englishkeywords{Small World, Network Model, Data Center}
+\end{englishabstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 论文的前言，应放在目录之前，中英文摘要之后
+%
+\begin{preface}
+
+复杂网络的研究可上溯到20世纪60年代对ER网络的研究。90年后代随着Internet
+的发展，以及对人类社会、通信网络、生物网络、社交网络等各领域研究的深入，
+发现了小世界网络和无尺度现象等普适现象与方法。对复杂网络的定性定量的科
+学理解和分析，已成为如今网络时代科学研究的一个重点课题。
+
+在此背景下，由于云计算时代的到来，本文针对面向云计算的数据中心网络基础
+设施设计中的若干问题，进行了几方面的研究。本文的创造性研究成果主要如下
+几方面：
+
+\begin{enumerate}
+\item 基于簇划分的思想，提出并设计了WarpNet网络模型。该网络模型基于随机
+  散列，以节点微路由链接多种散列分布，实现网络互联。并对网络的带宽等指
+  标进行理论分析并给出定量描述。最后对比了理论分析、仿真测试结果，并在
+  实际物理环境中进系真实部署，通过6节点的小规模实验以及1000节点虚拟机的
+  大规模实验，表明该模型的理论分析、仿真测试与实际实验吻合，并在网络性
+  能、容错能力、伸缩性灵活性方面得到较大提升。
+\item 提出DS小世界模型并构造SIDN网络，解决了把小世界理论应用于数据中心
+  网络布局构建中的最大度限制问题。分析了在带有最大度限制约束下，所构成
+  网络的平均直径、网络总带宽、对故障的容错能力等各项网络参数。理论分析
+  与仿真实验证明，SIDN网络具有很好的扩展能力，网络总带宽与网络规模成近
+  似线性增长的关系；具有很强的容错能力，链路损坏与节点损坏几乎无法破坏
+  网络的联通性，故障率对网络性能的影响与破坏节点/链路占总资源比率线性相
+  关。
+\item 分析了无尺度网络在数据中心网络构建应用中的理论方面问题。在引入节
+  点最大度限制之后，给出无尺度网络的各项网络参数。并进一步分析了交换机
+  节点以及计算节点两种角色在不同比率的组合下对网络性能的影响，给出最高
+  性价比的比率参数。最后通过理论分析与仿真实验证明，在引入了无尺度现象
+  之后，提高了网络的聚类系数，从而显著的提升了网络的性能。
+
+\item 针对网络模型研究这一类工作的共性，设计构造通用验证平台系统。以海
+  量虚拟机和虚拟分布式交换机的形式，实现了基于少量物理节点，对大规模节
+  点的模拟。其模拟运行的过程与真实运行在实现层面完全一致，运行的结果与
+  真实环境线性相关。除为本文所涉若干网络模型提供验证外，可进一步推广到
+  更为广泛的领域，为各种网络模型及路由算法的研究工作，提供分析、指导与
+  验证。
+\end{enumerate}
+
+复杂网络的研究可上溯到20世纪60年代对ER网络的研究。90年后代随着Internet
+的发展，以及对人类社会、通信网络、生物网络、社交网络等各领域研究的深入，
+发现了小世界网络和无尺度现象等普适现象与方法。对复杂网络的定性定量的科
+学理解和分析，已成为如今网络时代科学研究的一个重点课题。
+
+在此背景下，由于云计算时代的到来，本文针对面向云计算的数据中心网络基础
+设施设计中的若干问题，进行了几方面的研究。本文的创造性研究成果主要如下
+几方面：
+
+\begin{enumerate}
+\item 基于簇划分的思想，提出并设计了WarpNet网络模型。该网络模型基于随机
+  散列，以节点微路由链接多种散列分布，实现网络互联。并对网络的带宽等指
+  标进行理论分析并给出定量描述。最后对比了理论分析、仿真测试结果，并在
+  实际物理环境中进系真实部署，通过6节点的小规模实验以及1000节点虚拟机的
+  大规模实验，表明该模型的理论分析、仿真测试与实际实验吻合，并在网络性
+  能、容错能力、伸缩性灵活性方面得到较大提升。
+\item 提出DS小世界模型并构造SIDN网络，解决了把小世界理论应用于数据中心
+  网络布局构建中的最大度限制问题。分析了在带有最大度限制约束下，所构成
+  网络的平均直径、网络总带宽、对故障的容错能力等各项网络参数。理论分析
+  与仿真实验证明，SIDN网络具有很好的扩展能力，网络总带宽与网络规模成近
+  似线性增长的关系；具有很强的容错能力，链路损坏与节点损坏几乎无法破坏
+  网络的联通性，故障率对网络性能的影响与破坏节点/链路占总资源比率线性相
+  关。
+\item 分析了无尺度网络在数据中心网络构建应用中的理论方面问题。在引入节
+  点最大度限制之后，给出无尺度网络的各项网络参数。并进一步分析了交换机
+  节点以及计算节点两种角色在不同比率的组合下对网络性能的影响，给出最高
+  性价比的比率参数。最后通过理论分析与仿真实验证明，在引入了无尺度现象
+  之后，提高了网络的聚类系数，从而显著的提升了网络的性能。
+
+\item 针对网络模型研究这一类工作的共性，设计构造通用验证平台系统。以海
+  量虚拟机和虚拟分布式交换机的形式，实现了基于少量物理节点，对大规模节
+  点的模拟。其模拟运行的过程与真实运行在实现层面完全一致，运行的结果与
+  真实环境线性相关。除为本文所涉若干网络模型提供验证外，可进一步推广到
+  更为广泛的领域，为各种网络模型及路由算法的研究工作，提供分析、指导与
+  验证。
+\end{enumerate}
+
+\vspace{1cm}
+\begin{flushright}
+邹远航\\
+2015年夏于南京大学
+\end{flushright}
+
+\end{preface}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 生成论文目次
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 生成插图清单。如无需插图清单则可注释掉下述语句。
+\listoffigures
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 生成附表清单。如无需附表清单则可注释掉下述语句。
+\listoftables
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 开始正文部分
+\mainmatter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 学位论文的正文应以《绪论》作为第一章
+\chapter{绪论}\label{chapter_introduction}
+\section{研究背景}
+
+我的毕业设计focus在机器学习算法在短文本上的应用，随着社交网络的兴起，类似于weibo或者dialogue query这种短文本越来越多的出现在人们的生活当中，对于研究者来说面临着以下诸多挑战，首先随着新浪微博以及cortana在的大量使用，每天产生巨大的数据，我们如何去获取这些数据，另一方面，无论是微博还是dialogue query本身的长度非常短，传统的文本处理方法是否依然适用。
+在这里我们期望将传统的文本处理方法在短文本应用起来。这里我将选择三种在短文本中的应用去介绍，他们是关键词短语提取，domain classification以及incremental learning。对于三种应用，我将从研究背景，相关研究，算法介绍，实验设计以及未来可能改进的地方等等加以介绍。
+本文的结构组织如下，第一章主要介绍基于LDA和PageRank的方法在关键词短语提取中的应用，这里我们将从数据爬取，算法设计，结果展示三个方面来介绍。其中在算法设计过程中我们借鉴了LDA以及pagerank，我们会对此两种算法做简单的介绍。在结果展示中我们为了呈现更直观的结果，我们将结果可视化出来。
+第二章主要介绍domain classification using slot feature，首先我们将会阐述何为domain classification，何为slot feature，这一章我们将从算法设计，以及实验结果两方面来展示，在算法设计过程中我们使用SVM算法以及CRF算法，所以我们会对SVM以及CRF算法做详细的介绍。
+第三章介绍incremental learning的知识，首先我们将会阐述何为incremental learning。Incremental learning与domain classification的联系以及我们为什么需要incremental learning。在incremental learning的实验中我们使用了两种优化算法，我们会首先阐述优化算法在机器学习中的意义，对于使用的两种优化算法我们将会做详细的介绍，最后我们总结了实验结果。
+
+\section{研究目的与意义}
+\subsection{现有解决方法}
+\Blindtext
+\begin{table}
+  \centering
+  \begin{tabular}{cccp{38mm}}
+    \toprule
+    \textbf{文档域类型} & \textbf{Java类型} & \textbf{宽度(字节)} & \textbf{说明} \\
+    \midrule
+    BOOLEAN  & boolean &  1  & \\
+    CHAR     & char    &  2  & UTF-16字符 \\
+    BYTE     & byte    &  1  & 有符号8位整数 \\
+    SHORT    & short   &  2  & 有符号16位整数 \\
+    INT      & int     &  4  & 有符号32位整数 \\
+    LONG     & long    &  8  & 有符号64位整数 \\
+    STRING   & String  &  字符串长度  & 以UTF-8编码存储 \\
+    DATE     & java.util.Date & 8 & 距离GMT时间1970年1月1日0点0分0秒的毫秒数 \\
+    BYTE\_ARRAY & byte$[]$ & 数组长度 & 用于存储二进制值 \\
+    BIG\_INTEGER & java.math.BigInteger & 和具体值有关 & 任意精度的长整数 \\
+    BIG\_DECIMAL & java.math.BigDecimal & 和具体值有关 & 任意精度的十进制实数 \\
+    \bottomrule
+  \end{tabular}
+  \caption{测试表格}\label{table:test1}
+\end{table}
+\Blindtext
+\subsection{现有问题与不足}
+
+测试一下脚注\footnote{测试脚注}，测试一下脚注\footnote{测试脚注}，测试一下脚
+注\footnote{测试脚注}，测试一下脚注\footnote{测试脚注}，测试一下脚注\footnote{测
+  试脚注}，测试一下脚注\footnote{测试脚注}，测试一下脚注\footnote{测试脚注}，测
+试一下脚注\footnote{测试脚注}，测试一下脚注\footnote{测试脚注}，测试一下脚
+注\footnote{测试脚注}。
+
+测试一下引用\cite{newman2006structure}，连续引用
+\cite{newman2001random,aiello2000random,bollobas2001random}，另一个连续引用
+\cite{newman2001random,bollobas2001random,barabasi1999emergence}。测试一下带页码
+的引用\cite[124--128]{erdHos1961strength}。
+
+下面是一个项目列表：
+
+\begin{itemize}
+\item 这是第一项。这是第一项。
+\item 这是第二项。这是第二项。这是第二项。这是第二项。这是第二项。这是第二项。这
+  是第二项。这是第二项。这是第二项。这是第二项。这是第二项。
+\item 这是第三项。这是第三项。这是第三项。
+  \begin{itemize}
+  \item 测试第二层列表。测试第二层列表。
+  \item 测试第二层列表。测试第二层列表。
+  \begin{itemize}
+     \item 测试第三层列表。测试第三层列表。
+     \item 测试第三层列表。测试第三层列表。
+  \end{itemize}
+  \item 测试第二层列表。测试第二层列表。测试第二层列表。测试第二层列表。测试第二
+    层列表。
+  \end{itemize}
+\item 这是第四项。这是第四项。这是第四项。
+  \begin{enumerate}
+  \item 测试第二层列表。测试第二层列表。测试第二层列表。测试第二层列表。测试第二
+    层列表。测试第二层列表。测试第二层列表。测试第二层列表。
+  \item 测试第二层列表。测试第二层列表。
+  \item 测试第二层列表。测试第二层列表。测试第二层列表。测试第二层列表。测试第二
+    层列表。
+  \end{enumerate}
+\end{itemize}
+
+下面是一个编号列表：
+
+\begin{enumerate}
+\item 这是第一项。这是第一项。这是第一项。这是第一项。这是第一项。这是第一项。这
+  是第一项。这是第一项。这是第一项。这是第一项。这是第一项。
+\item 这是第二项。这是第二项。
+\item 这是第三项。这是第三项。这是第三项。
+  \begin{itemize}
+  \item 测试第二层列表。测试第二层列表。
+  \item 测试第二层列表。测试第二层列表。
+  \item 测试第二层列表。测试第二层列表。测试第二层列表。测试第二层列表。测试第二
+    层列表。
+  \end{itemize}
+\item 这是第四项。这是第四项。这是第四项。
+  \begin{enumerate}
+  \item 测试第二层列表。测试第二层列表。
+  \begin{enumerate}
+  \item 测试第三层列表。测试第三层列表。测试第三层列表。测试第三层列表。测试第三
+    层列表。测试第三层列表。
+  \item 测试第三层列表。测试第三层列表。
+  \item 测试第三层列表。测试第三层列表。测试第三层列表。
+  \end{enumerate}
+  \item 测试第二层列表。测试第二层列表。测试第二层列表。
+  \end{enumerate}
+\end{enumerate}
+
+下面是最多三层的阿拉伯数字列表:
+\begin{arabicenum}
+\item 第1项
+\item 第2项
+  \begin{arabicenum}
+  \item 第2.1项
+  \item 第2.2项
+    \begin{arabicenum}
+    \item 第2.2.1项
+    \item 第2.2.2项
+    \item 第2.2.3项
+    \end{arabicenum}
+  \item 第2.3项
+  \end{arabicenum}
+\item 第3项
+\end{arabicenum}
+
+下面是最多两层的罗马数字列表:
+\begin{romanenum}
+\item 第1项
+\item 第2项
+  \begin{romanenum}
+  \item 第2.1项
+  \item 第2.2项
+  \item 第2.3项
+  \end{romanenum}
+\item 第3项
+\end{romanenum}
+
+下面是最多两层的小写字母列表:
+\begin{alphaenum}
+\item 第1项
+\item 第2项
+  \begin{alphaenum}
+  \item 第2.1项
+  \item 第2.2项
+  \item 第2.3项
+  \end{alphaenum}
+\item 第3项
+\end{alphaenum}
+
+
+下面测试一下引用环境|quote|。下面测试一下引用环境|quote|。下面测试一下引用环境|quote|。
+下面测试一下引用环境|quote|。下面测试一下引用环境|quote|。下面测试一下引用环境|quote|。
+下面测试一下引用环境|quote|。下面测试一下引用环境|quote|。下面测试一下引用环境|quote|。
+
+\begin{quote}
+这是一段引用。这是一段引用。这是一段引用。这是一段引用。这是一段引用。这是一段引用。
+这是一段引用。这是一段引用。这是一段引用。这是一段引用。这是一段引用。这是一段引用。
+这是一段引用。这是一段引用。这是一段引用。这是一段引用。这是一段引用。
+
+这是一段引用。这是一段引用。这是一段引用。这是一段引用。这是一段引用。这是一段引用。
+这是一段引用。这是一段引用。这是一段引用。
+
+这是一段引用。这是一段引用。
+\end{quote}
+
+下面测试一下引用环境|quotation|。下面测试一下引用环境|quotation|。
+下面测试一下引用环境|quotation|。下面测试一下引用环境|quotation|。
+下面测试一下引用环境|quotation|。下面测试一下引用环境|quotation|。
+下面测试一下引用环境|quotation|。下面测试一下引用环境|quotation|。
+下面测试一下引用环境|quotation|。
+
+\begin{quotation}
+这是一段引用。这是一段引用。这是一段引用。这是一段引用。这是一段引用。这是一段引用。
+这是一段引用。这是一段引用。这是一段引用。这是一段引用。这是一段引用。这是一段引用。
+这是一段引用。这是一段引用。这是一段引用。这是一段引用。这是一段引用。
+
+这是一段引用。这是一段引用。这是一段引用。这是一段引用。这是一段引用。这是一段引用。
+这是一段引用。这是一段引用。这是一段引用。
+
+这是一段引用。这是一段引用。
+\end{quotation}
+
+引用结束。引用结束。引用结束。引用结束。引用结束。引用结束。引用结束。引用结束。引用结束。
+引用结束。引用结束。引用结束。
+
+测试一下定理环境。
+
+\begin{theorem}[测试定理]
+测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下
+定理环境。测试一下定理环境。测试一下定理环境。
+\end{theorem}
+\begin{proof}
+\blindtext
+\end{proof}
+
+\blindtext
+
+\begin{theorem}
+测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下
+定理环境。测试一下定理环境。测试一下定理环境。
+\end{theorem}
+\begin{proof}
+\blindtext
+\end{proof}
+
+\blindtext
+
+\begin{lemma}
+测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下
+定理环境。测试一下定理环境。测试一下定理环境。
+\end{lemma}
+\begin{proof}
+\blindtext
+\end{proof}
+
+\blindtext
+
+\begin{definition}
+测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下
+定理环境。测试一下定理环境。测试一下定理环境。
+\end{definition}
+
+\blindtext
+
+\begin{corollary}
+测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下
+定理环境。测试一下定理环境。测试一下定理环境。
+\end{corollary}
+
+\blindtext
+
+\begin{proposition}
+测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下
+定理环境。测试一下定理环境。测试一下定理环境。
+\end{proposition}
+
+\blindtext
+
+\begin{fact}
+测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下
+定理环境。测试一下定理环境。测试一下定理环境。
+\end{fact}
+
+\blindtext
+
+\begin{assumption}
+测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下
+定理环境。测试一下定理环境。测试一下定理环境。
+\end{assumption}
+
+\blindtext
+
+\begin{conjecture}
+测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下
+定理环境。测试一下定理环境。测试一下定理环境。
+\end{conjecture}
+
+\blindtext
+
+\begin{axiom}
+测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下
+定理环境。测试一下定理环境。测试一下定理环境。
+\end{axiom}
+
+\blindtext
+
+\begin{principle}
+测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下
+定理环境。测试一下定理环境。测试一下定理环境。
+\end{principle}
+
+\blindtext
+
+\begin{problem}
+测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下
+定理环境。测试一下定理环境。测试一下定理环境。
+\end{problem}
+\begin{solution}
+\blindtext
+\end{solution}
+
+\blindtext
+
+\begin{problem}
+测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下
+定理环境。测试一下定理环境。测试一下定理环境。
+\end{problem}
+\begin{solution}
+\blindtext
+\end{solution}
+
+\blindtext
+
+\begin{exercise}
+测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下
+定理环境。测试一下定理环境。测试一下定理环境。
+\end{exercise}
+
+\blindtext
+
+\begin{exercise}
+测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下定理环境。测试一下
+定理环境。测试一下定理环境。测试一下定理环境。
+\end{exercise}
+
+
+\subsection{中心观点与思想}
+
+云计算在概念上通常被分为IaaS、PaaS、SaaS几个层面。但透过分类去理解其本
+质，可认为是上世纪70年代基于大型计算机的中心控制型瘦客户端终端模式，在
+如今技术水平上的一种新的表达，是在技术发展道路中，螺旋上升的结果。
+
+与瘦客户端相比，云计算在设计结构上存在一定的相似性。
+
+\begin{enumerate}
+\item 中心控制的模式：通过中心的大规模硬件提供统一的计算，可大大降低管理成本，提
+  高硬件资源利用率，同时降低客户端的硬件成本需求。例如Nvidia推出Georce GRID平台
+  \cite{NVIDIAGRID}，推出了GaaS\footnote{Gaming as a Service}概念。将
+  GPU放置在云端，使得用户不需要再不断购买升级显卡，并可在更为广泛的终端（包括手机、
+  平板、智能电视）和地点体验最新的游戏。
+\item 数据集中：由于瘦客户端的关系，数据都集中存储在中心，可对数据提供
+  可靠的保护，并且通过按需调用的实现方式，降低对网络带宽的需求。
+\end{enumerate}
+
+在设计思路上，两者都为了降低管理成本和硬件成本、以低能耗、高弹性等需求
+为设计目标。随着技术的进步，云计算在具体实现形态上与传统的大型机也有很
+大的不同：
+
+一方面，云中心不再是传统的一台大型机，而是用大量廉价计算节点的互联来提
+供海量资源。云计算更强调资源规模的无缝、平滑扩展，以及高可靠性，无单点
+故障问题。另一方面，云计算时代的终端，也具备相当计算能力。随着web2.0的
+整合，还有向胖客户端和智能终端发展的趋势。
+
+总而言之，云计算在大框架中是传统的中心控制／终端的模式，但在中心与终端
+两方面，都引入分布式技术加以改良。核心的思路是在低成本的前提下做到高可
+靠性、高灵活性和高伸缩性。因此，云计算并不仅仅以数量换性能的表象，本质
+上为低成本高性能，追求高能效比，并在实现层面讲究可实现性和可操作性。
+\subsection{需要解决的问题与挑战}
+
+测试一下中文字体：
+
+{\songti\zihao{0} 宋体，初号}
+
+{\songti\zihao{-0} 宋体，小初}
+
+{\songti\zihao{1} 宋体，一号}
+
+{\songti\zihao{-1} 宋体，小一}
+
+{\songti\zihao{2} 宋体，二号}
+
+{\songti\zihao{-2} 宋体，小二}
+
+{\songti\zihao{3} 宋体，三号}
+
+{\songti\zihao{-3} 宋体，小三}
+
+{\songti\zihao{4} 宋体，四号}
+
+{\songti\zihao{-4} 宋体，小四}
+
+{\songti\zihao{5} 宋体，五号}
+
+{\songti\zihao{-5} 宋体，小五}
+
+{\songti\zihao{6} 宋体，六号}
+
+{\songti\zihao{-6} 宋体，小六}
+
+{\songti\zihao{7} 宋体，七号}
+
+{\songti\zihao{8} 宋体，八号}
+
+{\heiti\zihao{0} 黑体，初号}
+
+{\heiti\zihao{-0} 黑体，小初}
+
+{\heiti\zihao{1} 黑体，一号}
+
+{\heiti\zihao{-1} 黑体，小一}
+
+{\heiti\zihao{2} 黑体，二号}
+
+{\heiti\zihao{-2} 黑体，小二}
+
+{\heiti\zihao{3} 黑体，三号}
+
+{\heiti\zihao{-3} 黑体，小三}
+
+{\heiti\zihao{4} 黑体，四号}
+
+{\heiti\zihao{-4} 黑体，小四}
+
+{\heiti\zihao{5} 黑体，五号}
+
+{\heiti\zihao{-5} 黑体，小五}
+
+{\heiti\zihao{6} 黑体，六号}
+
+{\heiti\zihao{-6} 黑体，小六}
+
+{\heiti\zihao{7} 黑体，七号}
+
+{\heiti\zihao{8} 黑体，八号}
+
+{\kaishu\zihao{0} 楷书，初号}
+
+{\kaishu\zihao{-0} 楷书，小初}
+
+{\kaishu\zihao{1} 楷书，一号}
+
+{\kaishu\zihao{-1} 楷书，小一}
+
+{\kaishu\zihao{2} 楷书，二号}
+
+{\kaishu\zihao{-2} 楷书，小二}
+
+{\kaishu\zihao{3} 楷书，三号}
+
+{\kaishu\zihao{-3} 楷书，小三}
+
+{\kaishu\zihao{4} 楷书，四号}
+
+{\kaishu\zihao{-4} 楷书，小四}
+
+{\kaishu\zihao{5} 楷书，五号}
+
+{\kaishu\zihao{-5} 楷书，小五}
+
+{\kaishu\zihao{6} 楷书，六号}
+
+{\kaishu\zihao{-6} 楷书，小六}
+
+{\kaishu\zihao{7} 楷书，七号}
+
+{\kaishu\zihao{8} 楷书，八号}
+
+{\fangsong\zihao{0} 仿宋，初号}
+
+{\fangsong\zihao{-0} 仿宋，小初}
+
+{\fangsong\zihao{1} 仿宋，一号}
+
+{\fangsong\zihao{-1} 仿宋，小一}
+
+{\fangsong\zihao{2} 仿宋，二号}
+
+{\fangsong\zihao{-2} 仿宋，小二}
+
+{\fangsong\zihao{3} 仿宋，三号}
+
+{\fangsong\zihao{-3} 仿宋，小三}
+
+{\fangsong\zihao{4} 仿宋，四号}
+
+{\fangsong\zihao{-4} 仿宋，小四}
+
+{\fangsong\zihao{5} 仿宋，五号}
+
+{\fangsong\zihao{-5} 仿宋，小五}
+
+{\fangsong\zihao{6} 仿宋，六号}
+
+{\fangsong\zihao{-6} 仿宋，小六}
+
+{\fangsong\zihao{7} 仿宋，七号}
+
+{\fangsong\zihao{8} 仿宋，八号}
+
+测试一下标准字号：
+
+{\Huge 汉字，Huge}
+
+{\huge 汉字，huge}
+
+{\LARGE 汉字，LARGE}
+
+{\Large 汉字，Large}
+
+{\large 汉字，large}
+
+{\normalsize 汉字，normalsize}
+
+{\small 汉字，small}
+
+{\footnotesize 汉字，footnotesize}
+
+{\scriptsize 汉字，scriptsize}
+
+{\tiny 汉字，tiny}
+
+测试一下标准字体的变形：
+
+{\songti 宋体} {\heiti 黑体} {\kaishu 楷书} {\fangsong 仿宋}
+
+{\textsl{textsl字体}}
+
+{\bfseries bfseries字体}
+
+{\textbf{textbf字体}}
+
+{\textit{textit字体}}
+
+测试一下数学公式中的字体大小。
+
+\newcommand{\set}[1]{\left\{\,#1\,\right\}}
+\newcommand{\card}[1]{\left|\,#1\,\right|}
+
+Fall-Out指标计算公式如下：
+\begin{equation*}
+  \mbox{fallout} = \frac{\card{\set{\text{不相关文档}}\cap\set{\text{获取的文档}}}}{\card{\set{\text{不相关文档}}}}
+\end{equation*}
+
+\section{研究的应用背景}
+云计算作为分布式技术的当前表现形式，通过将众多节点资源整合，以冗余、去
+中心化的分布式模式，实现传统技术中需要大型机才能解决的海量信息问题。一
+言而概之，“人多力量大”。
+
+但随着节点数目的增多，问题的重点将逐步转换为如何对大量节点进行高效互联。图
+\ref{fig:test1}所示为传统IaaS云中心网络结构的一部分。通过BR边界路由器，AR接入路
+由器构建数据中心的主干；核心交换机和接入交换机S，构成二层交换网络层，大量的服务
+器节点通过二层交换机被最终接入整个网络。
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width= 0.5\textwidth]{njuname.eps}\\
+  \caption{测试插图}\label{fig:test1}
+\end{figure}
+在上述传统网络中，当节点总数达到数千乃至万数量级时，上层链路的聚合带宽
+将不断提高，从而对核心交换机、接入路由器、边界路由器的指标提出了极高的
+要求。以至于少数核心网络设备，成为整个网络中的高价格、高性能单点。一方
+面与原本追求低成本、分布化、去中心化的云技术设计理念背道而驰，另一方面
+也降低了网络的健壮性。因而本文所做工作对数据中心的网络基础设施而言，具
+有较大应用价值。
+\subsection{IaaS云中心}
+\Blindtext
+\subsection{PaaS云中心}
+\Blindtext
+\section{论文结构}
+\Blindtext
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{基于LDA和PageRank的关键词短语提取算法}\label{chapter_smallworld}
+\section{研究背景}
+
+近些年来随着社交网络的兴起，对于社交网络的研究以及基于社交网络的应用越来越多，在中国新浪微博的用户数量活跃度最高，随着新浪微博的使用越来越来普及，在新浪微博每时每刻都在产生大量的数据，如何利用这些数据是一件非常有意义的事情。
+当然现在基于新浪微博上的上的应用已经非常丰富了，例如政府可以对于社会热点事件进行舆情分析，企业主可以从实时获取自己的产品在微博上的反响，广告主可以根据用户过去的浏览以及关注历史向用户定向推荐广告。
+然而无论是舆情分析，产品反馈亦或是广告推荐，关键词提取对于这些应用来说都会有很大的帮助。虽然关键词的描述能力很强并且已经有了很多成熟的方法，但是毕竟关键词包含的信息量不大，我们认为关键词短语带有更多的信息并且描述能力更好。基于此我们希望
+可以基于某个关键词，首先在新浪微博上爬取一批数量的微博，然后在爬取到的微博上提取出来相应的关键词短语，这些关键词短语可以用于舆情分析，产品反馈，广告推荐，同时这些关键词短语还可以尝试用来做微博上的的分类，推荐以及用于预测微博上的热点事件发生等等应用。
+对于长文本来说，文本处理相对容易，对于关键词短语的提取已经有了不错的研究。然而对于短文本，我们遇到下面的问题，微博长度比传统的文本短，有一部分微博没有有用的信息，微博上的主题更加多样化。
+我们希望可以利用长文本分析的技术同时结合短文本的特点开发出一套关键词短语提取系统。同时伴随着可视化技术的发展以及可视化可以给用户带来直观的感受，我们会将自己处理的结果使用可视化工具呈现出来。
+
+\section{数据来源}
+
+这里我们会首先给出某个关键字，然后基于此关键词去新浪微博上爬取，我们使用自己开发的数据爬虫，可以给出关键字以及时间戳，用来爬取一定时间的微博用于分析。
+
+\section{相关工作}
+
+在介绍关键词短语之前我们首先介绍关键词提取的概念。关键词提取指的是从一篇或者一批文档中提取出来的词语，这些词语可以概括这些文档的中心思想，被广泛的用在建立索引等应用中
+关键词短语指的是在关键词提取的基础上，不再关注提取单一的词语，而是将关注点放在提取关键词短语上。关键词短语长度更长，因此被认为具有比关键词更强的描述能力。
+关键词短语与关键词不同地方，关键词短语表达能力更强。
+对于关键词短语的提取，可以分为有监督学习的方法以及无监督学习的方法，我们首先介绍下有监督学习以及无监督学习的概念。
+有监督学习指的是首先需要人工标注一批数据，然后将数据划分成训练集以及测试集，然后利用机器学习的算法在训练集训练出model，在测试集上调整model参数，使得最终的模型具有很好的泛化能力。有监督学习中最普遍的一类机器学习算法就是分类以及回归。
+无监督学习指的是不需要人工标注数据，让计算机自己去学习，无监督学习算法中最普遍的一类算法就是聚类算法。
+在关键词短语提取中，有监督方法包括。。。。。。无监督方法包括。。。。。。
+
+然而在当今时代，互联网发展迅速，我们可以很容易方便的获取大量的数据，如果对这样大规模的数据进行标注，需要付出很大的代价，在实际工作中是几乎是不可能的，所以有监督的方法不太实用，基于无监督学习的方法越来越受到重视，无监督的方法中TFIDF或者TextRank方法发展的比较成熟，在实际使用中比较广泛，我们接下来会讲TFIDF或者TextRank，然后引申出来我们的方法。我们会在新浪微博的语料上比较这三种不同的方法，相比于其他两种方法，结合LDA以及PageRank方法在precision以及recall上都可以取得较好的结果。
+
+TFIDF是一种统计方法，在信息检索中使用比较广泛，可以用来评估一个词对于一个文件集合的重要程度。TFIDF主要思想就是，如果某个词在一篇文档中出现的频率高，然而在其它文档中出现的次数比较少，我们就认为这个词具有很好的区分能力。
+TFIDF中TF（term frequency）指的是某个词在文档中出现的频率，IDF（inverse document frequency）指的是如果包含某个词条t的文档n数目很少，那么IDF就越大，同时可以说明词条t具有很好的区分能力。
+TFIDF= TF*IDF，TF计算公式。。。。。。，IDF计算公司。。。。。。
+TFIDF的优点是实现简单并且效果不错因而在实际中使用非常广泛，缺点就是TFIDF算法中并没有体现出单词的位置信息，因此存在改进的机会。
+我们可以将TFIDF作为一种baseline方法用于在微博中进行关键词短语的提取。
+
+TextRank介绍
+TextRank首先是一种无监督的方法，。。。。
+
+\section{算法介绍}
+
+首先基于微博构建word graph，我们将每条微博的单词视为节点，单词之间的联系视为一条边，这样我们可以基于微博构建出图。
+基于topic model，我们假设这一批微博上有n个topic，我们首先使用LDA得到每个单词在每一个topic下的概率值，这样我们得到n个topic下面每个单词的权值。
+基于word graph的概念以及每个单词在每一个topic下的权值，我们可以得到n个graph，我们在n个graph运行pagerank，最终在每一个word graph中 我们都可以得到最终稳定的图，同时我们可以得到此图中已经排好序的词以及词的权重。我们基于一个假设就是关键词短语一般是名词短语出现，这里我们首先提取出根据正则表达式从微博中匹配出名词短语，然后我们根据关键词短语中每一个词在在每一个topic下的权值wi,根据第i个topic在文档中的分布概率ti，统计关键词短语在所有topic下出现的权重。。。。。。最终我们可以得到所有关键词短语的topic权值，我们选取top n关键词短语输出。最后将我们的关键词短语使用可视化工具D3.js可视化出来。
+
+\section{算法流程}
+
+构建word graph-》使用LDA 获取每个topic下面的单词的概率-》对于word graph运行改进的page rank算法-》关键词短语排序
+
+\subsection{如何构建word graph}
+
+首先介绍一个窗口概念，窗口以当前词作为源点，以接下里的若干个词作为终点，以I  Love Nanjing University very much 为例。以单词I 为例，假设窗口为3，那么我们可以得到边I-》love，I->Nanjing，I->university。我们构建word graph的单位是一篇文本，这样一篇文本是由一批数量微博得到的。所以word graph的节点就是词，word graph的边就是词之间的联系，边上的权重就是统计边出现的次数
+ 
+\subsection{基础算法介绍}
+
+怎样获取单词在某个topic下面的概率
+我们可以是plsa或者lda，lda是由。。。提出来的，在数据量较大的时候，可以取得较好的结果
+
+\subsection{LDA}
+
+LDA是一种主题模型，一种无监督学习算法，是由Blei，Andrew Ng，Michael提出来的，它可以将文档的主题按照概率分布的形式给出。在LDA中，一篇文档是这样产生的，首先我们根据狄利克雷分布得到主题分布，从主题的多项式分布中得到文档第j个词的主题zj，然后我们从狄利克雷分布中取样生成主题zj的词语分布，最终我们根据这个词语分布得到某个单词。
+LDA（Latent Dirichlet Allocation）是一种文档主题生成模型，也称为一个三层贝叶斯概率模型，包含词、主题和文档三层结构。所谓生成模型，就是说，我们认为一篇文章的每个词都是通过“以一定概率选择了某个主题，并从这个主题中以一定概率选择某个词语”这样一个过程得到。文档到主题服从多项式分布，主题到词服从多项式分布。[1] 
+LDA是一种非监督机器学习技术，可以用来识别大规模文档集（document collection）或语料库（corpus）中潜藏的主题信息。它采用了词袋（bag of words）的方法，这种方法将每一篇文档视为一个词频向量，从而将文本信息转化为了易于建模的数字信息。但是词袋方法没有考虑词与词之间的顺序，这简化了问题的复杂性，同时也为模型的改进提供了契机。每一篇文档代表了一些主题所构成的一个概率分布，而每一个主题又代表了很多单词所构成的一个概率分布。
+LDA整体流程。。。。。。
+先定义一些字母的含义：文档集合D，主题（topic)集合T
+D中每个文档d看作一个单词序列<w1,w2,...,wn>，wi表示第i个单词，设d有n个单词。（LDA里面称之为wordbag，实际上每个单词的出现位置对LDA算法无影响）
+·D中涉及的所有不同单词组成一个大集合VOCABULARY（简称VOC），LDA以文档集合D作为输入，希望训练出的两个结果向量（设聚成k个topic，VOC中共包含m个词）：
+·对每个D中的文档d，对应到不同Topic的概率θd<pt1,...,ptk>，其中，pti表示d对应T中第i个topic的概率。计算方法是直观的，pti=nti/n，其中nti表示d中对应第i个topic的词的数目，n是d中所有词的总数。
+·对每个T中的topict，生成不同单词的概率φt<pw1,...,pwm>，其中，pwi表示t生成VOC中第i个单词的概率。计算方法同样很直观，pwi=Nwi/N，其中Nwi表示对应到topict的VOC中第i个单词的数目，N表示所有对应到topict的单词总数。
+LDA的核心公式如下：
+p(w|d)=p(w|t)*p(t|d)
+直观的看这个公式，就是以Topic作为中间层，可以通过当前的θd和φt给出了文档d中出现单词w的概率。其中p(t|d)利用θd计算得到，p(w|t)利用φt计算得到。
+实际上，利用当前的θd和φt，我们可以为一个文档中的一个单词计算它对应任意一个Topic时的p(w|d)，然后根据这些结果来更新这个词应该对应的topic。然后，如果这个更新改变了这个单词所对应的Topic，就会反过来影响θd和φt
+
+我们使用LDA期望得到文档的主题分布以及某个主题下面的单词分布。
+
+\subsection{PageRank}
+
+Pagerank算法是google用来进行对网页进行排序的算法，pagerank的做法首先将网页建模成图，图中的每个节点都有入度以及出度，所以我们的每一个点的权重是由指向这些点来决定的，然后再加上一项是随机因子，保证每个节点有相同的概率挑往其他节点。经过迭代之后我们每一个节点可以得到稳定的权值。Pagerank每个节点的入度是由那些指向节点的节点数量，每个节点的出度指的是当前节点指向的节点的数量。
+PageRank is a link analysis algorithm and it assigns a numerical weighting to each element of a hyperlinked set of documents, such as the World Wide Web, with the purpose of "measuring" its relative importance within the set. The algorithm may be applied to any collection of entities with reciprocal quotations and references. The numerical weight that it assigns to any given element E is referred to as the PageRank of E and denoted by  Other factors like Author Rank can contribute to the importance of an entity.
+A PageRank results from a mathematical algorithm based on the webgraph, created by all World Wide Web pages as nodes and hyperlinks as edges, taking into consideration authority hubs such as cnn.com or usa.gov. The rank value indicates an importance of a particular page. A hyperlink to a page counts as a vote of support. The PageRank of a page is defined recursively and depends on the number and PageRank metric of all pages that link to it ("incoming links"). A page that is linked to by many pages with high PageRank receives a high rank itself.
+The PageRank algorithm outputs a probability distribution used to represent the likelihood that a person randomly clicking on links will arrive at any particular page. PageRank can be calculated for collections of documents of any size. It is assumed in several research papers that the distribution is evenly divided among all documents in the collection at the beginning of the computational process. The PageRank computations require several passes, called "iterations", through the collection to adjust approximate PageRank values to more closely reflect the theoretical true value.
+
+A probability is expressed as a numeric value between 0 and 1. A 0.5 probability is
+commonly expressed as a "50\% chance" of something happening. Hence, a PageRank of 0.5 means there is a 50\% chance that a person clicking on a random link will be directed to the document with the 0.5 PageRank.
+PageRank can be computed either iteratively or algebraically. The iterative method can be viewed as the power iteration method[24][25] or the power method. The basic mathematical operations performed are identical.
+Depending on the framework used to perform the computation, the exact implementation of the methods, and the required accuracy of the result, the computation time of these methods can vary greatly.
+
+Pagerank算法的优化公式
+。。。。。
+
+\subsection{改进后的pagerank算法}
+
+Pagerank每个节点跳往其他节点是概率是相同的，这里我们做出的修改是，将这一项修改为每个单词在某个topic下面的权值，这样单词在跳转时候会倾向于跳转跟某个topic相关的词语。
+修改后的pagerank优化公式是
+。。。。。
+
+\subsection{关键词提取算法}
+
+根据上面的算法，我们最终可以得到每个topic下面每个词语基于pagerank的权值，我们有一个经验上的认识就是关键词短语通常会是名词短语。所以我们会首先根据正则表达式抽取出名词短语，然后计算名词短语的权重，最终进行排序。
+我们的计算公式是
+。。。。。。
+
+\subsection{D3.js}
+
+D3.js是由stanford大学开发的开源工具，应用非常广泛，可视化操作简单，现在已经是主流的数据可视化工具。D3.js是一个基于数据的操作文档的JavaScript库，可以让你绑定任何数据到DOM，支持DIV这种图案生成，也支持SVG这种图案的生成，D3帮助使用者屏蔽了浏览器差异，因此可以做到代码简洁[cpoy],选择D3作为我们的可视化工具的原因有1庞大的用户基数，在github上目前上的关注人数已经超过了2w人，是非常受欢迎的项目。2社区是友好开放的，由于D3本身是一个开源的库，因此在社区里分享很活跃。3 资料丰富，D3拥有数以千计的实例，大量的教程，方便使用者轻松容易的做出自己想做的应用。
+1.4 系统开发
+我们的关键词短语提取系统总共包括数据获取模块，关键词短语提取模块，前端展示模块。
+数据获取模块，主要包括微博登陆模块，爬取模块，存储模块，我们使用主要使用python语言结合mongodb数据库进行开发。
+Mongodb是一种非结构化数据库，也称为文档型数据库，mongodb支持key-value的存储模式，这里key可以是我们的搜索关键字，value是基于关键词搜索出来的weibo。
+MongoDB介绍
+Mongdb是一种典型的NOSQL数据库，那么什么事NOSQL数据库以及NOSQL数据库与传统的SQL数据库区别是什么？
+NoSQL，指的是非关系型的数据库。NoSQL有时也称作Not Only SQL的缩写，是对不同于传统的关系型数据库的数据库管理系统的统称。NoSQL用于超大规模数据的存储。（例如谷歌或Facebook每天为他们的用户收集万亿比特的数据）。这些类型的数据存储不需要固定的模式，无需多余操作就可以横向扩展。今天我们可以通过第三方平台（如：Google,Facebook等）可以很容易的访问和抓取数据。用户的个人信息，社交网络，地理位置，用户生成的数据和用户操作日志已经成倍的增加。我们如果要对这些用户数据进行挖掘，那SQL数据库已经不适合这些应用了, NoSQL数据库的发展也却能很好的处理这些大的数据。
+NOSQL与RMBMS区别
+RDBMS特点是 高度组织化结构化数据,结构化查询语言（SQL） (SQL) ,数据和关系都存储在单独的表中。 数据操纵语言，数据定义语言 ,严格的一致性,基础事务
+NoSQL 特点是 代表着不仅仅是SQL，没有声明性查询语言，没有预定义的模式，键 - 值对存储，列存储，文档存储，图形数据库，最终一致性，而非ACID属性，非结构化和不可预知的数据，CAP定理 ，高性能，高可用性和可伸缩性
+那么什么是mongodb，MongoDB是一种文件导向数据库管理系统，由C++撰写而成，以此来解决应用程序开发社区中的大量现实问题。2007年10月，MongoDB由10gen团队所发展。2009年2月首度推出。
+
+关键词短语提取模块，主要包括数据预处理模块，topic mode模块，pagerank模块，我们主要使用python语言结合gensim开发，gemsim是Radim 힀eh킁힂ek开发的python包，里面有丰富的接口，这里我们使用里面提供的LDA实现。Gensim中LDA使用包括训练以及推荐，举例如下
+LDA train 过程
+Lda = ldaModel(corpus, num\_topics=100)
+LDA inference 过程
+。。。。。。
+前端展示模块，我们需要将关键词短语可视化的展示出来，这里我们使用了python语言的tornado库结合bootstrap库以及D3.js库。Tornado是FriendFeed开发并且由Facebook开源的Web服务框架，它是非阻塞形式的服务器，而且速度相当快。Bootstrap库由Twitter开发并且开源的前端开发框架，具有简洁，直观，强悍的特点，对于我们开发帮助很大。D3.js已经在前面介绍了，这里就不详细讲解了。
+
+\section{实验设计以及结果}
+
+实验数据来源，这里我们选取雾霾作为我们的关键字，使用新浪weibo上爬取的100w条微博，将这100w条微博存储在数据库中。
+
+\subsection{LDARank}
+
+1 由于我们爬取微博数量巨大，为了存取效率考虑，我们将爬取到的微博存储在数据库中，所以我们首先做的是将微博从数据库取出。
+2 然后我们需要对数据进行预处理，包括1去除重复的微博，2，将所有的微博合并到一个文档里面去 3 使用分词工具进行微博分词，这里我们使用的中文分词工具是jieba分词（github链接）4 实用停用词表去除停用词以及标点符号。
+3 其次，我们实用处理后的微博构建word graph，将每个词作为节点，根据窗口大小，这里我们默认的窗口大小是5，连接不同的节点构成边，边的权重由边出现的次数统计出来。这样以后，我们构建出基于weibo的word graph。
+4 然后，我们使用经过1预处理过的微博语料，使用LDA算法来获取文档的topic分布以及topic下面单词的分布。我们采用了gensim的LDA实现。
+5 接着，我们实现了基于LDA的pagerank。在word graph上迭代1000轮终止算法，这样我们可以获取每一个word graph上面的单词排序。
+6 我们使用正则表达式。。。。。，抽取文档中的名词短语，然后获取根据公式。。。。。。计算每个名词短语的权重，并进行排序，提取最终的topN个短语来作为最后的关键词短语。同时我们计算LDARank的precision，recall以及F值。
+7 我们使用D3.js将关键词短语可视化出来，并且将结果放在http://......
+
+\subsection{TFIDF}
+
+1 首先我们采用与LDARank相同的微博预处理方法，这里不同的地方是我们不将所有的微博合并。
+2 我们根据TFIDF的计算公式，依次计算item的TF以及IDF，然后计算每个词的权重。
+3 使用相同的正则表达式，提取名词短语
+4 我们使用下面的计算公式来计算名词短语的最终权重。。。。。。。
+5 统计TFIDF方法的precision，recall以及F值
+
+\subsection{TextRank}
+。。。。。。
+
+\section{可以改进的地方}
+
+\chapter{domain classification using slot feature}\label{chapter_smallworld}
+
+\section{研究背景}
+
+随着智能手机的大量使用，语音交互将会越来越多的出现在人们的实际生活中，基于此语音助手的使用越来越普及，现在比较流行的语音助手有苹果公司开的siri，谷歌公司开发的google now，而现在微软也推出一款叫做Cortana的语音助手，Cortana基于人工智能以及大数据的技术，尝试去理解用户的喜好和习惯，帮助用户进行日程安排，问题回答等等。
+在Cortana的处理逻辑中包括一个称之为domain classification的模块。Domain classification模块需要处理经过speech recognition处理之后的短文本或者手写送过来的短文本，domain classification模块负责对短文本进行分类。Domain classification非常重要，因为这是接下来一系列更深入处理的入口，所以domain classification的正确率的非常重要.
+微软的语音助手Cortana总共有9个domain，分别是alarm，places，reminder，calender，weather，......，web。我们的domain classification处理的就是当每一个未知的query进来的时候，我们可以将此未知的query正确分类。既然这里的domain classification处理的主要是query，所以我们可以将之认为是一种文本分类或者说更确切地说是短文本分类。
+分类是一种有监督学习算法，分类学习算法的流程是首先在人工标注好的数据上学习模型参数，然后在测试集上调整模型参数，最终希望可以输出泛华能力强的model。
+在机器学习的分类算法中，广泛使用的有最近邻方法KNN，朴素贝叶斯NB，支持向量机SVM，神经网络NN，决策树方法Decision Tree等等，对于文本分类来讲，我们需要处理数据的特点是，通常数据规模比较大，特征比较稀疏，SVM算法经过几十年的使用实践，已经被证明可以在文本分类的领域中有效地使用。
+在SVM中引入核函数，具体说就是可以将非线性可分的数据扩展到更高维空间使得可以线性可分，这大大的扩展了SVM的能力，使得SVM应用更加广泛。然而对于数据规模大，特征数量多并且比较稀疏的语料来说，引入核函数固然可以取得不错的结果，但是却要付出很大的时间代价。有研究表名，在处理这种数据时，使用线性核的SVM可以取得相似的准确率，同时可以极大的减少训练时间。因此对于我们要解决的基于短文本的domain classification来说，可以使用结合linear kernel的SVM，处理时间非常快并且可以获得不错的准确率。在实验过程中我们选取台湾大学林智仁老师组开发的Liblinear作为我们的实验工具。LibLinear实现高效并且易于使用，可以极大的提高我们的实验效率，在这里我们要感谢Liblinear的开发者。
+对于基于Cortana query的domain classification来讲遇到的主要问题就是query长度非常短，特征比较稀疏，对于每一个query来讲，可以利用的特征数量比较少。基于此我们想到可以为query扩充特征。在微软的给定的语料中，每一条query都被人工标上slot，slot是一种实体，是领域相关。我们尝试结合slot特征的分类算法，希望slot特征可以帮助提高domain classification的准确度。实验证明，引入slot特征确实可以帮助提高domain classification准确率。
+
+\section{数据来源}
+
+微软400w query
+
+\section{算法介绍}
+
+我们使用SVM算法作为我们的分类算法，SVM算法在工业界中使用广泛并且效果不错。在实际使用中，我们希望我们model训练时间足够短以及model足够小，可以减少存储空间的要求。由于我们的语料集非常大，特征数量多并且稀疏，所以我们考虑使用线性核的SVM，这样可以减少训练时间，同时为了减少生成的model的size。我们使用了L1 正则 L2 Loss的linear kernel SVM。
+我们的baseline使用的特征是提取query的ngram来得到，具体来说我们使用的是unigram，bigram，trigram组成的特征。
+Ngram是自然语言处理常用的语言模型。
+我们的对比算法中使用了额外的slot特征，下面来解释下什么是slot，slot可以理解为一个实体，作为例子，我们以以下的query为例，“闹钟 设 在 明 早 2 点”，标注了slot之后的query为“闹铃 设 在 《start\_date》 明 《/start\_date》 《start\_time>  早 2 点 《/start\_time>”这里的<start\_date>, </start\_date>, <start\_time>, </start\_time>是slot。
+在处理未知的query时候，使用人工为未知的query标注slot是不切实际的。那么我们如何得到slot。上面我们提到过我们语料中400w query，这400w query中已经有标注好的slot数据，我们希望学习一种可以对query进行序列化标注的模型，这种经过学习过的模型可以给未知的query标注slot。常用的序列化标注模型，有隐马尔科夫模型HMM，条件随机场模型CRF，基于我们已经有实现好的高效的CRF model，这里我们选择使用CRF model来学习slot的标注。基于此我们可以使用crf模型来为未知的query预测slot。
+在我们的后续实验过程中，结合slot作为特征来进行分类，我们可以得到的分类精确度比baseline可以提高大概1.9个点。
+下文中我们将支持向量机模型简称为SVM，将条件随机场模型简称为CRF。
+
+\subsection{基础算法介绍}
+
+在我们的domain classification任务中，我们主要使用了SVM和CRF算法，接下来我们将介绍SVM以及CRF
+
+\subsection{SVM介绍}
+
+In machine learning, support vector machines (SVMs, also support vector networks[1]) are supervised learning models with associated learning algorithms that analyze data and recognize patterns, used for classification and regression analysis. Given a set of training examples, each marked as belonging to one of two categories, an SVM training algorithm builds a model that assigns new examples into one category or the other, making it a non-probabilistic binary linear classifier. An SVM model is a representation of the examples as points in space, mapped so that the examples of the separate categories are divided by a clear gap that is as wide as possible. New examples are then mapped into that same space and predicted to belong to a category based on which side of the gap they fall on.
+In addition to performing linear classification, SVMs can efficiently perform a non-linear classification using what is called thekernel trick, implicitly mapping their inputs into high-dimensional feature spaces.
+More formally, a support vector machine constructs a hyperplane or set of hyperplanes in a high- or infinite-dimensional space, which can be used for classification, regression, or other tasks. Intuitively, a good separation is achieved by the hyperplane that has the largest distance to the nearest training data point of any class (so-called functional margin), since in general the larger the margin the lower the generalization error of the classifier.
+Whereas the original problem may be stated in a finite dimensional space, it often happens that the sets to discriminate are notlinearly separable in that space. For this reason, it was proposed that the original finite-dimensional space be mapped into a much higher-dimensional space, presumably making the separation easier in that space. To keep the computational load reasonable, the mappings used by SVM schemes are designed to ensure that dot products may be computed easily in terms of the variables in the original space, by defining them in terms of a kernel function  selected to suit the problem.[2] The hyperplanes in the higher-dimensional space are defined as the set of points whose dot product with a vector in that space is constant. The vectors defining the hyperplanes can be chosen to be linear combinations with parameters  of images of feature vectors that occur in the data base. With this choice of a hyperplane, the points  in the feature space that are mapped into the hyperplane are defined by the relation:  Note that if  becomes small as  grows further away from , each term in the sum measures the degree of closeness of the test point  to the corresponding data base point . In this way, the sum of kernels above can be used to measure the relative nearness of each test point to the data points originating in one or the other of the sets to be discriminated. Note the fact that the set of points  mapped into any hyperplane can be quite convoluted as a result, allowing much more complex discrimination between sets which are not convex at all in the original space.
+.
+SVM算法是一种经典的机器学习算法，是由Boster，Guyon，Vapnik在1992年提出来的，SVM算法的特点是可以同时最小化经验误差与最大化几何间隔。从几何意义上来讲SVM算法寻找一个超平面，这个超平面用来分离开数据点，因此超平面也被成为分离面。基于SVM的优良性质，SVM可以应用非常广泛，比如文本分类，蛋白质识别，手写数字识别等等。
+SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可以描述为最大化几何间隔，SVM形式很多，具体到我们的问题，我们使用的L1正则L2损失的SVM，SVM算法优化公式，L1+L2。
+由于使用了L1正则，我们可以得到稀疏模型，首先我们解释在SVM中使用正则项的目的是避免过拟合The feasible point that minimizes the loss is more likely to happen on the coordinates on graph (a) than on graph (b) since graph (a) is more angular.  This effect amplifies when your number of coefficients increases, i.e. from 2 to 200. The implication of this is that the L1 regularization gives you sparse estimates. Namely, in a high dimensional space, you got mostly zeros and a small number of non-zero coefficients. This is huge since it incorporates variable selection to the modeling problem. In addition, if you have to score a large sample with your model, you can have a lot of computational savings since you don't have to compute features(predictors) whose coefficient is 0
+所以通过使用L1正则我们可以得到一个稀疏化的模型，也即我们可以得到一个比较小的model。
+传统上SVM是用来解决二分类的，怎么讲SVM用于多分类呢，方法有如下集中，one-vs-rest，one-vs-one以及。。。。。。
+假设我们有n个类，one-vs-one指的是我们从这n个类中选取两个类ni，nj出来，然后利用这两个类的数据训练出一个binary classifier。以此类推，我们将会有n\^2/2个分类器。当有测试数据时候，我们同时使用这么多分类器，然后得到n\^2/2个分数，选取分值最高所属的类作为测试数据的类。
+假设我们有n个类，One-vs-rest指的是我们将我们将其中的一个类作为正例，其余n-1个类作为负例，训练出一个binary classifier。依次类推，最后我们将会得到n个binary classifier。当遇到一个测试数据时候，我们同时使用这n个binary classifier，这样我们将会得到n个分值，选取分值最高所属的类作为测试数据的类。
+实际中我们使用的是one-vs-rest方法来做多分类。
+
+\subsection{CRF}
+
+Conditional random fields (CRFs) are a class of statistical modelling method often applied in pattern recognition and machine learning, where they are used for structured prediction. Whereas an ordinary classifier predicts a label for a single sample without regard to "neighboring" samples, a CRF can take context into account; e.g., the linear chain CRF popular in natural language processing predicts sequences of labels for sequences of input samples.
+CRFs are a type of discriminative undirected probabilistic graphical model. It is used to encode known relationships between observations and construct consistent interpretations. It is often used for labeling or parsing of sequential data, such as natural language text or biological sequences[1] and in computer vision.[2] Specifically, CRFs find applications in shallow parsing,[3] named entity recognition[4] and gene finding, among other tasks, being an alternative to the related hidden Markov models (HMMs). In computer vision, CRFs are often used for object recognition and image segmentation.
+Lafferty, McCallum and Pereira[1] define a CRF on observations  and random variables  as follows:
+Let  be a graph such that
+, so that  is indexed by the vertices of . Then  is a conditional random field when the random variables , conditioned on , obey the Markov property with respect to the graph: , where  means that  and  are neighbors in .
+What this means is that a CRF is an undirected graphical model whose nodes can be divided into exactly two disjoint sets  and , the observed and output variables, respectively; the conditional distribution  is then modeled.
+Inference[edit]
+For general graphs, the problem of exact inference in CRFs is intractable. The inference problem for a CRF is basically the same as for an MRF and the same arguments hold.[5] However there exist special cases for which exact inference is feasible:
+If the graph is a chain or a tree, message passing algorithms yield exact solutions. The algorithms used in these cases are analogous to the forward-backward and Viterbi algorithm for the case of HMMs.
+If the CRF only contains pair-wise potentials and the energy is submodular, combinatorial min cut/max flow algorithms yield exact solutions.
+If exact inference is impossible, several algorithms can be used to obtain approximate solutions. These include:
+Loopy belief propagation
+Alpha expansion
+Mean field inference
+Linear programming relaxations
+Parameter Learning[edit]
+Learning the parameters  is usually done by maximum likelihood learning for . If all nodes have exponential family distributions and all nodes are observed during training, this optimization is convex.[5] It can be solved for example using gradient descent algorithms, or Quasi-Newton methods such as the L-BFGS algorithm. On the other hand, if some variables are unobserved, the inference problem has to be solved for these variables. Exact inference is intractable in general graphs, so approximations have to be used.
+
+条件随机场(CRF)由Lafferty等人于2001年提出，结合了最大熵模型和隐马尔可夫模型的特点，是一种无向图模型，近年来在分词、词性标注和命名实体识别等序列标注任务中取得了很好的效果。条件随机场是一个典型的判别式模型，其联合概率可以写成若干势函数联乘的形式，其中最常用的是线性链条件随机场。若让x=(x1，x2，…xn)表示被观察的输入数据序列，y=(y1，y2，…yn)表示一个状态序列，在给定一个输入序列的情况下，线性链的CRF模型定义状态序列的联合条件概率为
+p(y|x)=exp{} (2-14)
+Z(x)={} (2-15)
+其中:Z是以观察序列x为条件的概率归一化因子；fj(yi-1，yi，x，i)是一个任意的特征函数；是每个特征函数的权值。
+我们可以将slot标注认为是序列化标注问题，因此这里采用CRF作为我们的序列化标注模型。
+我们使用两种不同的slot生成方法，一种是generic slot tagger，这种方法是对于包含所有domain的语料集生成一个CRF model，然后利用这个CRF model标注未知的query。一种是in-domain的slot tagger，这种方法为每一个domain单独生成一个CRF model，因为Cortana中的domain数量有9个，所以我们有9个不同domain的CRF model。这样在遇到未知的query时候，9个不同domain的CRF model都要为这个query进行标注，最后我们得到的是经过9个经过标注过slot的query。
+接下来我们将首先介绍结合了generic slot model的方法，然后介绍in-domain slot model，最后比较两种不同方法优劣。
+
+\subsection{generic slot model}
+
+Generic slot model处理流程
+Raw query -> feature extraction---unigram, bigram, trigram--->generic slot model 
+--- +slot -> alarm binary classifier
+--- +slot -> reminder binary classifier
+--- +slot -> calender binary classifier
+--- +slot -> places binary classifier
+.......
+这种流程处理的好处是对于domain classification来说可以灵活的加入更丰富的特征，结构化的信息可以容易的传递给binary classifier。
+我们的语料集中已经标注好slot了，我们首先使用这些标注好的slot结合SVM得到一个oracle结果，这个oracle的accuracy是96.5\%。相比于baseline结果，有大概10\%的绝对提升，提升的非常显著，说明结合了slot特征可以提升我们的domain classification准确率。
+实际上，对于未知的大量的query，人工标注slot是不可行的。因此我们希望可以借助一种机器学习算法帮助我们实现自动的标注，这里我们选择条件随机场算法（CRF）来实现这一目的。
+从我们的语料集来看，我们有9个domain，所有的slot数目是86个。我们首先想到的是训练出来一个generic slot model。当遇到未知的query时候，使用一次generic slot model对于query进行标注。在线上实际运行时候，我们的处理逻辑是首先使用generic slot model对query进行标注，使用时间是t1，然后再使用SVM处理标注好的query，使用时间是t2。总得运行时间t = t1 + t2。由于CRF的加码时间跟slot相关，也即是o(Tn\^2),这里n指的是slot数量，由于slot数量比较多，在线上运行时候，CRF解码时间大于SVM预测时间，这对于线上是不能接受。所以我们首先需要做的是从86个slot中选取少量具有代表性的slot。
+经过我们讨论，我们选取了19个slot来作为代表。同时我们也想了解这19个slot对于我们分类的影响。基于此，我们首先对于语料集做了处理，对于标注的slot，我们只保留了这19种slot，其余的全部移除。然后在处理后的语料集中使用SVM算法结合slot特征，最终我们可以得到的oracle accuracy是91\%，相对于baseline来讲这也是一个非常显著的提升。
+接下来我们需要做的是，训练出来一个CRF model在实际中使用。我们首先了解的是F值为多少的CRF model对于我们的domain classification有提升作用，基于此我们做了一个模拟实验，在语料集上我们随机的对于每一条query的slot进行增加，删除，改变三个行动，
+也即当某个item没有slot时候，我们随机的给定一个slot，当某个item有slot时候，我们会选择删除这个slot或者使用其它slot替换此slot。然后我们计算模拟实验的F值，最后我们在这些处理后的语料集上使用SVM，观察F值与Accuracy的关系，下图是我们的模拟实验。。。。。。
+
+可以观察得知在F值有60\%的时候，我们accuracy得以提高，这将指导我们训练CRFmodel，我们的训练过程是从400w query中随机抽取10w条用来做训练数据，1w条用来做测试数据。然而当我们将crf model F值为60\%-80\%时候，我们并没有得到相应的accuracy。这是一个有待解决的问题。
+
+\subsection{in-domain slot tagger}
+
+In-domain slot model处理流程
+Raw query -> feature extraction --- unigram, bigram, trigram --- 9 in-domain slot model --- + slot by alarm slot tagger -> alarm binary classifier
+ + slot by reminder slot tagger -> reminder binary classifier
+ + slot by calender slot tagger -> calender binary classifier
+ + slot by places slot tagger -> places binary classifier
+......
+
+观察训练集之后，我们发现slot是跟domain相关的，也就是说对于我们9个domain来说，每个domain 标注的slot种类跟其它domain几乎没有重合的。我们想到了一种方法就是为每一个domain训练出一个CRF model，由于每个domain中slot数量不多，我们可以容易的获取F值很高的CRF model，对于每个domain CRF model的训练过程是首先随机选取3000个sentences作为我们的训练数据用于训练我们的model，1800句作为我们的测试数据。最终我们每个domain的CRF model的F值》=90%。
+结合in-domain slot tagger，我们首先使用in-domain的slot tagger来对anti-domain进行标注，这里anti-domain指的是除了某个domain以外的其余全部domain，这样做的好处就是增加负例。接着我们使用in-domain语料作为正例，anti-domain语料作为负例，提取特征之后（后面介绍），使用SVM我们训练出一个binary classifier。以此类推，因为我们有9个domain，所以我们可以获得9个binary classifier。在线上运行时，我们可以做到，对于每一个新来的query，首先由in-domain的slot tagger对query进行标注，然后再有in-domain的classifier对这个query进行预测打分，SVM在进行分类时候不仅可以给出类别，同时可以给出一个具体分数。由于我们有9个binary classifier，所以我们可以得到9个分数，最终我们选取分数最高的作为prediction domain。 最后我们可以得到比baseline高1.9个点的分类算法
+
+这种方法隐含的好处是因为我们每个in-domain的slot tagger中的slot 数量都在20以内，所以CRF解码时间在可以接受的范围内，对于9个in-domain slot tagger，我们可以并行进行标注以及分类预测，所以我们的运行时间取决于这9个里面最大的一个，在线上是可以运行的。
+如何提取slot特征，我们将slot看成是跟词一样的item，在提取特征时候，我们提取了三种不能类型的特征，然后组成最终的特征空间，我们使用的方法如下，我们首先提取query本身的特征，其次提取slot的特征，最后我们提取query跟slot一起的特征。举例如下，对于如下标注好slot的query
+“闹铃 设 在 《start\_date》 明 《/start\_date》 《start\_time>  早 2 点 《/start\_time>”
+我们首先提取query“闹铃 设 在 明 早 2 点”的特征，具体来说就是unigram，bigram，trigram然后我们提取slot集合《start\_data》 《/start\_data> <start\_time> </start\_time> 的unigram，bigram，trigram特征,，最后我们提取的特征是将标注好的slot的query看成是一个整体，我们来提取相应的unigram，bigram，trigram特征
+
+\subsection{实验设计以及结果}
+
+LIBLinear介绍
+LIBLINEAR is a linear classifier for data with millions of instances and features. It supports
+L2-regularized classifiers 
+L2-loss linear SVM, L1-loss linear SVM, and logistic regression (LR)
+L1-regularized classifiers (after version 1.4) 
+L2-loss linear SVM and logistic regression (LR)
+L2-regularized support vector regression (after version 1.9) 
+L2-loss linear SVR and L1-loss linear SVR.
+Main features of LIBLINEAR include
+Same data format as LIBSVM, our general-purpose SVM solver, and also similar usage
+Multi-class classification: 1) one-vs-the rest, 2) Crammer \& Singer
+Cross validation for model selection
+Probability estimates (logistic regression only)
+Weights for unbalanced data
+MATLAB/Octave, Java, Python, Ruby interfaces
+
+对于分类算法来讲，我们需要使用训练集得到SVM的参数，然后使用测试集去测试SVM的分类能力。这里我们使用微软Cortana 400w query作为我们的训练数据，1w8 query作为我们的测试数据。这里我们使用的是台湾大学林智仁开发的Liblinear。Liblinear使用主要包括train 以及predict
+SVM train 过程
+./train -s 2 training training\_model
+SVM predict 过程
+./predict training\_model test output
+这里train以及predict是Liblinear提供的训练以及测试工具，training指的是我们的训练语料，training\_model指的是训练之后得到的model。Test指的是我们的测试语料，output是training\_model在测试语料test上的预测输出。
+实验设计流程如下，
+1 首先我们对于训练集以及测试集进行数据预处理，包括1 使用分词工具分词，这里的分词工具是微软内部提供的，2 去除停用词。
+2 然后提取特征，我们的特征集合是在训练集上提取。对于测试集来讲，所有的不在特征集合的特征都被舍弃掉
+3 对于每一条query的特征进行归一化，归一化的好处是可以防止某一维或某几维对数据影响过大，其次是可以使程序可以运行更快。
+5 将特征处理成SVM使用的格式，特征提取方法已经在2.3.1.4讲过。
+6 在微软Cortana语料集中得到的特征数量为875w。接着我们在处理好的数据集中使用Liblinear，这里由于特征数量大，所以我们选取了线性核。为了防止随机性对于我们实验结果的影响，我们重复实验50次，取平均值作为我们最终的结果。
+7 我们的baseline实验，仅仅使用了query本身的ngram特征，得到的accuracy是86.5
+使用slot特征以后，我们的实验结果在86.5+1.9。
+实验总结，
+使用slot特征之后可以提升domain classification的accuracy，同时由于我们每个slot tagger中的slot数量比较少，CRF解码时间比较短，所以我们的总运行时间满足线上运行的要求。
+
+\section{可以改进的地方}
+
+
+\chapter{incremental learning using SVM}\label{chapter_smallworld}
+
+\section{研究背景}
+
+随着互联网的快速发展，人们可以容易的获取大量的数据，这对于公司的信息挖掘以及知识获取是一种挑战，一方面是可以获取的数据量越来越丰富，另一方面信息的更新速度越来越惊人，最近随着智能手机的普及以及大数据，人工智能技术的发展，语音助手越来越普及，使用语音助手的的人将会越来越多，从语音助手中获取的数据量越来越大，是的我们也面临同样的问题。
+对于微软的语音助手Cortana来说我们每周都可以从Cortana的对话记录中得到越来越多的数据。对于机器学习算法来说，机器学习的泛化能力受两方面的影响，一方面是模型的复杂度，一方面是数据规模。大规模的数据对于提升机器学习算法的泛化能力很重要。这就意味着如果我们可以将Cortana更新的数据全部利用起来，可以帮助我们提升模型的泛化能力，具体到domain classification来讲就是可以提升模型的精确度。然而这伴随着另一个不能忽视的问题，随着我们可以利用的数据越来越多，我们在模型的训练时间上付出的代价越来越显著。这时候我们面临的问题是一方面大规模的数据可以帮助我们训练出泛化能力更强的模型，另一方面如果每次都是从头开始训练，训练时间将大大的增加，这对于在线上使用是不可以接受的。
+基于此，我们希望可以提出一种算法，这种算法可以取得跟从头开始训练相同的准确度，同时要大大的减少训练时间，至少可以满足现在的训练需求。实际上，对于domain classification来讲，我们已经在原始数据上训练出了很好的model。如果我们在使用更新后的数据训练model的时候利用上之前使用原始数据训练出来的model，那么我们的训练时间有可能会减少。
+在有监督学习算法中，当一部分数据增加进来的时候，分类模型可以不回发生太大的变化，因此incremental learning有可能帮助更新model而不需要从从头开始训练模型。
+结合这个事实，一种称之为incremental learning算法提出来。
+
+\section{数据来源}
+
+微软400w query
+
+\section{相关研究}
+
+大规模在线处理算法，online learning using SGD等等。
+
+\section{算法介绍}
+
+\section{SVM}
+SVM算法介绍在第二章domain classification using slot中已经介绍过，svm的优化公式。。。。。。如下，我们知道SVM的优化公式属于凸优化范畴，那么对于凸优化来说存在着全局最优解。这意味我们可以使用一系列的优化算法来求解SVM问题，同时对于SVM问题，可以使用原始解法或者对偶解法，对于原始问题，给定参数w初始值，然后迭代直至收敛。我们知道SVM的参数跟特征相关。在接下来的算法中，我们假设数据特征没有发生变化，这样我们求解的参数的数量也没有变化。同时我们继续使用相关假设，也就是我们使用的新来的数据跟原始服从于同一分布。
+对于SVM我们使用原始问题求解或者对偶问题进行求解。基于上面的两个假设，林智仁提出下面的算法。
+对于原始问题，在原始数据集中，使用SVM训练出model 1，同时我们将SVM的参数W保留下来，当增加新的数据时候，我们使用原始数据训练好的参数W作为我们下次SVM算法参数W的初始值，同随机赋值相比，使用这些前面训练好的参数好处是，基于前面的两个假设，我们推测出使用W初始值距离新的优化目标最优参数较近。由于求解W是一种迭代算法，W已经取得了不错的初始值，将会减少迭代次数，这样就可以大大的减少训练时间。上面讲过由于我们求解的是一个凸优化问题，那么对于凸优化问题是存在一个全局最优解的，所以经过一定次数的迭代之后，算法肯定会收敛，这样我们得到的准确率也会得到保证。直观上我们我们可以这样理解，原始问题求解的是一个分类面，当数据分不一致以及数据特征服从假设之后，分类面的变化较小，这样迭代算法时间会比较短。
+对于对偶问题，SVM的优化公式是。。。。。。。。我们实际上要求的就是support vector，增加新的数据后，A是跟数据相关的，当增加新的数据时候，A的数量也会发生变化，我们面临的问题是不能确定怎样给新增加的A很好的赋值。
+同时对于对偶问题也可以直观的理解为，我们是求support vector，当我们增加新的数据时候，最终求出的support vector可能会有很大的变化，从而会引起时间上的增加。同时求解对偶问题的时候，我们需要保存一个matrix，这个matrix在实际实现的时候，难度比较大。
+综上，选择求解svm原始问题。
+
+\subsection{优化公式}
+原始优化问题，优化公式。。。。。
+新数据进来后的优化问题，优化公式。。。。。
+
+\subsection{初始值的设定}
+。。。。。。。。。。。
+
+\section{使用的算法}
+
+为了验证实验的方便，我们采取了使用L2正则以及L2 Loss的SVM，L2正则L2 loss SVM容易求解，L2正则L2 loss优化公式是。。。。。。
+SVM算法已经在前面具体的讲过，这里不再做具体介绍。
+3.5.1 优化算法
+最优化方法是一种应用数学方法，在机器学习中使用非常广泛，下面我们简单介绍最优化方法形式，以及一般的求解方法，
+最优化方法主要研究以下形式的问题：
+给定一个函数，寻找一个元素使得对于所有中的，（最小化）；或者（最大化）。
+这类定式有时还称为“数学规划”（譬如，线性规划）。许多现实和理论问题都可以建模成这样的一般性框架。
+典型的，一般为欧几里得空间中的子集，通常由一个必须满足的约束等式或者不等式来规定。 的元素被称为是可行解。函数被称为目标函数，或者代价函数。一个最小化（或者最大化）目标函数的可行解被称为最优解。
+一般情况下，会存在若干个局部的极小值或者极大值。局部极小值定义为对于一些，以及所有的 满足
+;
+公式
+
+成立。这就是说，在周围的一些闭球上，所有的函数值都大于或者等于在该点的函数值。一般的，求局部极小值是容易的，但是要确保其为全域性的最小值，则需要一些附加性的条件，例如，该函数必须是凸函数。
+
+由于我们求解的优化公式具有非常好的性质，具体的说我们求解的优化函数是一种凸函数，具有全局最优解，同时我们这里求解的SVM是L2正则L2Loss，这样我们可以我们容易的获得优化函数的一阶导数以及二阶导数，所以我们可以使用一系列优化算法，我们这里将比较两种优化算法，这两种优化算法是求解SVM速度最快的方法，我们通过比较两种优化算法在求解优化函数的时间也即SVM using incremental learning的训练时间，同时我们关注两种优化算法求解的SVM using incremental learning在测试集上的准确率，然后我们确定一种最好的优化算法。
+对于优化算法， 我们这里简单的分类为两种，一种算法是一阶优化算法，这种算法的优点是每次迭代代价比较小，具体来说就是求解一阶导数，缺点是迭代次数比较多。另一种算法是二阶优化算法，这种算法的优点是迭代次数比较少，因为这里求得是梯度的梯度，缺点每次迭代的代价比较大，具体来说要求Hessian矩阵的逆矩阵。
+为了便于比较两类算法的优劣，我们采用这在SVM优化算法中速度比较快的两种优化算法来进行比较。这两种优化算法是coordinate gradient method and trust region newton method，是台湾大学林智仁组所开发的。
+
+\subsection{Coordinate descent method}
+
+坐标梯度优化算法是一种非梯度优化算法。算法在每次迭代中，在当前点处沿着一个坐标方向进行一维搜索以求得一个函数的局部极小值。在整个过程中循环使用不同的坐标方向。对于不可拆分的函数而言，算法可能无法在较小的迭代步数中求得最优解。坐标下降法基于的思想是多变量函数可以通过每次沿一个方向优化来获取最小值。与通过梯度获取最速下降的方向不同，在坐标下降法中，优化方向从算法一开始就予以固定。例如，可以选择线性空间的一组基作为搜索方向。 在算法中，循环最小化各个坐标方向上的目标函数值。亦即，如果已给定，那么，的第个维度为
+
+因而，从一个初始的猜测值以求得函数的局部最优值，可以迭代获得的序列。
+通过在每一次迭代中采用一维搜索，可以很自然地获得不等式
+
+可以知道，这一序列与最速下降具有类似的收敛性质。如果在某次迭代中，函数得不到优化，说明一个驻点已经达到
+坐标梯度算法在机器学习中使用广泛。在台湾大学林智仁的paper中，详细的讲解了使用coordinate descent method求解SVM问题。
+坐标梯度算法特点是 1，使用牛顿方法来近似的解决优化问题2，线性的收敛速度
+
+\subsection{Trust region newton method}
+
+置信域方法（Trust-region methods）又称为信赖域方法，它是一种最优化方法，能够保证最优化方法总体收敛优化公式
+考虑，其中ƒ(x)是定义在Rn上的二阶连续可微函数。 定义当前点的邻域
+
+这里称为置信域半径。假定在这个邻域中，二次模型是目标函数ƒ(x)的一个合适的近似，则在这个邻域（称为置信域）中极小化二次模型，得到近似极小点，并取 ，其中。
+
+置信域方法的模型子问题是
+
+其中，，，是一个对称矩阵，它是黑塞矩阵或其近似，为置信域半径，为某一范数，通常我们采用范数。
+
+选择的方法：根据模型函数对目标函数ƒ(x)的拟合程度来调整置信域半径。 对于置信域方法的模型子问题的解，设目标函数的下降量
+
+为实际下降量，设模型函数的下降量
+
+为预测下降量。 定义比值
+,
+它用来衡量模型函数与目标函数ƒ 的一致性程度。
+置信域算法[编辑]
+步1. 给出初始点x0 ，置信域半径的上界，，，，，
+步2. 如果，停止
+步3. （近似地）求解置信域方法的模型子问题，得到 sk
+步4. 计算ƒ(xk+sk) 和 rk。令
+
+步5. 校正置信域半径，令
+
+步6. 产生Bk+1，校正q(k) ，令k:=k+1 ，转步2。
+现今，置信域算法广泛应用于应用数学、物理、化学、工程学、计算机科学、生物学与医学等学科。相信在不远将来，信赖域方法会在更广泛多样的领域有着更深远的的发展。
+
+使用共轭梯度下降来求解以上优化算法，二阶收敛速度
+可以参考台湾大学林智仁的paper1。。。。。。。
+
+\section{ 算法评价以及实验系统}
+这里我们采用accuracy以及time作为我们的评价指标，我们的程序主要使用python语言开发， 我们的模块主要包括数据预处理模块，数据划分模块，特征提取模块，分类模块。在分类中，我们使用台湾大学林智仁开发的incremental learning工具incremental Liblinear。
+
+\section{ 实验设计以及结果分析}
+
+实验设计，
+对于分类算法来讲，我们需要使用训练集得到SVM的参数，然后使用测试集去测试SVM的分类能力，我们使用微软提供的400wquery作为我们的训练数据集，1w8query作为我们的测试数据集
+1 为了防止随机性对于我们实验结果的影响，我们重复实验50次，取平均的训练时间以及accuracy作为做最终的结果
+2 在每次实验中，我们训练集按照如下方法获取， 我们将400w数据shuffle下，然后将数据划分为10份，也即第一份数据包含原始数据的1/10,第二份数据包含原始数据的2/10,......,最后一份数据包含完整的数据。这样每次实验我们有十份不同的训练集，测试集依然是原始的1w8 query。
+3 对于non-incremental learning方法，我们使用每一份数据作为训练集单独训练出分类器，使用原始1w8 query测试集，对于每一个分类器，我们需要记录分类器的训练时间以及在测试集上的accuracy，因为我们有10份数据，最终我们获取了10个分类器以及我们记录了每个分类器的training time以及accuracy。
+4 对于incremental learning方法，我们首先使用第一份数据作为训练集训练出第一个分类器，记录训练时间同时保留第一个分类器的收敛之后的参数w，然后使用原始1w8 query作为测试集，记录分类器在测试集上的accuracy。
+然后我们在第二份数据上训练分类器同时使用第一个已经训练好的分类器的参数w作为我们第二个分类器参数的初始值，同时我们记录第二个分类器的训练时间，以及在分类器在测试集上的accuracy。
+依次类推，我们最后一个分类器在最后一份数据上进行训练，最后一份数据包含了完整的全部数据，同时我们将第九个分类器的参数w作为我们最后一个分类器的初始值。同样的，我们记录最后一个分类器的训练时间以及分类器在测试集上的accuracy。
+5 对于non-incremental learning方法和incremental learning方法，我们对于每一个分类器的训练集以及测试集的处理方法一致，具体如下，
+5.1 首先我们对于训练集以及测试集进行数据预处理，包括1 使用分词工具分词，这里的分词工具是微软内部提供的，2 去除停用词。
+5.2 然后提取特征，我们的特征集合是在训练集上提取。对于测试集来讲，所有的不在特征集合的特征都被舍弃掉。注意，这里我们使用的特征是从query提取出来的ngram特征。
+5.3 对于每一条query的特征进行归一化，归一化的好处是可以防止某一维或某几维对数据影响过大，其次是可以使程序可以运行更快。
+5.4 将特征处理成SVM使用的格式，特征提取方法已经在2.3.1.4讲过。
+
+这样对于non-incremental learning方法和incremental learning方法我们分别训练出10个分类器，同时对于每一个分类器我们已经记录了训练时间以及accuracy。然后比较每个分类器的训练时间以及acuracy。从accuracy的角度上看，non-incremental learning以及incremental learning方法取得类似的accuracy，误差在。。。，从training time的角度看，incremental learning方法的训练时间远远小于non-incremental learning方法。
+实验结果如下图所示：
+。。。。。。。。。。。
+
+同时基于优化算法的结果，我们可以得出如下结论Warm start对于解决原始问题比解决对偶问题更好，同时warm start对于使用高阶优化算法更有利。
+基于以上实验结果，可以证实incremental learning方法可以在线上使用。
+
+\section{可以改进的地方}
+我们现在解决的优化问题是L2正则以及L2 loss的SVM 问题，在实际应用中，我们得到的model会非常大，不适合在实际工作中使用，我们希望未来可以解决L1 正则 SVM优化问题，可以得到稀疏解，同时我们的model也会比较小，可以解决存储上的瓶颈。然而我们现在还是做得是单机上面的优化，随着数据规模的越来越大，我们的model不能存储在单机上面，训练时间也会有不能接受的那一天，未来的工作，我们希望可以提出一种分布式的解决方案。
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{随机网络模型}\label{chapter_random}
+\section{随机网络背景与研究现状}
+\Blindtext
+\section{WarpNet网络模型构建}\label{sec:warpnet_construction}
+\subsection{网络结构}
+\Blindtext
+\subsection{双层拓扑结构}
+\Blindtext
+\section{路由算法}
+\subsection{基于flood的路由发现算法}
+\Blindtext
+\section{网络性能分析}
+\blindtext
+\subsection{连通性与互联通率}
+\Blindtext
+\subsection{路由跳数}
+\Blindtext
+\subsection{总带宽}
+\Blindtext
+\subsection{故障对网络的影响}
+\Blindtext
+\section{仿真分析}
+\Blindtext
+\section{实验验证}
+\Blindtext
+\section{小结}
+\blindtext
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{无尺度网络模型}\label{chapter_scalefree}
+\section{无尺度网络背景与研究现状}
+\Blindtext
+\section{基于数据中心的无尺度网络运用}
+\subsection{无尺度网络在数据中心运用的分析}
+\Blindtext
+\subsection{无尺度网络与最大度}
+\Blindtext
+\subsection{带最大度约束的无尺度构造算法}
+\Blindtext
+\section{模型分析}
+\subsection{度-度相关性分析}
+\Blindtext
+\subsection{聚类性分析}
+\Blindtext
+\section{基于数据中心的无尺度网络模型构建分析}
+\blindtext
+\subsection{节点结构与网络性能的关系}
+\Blindtext
+\section{平衡因子的参数调整}
+\blindtext
+\subsection{$q=0$的情况}
+\Blindtext
+\subsection{$q>0$的情况}
+\Blindtext
+\subsection{$q<0$的情况}
+\Blindtext
+\section{TPSF模型构建与性能分析}
+\blindtext
+\subsection{平均路由距离}
+\Blindtext
+\subsection{总网络带宽}
+\Blindtext
+\subsection{容错能力}
+\Blindtext
+\section{仿真结果}
+\subsection{平均路由跳数}
+\Blindtext
+\subsection{总网络带宽}
+\Blindtext
+\subsection{容错能力}
+\Blindtext
+\section{小结}
+\blindtext
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{网络模型验证框架}\label{chapter_experiments}
+\section{引言}
+\Blindtext
+\section{模拟平台实现}
+\Blindtext
+\subsection{系统结构}
+\Blindtext
+\subsection{构造模块}
+\Blindtext
+\subsection{虚拟网卡实现}
+\Blindtext
+\subsection{控制核心}
+\Blindtext
+\subsection{受控模块}
+\Blindtext
+\subsection{分布式虚拟交换网络}
+\Blindtext
+\section{验证结果}
+\Blindtext
+\subsection{真实环境验证}
+\Blindtext
+\subsection{海量虚拟化的检测与控制}
+\Blindtext
+\section{小结}
+\blindtext
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 学位论文的正文应以《结论》作为最后一章
+\chapter{结论}\label{chapter_concludes}
+
+本文在第\ref{chapter_smallworld}章中，通过考虑数据中心网络布局构建中的最大度限制
+问题，提出了符合数据中心网络基本要求的DS小世界模型，并分析了它的性质。随后提出
+SIDN，将DS模型映射到具体的网络结构中，并分析了所构成网络的平均直径、网络总带宽、
+对故障的容错能力等各项网络性能。
+
+分析与仿真实验证明，SIDN网络具有很好的扩展能力，网络总带宽与网络规模成
+近似线性增长的关系；具有很强的容错能力，链路损坏与节点损坏几乎无法破坏
+网络的联通性，故障率对网络性能的影响与破坏节点/链路占总资源比率线性相关。
+
+随后在第\ref{chapter_scalefree}章中，分析了无尺度网络在数据中心网络构建应用中的
+理论方面问题。对Scafida \cite{gyarmati2010scafida}文中所述在最大度限制的情况下运
+用BA算法构造的网络并不会损失无尺度性质的观点，进行了深入的分析，并指出了该论点的
+局限性。
+
+在给出了在引入节点最大度限制之后，利用分治和递归的思想，对无尺度网络
+进行多层构建，对所构造的网络进行度-度相关性，以及聚类性分析。
+
+\begin{table}
+  \centering
+  \begin{tabular}{cccp{38mm}}
+    \toprule
+    \textbf{文档域类型} & \textbf{Java类型} & \textbf{宽度(字节)} & \textbf{说明} \\
+    \midrule
+    BOOLEAN  & boolean &  1  & \\
+    CHAR     & char    &  2  & UTF-16字符 \\
+    BYTE     & byte    &  1  & 有符号8位整数 \\
+    SHORT    & short   &  2  & 有符号16位整数 \\
+    INT      & int     &  4  & 有符号32位整数 \\
+    LONG     & long    &  8  & 有符号64位整数 \\
+    STRING   & String  &  字符串长度  & 以UTF-8编码存储 \\
+    DATE     & java.util.Date & 8 & 距离GMT时间1970年1月1日0点0分0秒的毫秒数 \\
+    BYTE\_ARRAY & byte$[]$ & 数组长度 & 用于存储二进制值 \\
+    BIG\_INTEGER & java.math.BigInteger & 和具体值有关 & 任意精度的长整数 \\
+    BIG\_DECIMAL & java.math.BigDecimal & 和具体值有关 & 任意精度的十进制实数 \\
+    \bottomrule
+  \end{tabular}
+  \caption{测试表格}\label{table:test5}
+\end{table}
+
+表\ref{table:test5}用于测试表格。随后分析了无尺度网络构造过程中，交换机节点与数
+据节点的角色区别，分析了两者在不同比率下形成的网络形态，以及对网络性能造成的影响。
+
+通过理论分析和仿真实验，分析并找出比率因子q的最佳取值。此外，无尺度现象
+的引入提高了网络的聚类系数，从而在不失灵活性可靠性的基础上，进一步提升
+了网络的性能。
+
+在第\ref{chapter_random}章中，将关注点转移到交换机本身。由于图论难以描述数据中心
+网络中的交换设备，因此放弃基于图的抽象模型，转而基于多维簇划分的思想，提出并设计
+了WarpNet网络模型。
+
+该网络模型突破了基于图描述的局限性，并对网络的带宽等指标进行理论分析并
+给出定量描述。最后对比了理论分析、仿真测试结果，并在实际物理环境中进系
+真实部署，通过6节点的小规模实验以及1000节点虚拟机的大规模实验，表明该模
+型的理论分析、仿真测试与实际实验吻合，并在网络性能、容错能力、伸缩性灵
+活性方面得到了进一步的提升。
+
+在第\ref{chapter_experiments}章中，针对网络模型研究这一类工作的共性，设计构造通
+用验证平台系统。以海量虚拟机和虚拟分布式交换机的形式，实现了基于少量物理节点，对
+大规模节点的模拟。其模拟运行的过程与真实运行在实现层面完全一致，运行的结果与真实
+环境线性相关。除为本文所涉若干网络模型提供验证外，可进一步推广到更为广泛的领域，
+为各种网络模型及路由算法的研究工作，提供分析、指导与验证。
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 致谢，应放在《结论》之后
+\begin{acknowledgement}
+  首先感谢我的母亲韦春花对我的支持。其次感谢我的导师陈近南对我的精心指导和热心帮助。接下来，
+  感谢我的师兄茅十八和风际中，他们阅读了我的论文草稿并提出了很有价值的修改建议。
+
+  最后，感谢我亲爱的老婆们：双儿、苏荃、阿珂、沐剑屏、曾柔、建宁公主、方怡，感谢
+  你们在生活上对我无微不至的关怀和照顾。我爱你们！
+\end{acknowledgement}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 附录
+\appendix
+
+\chapter{博士(硕士)学位论文编写格式规定(试行)}
+
+\section{适用范围}
+
+本规定适用于博士学位论文编写，硕士学位论文编写应参照执行。
+
+\section{引用标准}
+
+GB7713科学技术报告、学位论文和学术论文的编写格式。
+
+GB7714文后参考文献著录规则。
+
+\section{印制要求}
+
+论文必须用白色纸印刷，并用A4(210mm×297mm)标准大小的白纸。纸的四周应留足空白
+边缘，上方和左侧应空边25mm以上，下方和右侧应空边20mm以上。除前置部分外，其它
+部分双面印刷。
+
+论文装订不要用铁钉，以便长期存档和收藏。
+
+论文封面与封底之间的中缝（书脊）必须有论文题目、作者和学校名。
+
+\section{编写格式}
+
+论文由前置部分、主体部分、附录部分(必要时)、结尾部分(必要时)组成。
+
+前置部分包括封面，题名页，声明及说明，前言，摘要(中、英文)，关键词，目次页，
+插图和附表清单(必要时)，符号、标志、缩略词、首字母缩写、单位、术语、名词解释
+表(必要时)。
+
+主体部分包括绪论(作为正文第一章)、正文、结论、致谢、参考文献表。
+
+附录部分包括必要的各种附录。
+
+结尾部分包括索引和封底。
+
+\section{前置部分}
+
+\subsection{封面（博士论文国图版用）}
+
+封面是论文的外表面，提供应有的信息，并起保护作用。
+
+封面上应包括下列内容：
+\begin{enumerate}
+\item 分类号  在左上角注明分类号，便于信息交换和处理。一般应注明《中国图书资
+  料分类法》的类号，同时应注明《国际十进分类法UDC》的类号；
+\item 密级  在右上角注明密级；
+\item “博士学位论文”用大号字标明；
+\item 题名和副题名   用大号字标明；
+\item 作者姓名；
+\item 学科专业名称；
+\item 研究方向；
+\item 导师姓名，职称；
+\item 日期包括论文提交日期和答辩日期；
+\item 学位授予单位。
+\end{enumerate}
+
+\subsection{题名}
+
+题名是以最恰当、最简明的词语反映论文中最重要的特定内容的逻辑组合。
+
+题名所用每一词语必须考虑到有助于选定关键词和编写题录、索引等二次文献可以提供
+检索的特定实用信息。
+
+题名应避免使用不常见的缩略词、首字母缩写字、字符、代号和公式等。
+
+题名一般不宜超过20字。
+
+论文应有外文题名，外文题名一般不宜超过10个实词。
+
+可以有副题名。
+
+题名在整本论文中不同地方出现时，应完全相同。
+
+\subsection{前言}
+
+前言是作者对本论文基本特征的简介，如论文背景、主旨、目的、意义等并简述本论文
+的创新性成果。
+
+\subsection{摘要}
+
+摘要是论文内容不加注释和评论的简单陈述。
+
+论文应有中、英文摘要，中、英文摘要内容应相同。
+
+摘要应具有独立性和自含性，即不阅读论文的全文，便能获得必要的信息，摘要
+中有数据、有结论，是一篇完整的短文，可以独立使用，可以引用，可以用于推广。摘
+要的内容应包括与论文同等量的主要信息，供读者确定有无必要阅读全文，也供文摘等
+二次文献引用。摘要的重点是成果和结论。
+
+中文摘要一般在1500字，英文摘要不宜超过1500实词。
+
+摘要中不用图、表、化学结构式、非公知公用的符号和术语。
+
+\subsection{关键词}
+
+关键词是为了文献标引工作从论文中选取出来用于表示全文主题内容信息款目的单词或
+术语。
+
+每篇论文选取3－8个词作为关键词，以显著的字符另起一行，排在摘要的左下方。在英
+文摘要的左下方应标注与中文对应的英文关键词。
+
+\subsection{目次页}
+
+目次页由论文的章、节、附录等的序号、名称和页码组成，另页排在摘要的后面。
+
+\subsection{插图和附表清单}
+
+论文中如图表较多，可以分别列出清单并置于目次页之后。
+
+图的清单应有序号、图题和页码。表的清单应有序号、表题和页码。
+
+符号、标志、缩略词、首字母缩写、计量单位、名词、术语等的注释表符号、标志、缩略词、
+首字母缩写、计量单位、名词、术语等的注释说明汇集表，应置于图表清单之后。
+
+\section{主体部分}
+
+\subsection{格式}
+
+主体部分由绪论开始，以结论结束。主体部分必须由另页右页开始。每一章必须另页开
+始。全部论文章、节、目的格式和版面安排要划一，层次清楚。
+
+\subsection{序号}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width= 0.5\textwidth]{njuname.eps}\\
+  \caption{测试附录中的插图}\label{fig:appendix1}
+\end{figure}
+
+论文的章可以写成：第一章。节及节以下均用阿拉伯数字编排序号，如
+1.1，1.1.1等。
+
+论文中的图、表、附注、参考文献、公式、算式等一律用阿拉伯数字分别分章依序连续编排
+序号。其标注形式应便于互相区别，一般用下例：图1.2；表2.3；附注1）；文献[4]；式
+  (6.3)等。
+
+论文一律用阿拉伯数字连续编页码。页码由首页开始，作为第1页，并为右页另页。封页、
+封二、封三和封底不编入页码，应为题名页、前言、目次页等前置部分单独编排页码。页码
+必须标注在每页的相同位置，便于识别。
+
+\begin{equation}
+    C_i = \frac{2E_i}{k_i(k_i-1)}
+\end{equation}
+
+附录依序用大写正体A、B、C、$\cdots$编序号，如：附录A。附录中的图、表、式、参考文
+献等另行编序号，与正文分开，也一律用阿拉伯数字编码，但在数码前题以附条序码，如图
+A.1；表B.2；式(B.3)；文献[A.5]等。
+
+\subsection{绪论}
+
+绪论（综述）：简要说明研究工作的目的、范围、相关领域的前人工作和知识空白、理
+论基础和分析，研究设想、研究方法和实验设计、预期结果和意义等。一般在教科书中
+有的知识，在绪论中不必赘述。
+
+绪论的内容应包括论文研究方向相关领域的最新进展、对有关进展和问题的评价、本论
+文研究的命题和技术路线等；绪论应表明博士生对研究方向相关的学科领域有系统深入
+的了解，论文具有先进性和前沿性；
+
+\begin{problem}
+测试定理环境。测试定理环境。测试定理环境。测试定理环境。测试定理环境。测试定理环境。
+测试定理环境。测试定理环境。测试定理环境。
+\end{problem}
+
+为了反映出作者确已掌握了坚实的基础理论和系统的专门知识，具有开阔的科学视野，对研
+究方案作了充分论证，绪论应单独成章，列为第一章，绪论的篇幅应达$1\sim 2$万字，不
+得少于$1$万字；绪论引用的文献应在$100$篇以上，其中外文文献不少于$60\%$；引用文献
+应按正文中引用的先后排列。
+
+\subsection{正文}
+
+论文的正文是核心部分，占主要篇幅。正文必须实事求是，客观真切，准确完备，合乎
+逻辑，层次分明，简便可读。
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width= 0.5\textwidth]{njuname.eps}\\
+  \caption{测试附录中的插图}\label{fig:appendix2}
+\end{figure}
+
+正文的每一章(除绪论外)应有小结，在小结中应明确阐明作者在本章中所做的工作，特
+别是创新性成果。凡本论文要用的基础性内容或他人的成果不应单独成章，也不应作过
+多的阐述，一般只引结论、使用条件等，不作推导。
+
+\subsubsection{图}
+
+图包括曲线图、构造图、示意图、图解、框图、流程图、记录图、布置图、地图、照片
+、图版等。
+
+图应具有“自明性”，即只看图、图题和图例，不阅读正文，就可以理解图意。
+
+图应编排序号。每一图应有简短确切的图题，连同图号置于图下。必要时，应将图上的
+符号、标记、代码，以及实验条件等，用最简练的文字，横排于图题下方，作为图例说
+明。
+
+\begin{example}
+测试定理环境。测试定理环境。测试定理环境。测试定理环境。测试定理环境。测试定理环境。
+测试定理环境。测试定理环境。测试定理环境。
+\end{example}
+
+曲线图的纵、横坐标必须标注“量、标准规定符号、单位”。此三者只有在不必要标明
+(如无量纲等)的情况下方可省略。坐标上标注的量的符号和缩略词必须与正文一致。
+
+照片图要求主题和主要显示部分的轮廓鲜明，便于制版。如用放大缩小的复制品，必须
+清晰，反差适中。照片上应该有表示目的物尺寸的标度。
+
+\subsubsection{表}
+
+表的编排，一般是内容和测试项目由左至右横读，数据依序竖排。表应有自明性。
+
+表应编排序号。
+
+每一表应有简短确切的表题，连同标号置于表上。必要时，应将表中的符号、标记、代
+码，以及需要说明事项，以最简练的文字，横排于表题下，作为表注，也可以附注于表
+下。表内附注的序号宜用小号阿拉伯数字并加圆括号置于被标注对象的右上角，如：
+xxx${}^{1)}$；不宜用“*”，以免与数学上共轭和物质转移的符号相混。
+
+表的各栏均应标明“量或测试项目、标准规定符号、单位”。只有在无必要标注的情况下
+方可省略。表中的缩略词和符号，必须与正文中一致。
+
+表内同一栏的数字必须上下对齐。表内不宜用“同上”，“同左”和类似词，一律填入具体数字
+或文字。表内“空白”代表未测或无此项，“－”或“\textellipsis”（因“－”可能与代表阴性
+  反应相混）代表未发现，“0”代表实测结果确为零。
+
+如数据已绘成曲线图，可不再列表。
+
+\subsubsection{数学、物理和化学式}
+
+正文中的公式、算式或方程式等应编排序号，序号标注于该式所在行(当有续行时，应
+标注于最后一行)的最右边。
+
+较长的式，另行居中横排。如式必须转行时，只能在$+$，$-$，$\times$，$\div$，$<$，
+$>$处转行。上下式尽可能在等号“$=$”处对齐。
+
+小数点用“$.$”表示。大于$999$的整数和多于三位数的小数，一律用半个阿拉伯数字符的小
+间隔分开，不用千位撇。对于纯小数应将$0$列于小数点之前。
+
+示例：应该写成$94\ 652.023\ 567$和$0.314\ 325$, 不应写成$94,652.023,567$和
+$.314,325$。
+
+应注意区别各种字符，如：拉丁文、希腊文、俄文、德文花体、草体；罗马数字和阿拉伯数
+字；字符的正斜体、黑白体、大小写、上下脚标（特别是多层次，如“三踏步”）、上下偏差
+等。
+
+\subsubsection{计量单位}
+
+报告、论文必须采用国务院发布的《中华人民共和国法定计量单位》，并遵照《中华人
+民共和国法定计量单位使用方法》执行。使用各种量、单位和符号，必须遵循附录B所
+列国家标准的规定执行。单位名称和符号的书写方式一律采用国际通用符号。
+
+\subsubsection{符号和缩略词}
+
+符号和缩略词应遵照国家标准的有关规定执行。如无标准可循，可采纳本学科或本专业
+的权威性机构或学术团体所公布的规定；也可以采用全国自然科学名词审定委员会编印
+的各学科词汇的用词。如不得不引用某些不是公知公用的、且又不易为同行读者所理解
+的、或系作者自定的符号、记号、缩略词、首字母缩写字等时，均应在第一次出现时一
+一加以说明，给以明确的定义。
+
+\subsection{结论}
+
+报告、论文的结论是最终的、总体的结论，不是正文中各段的小结的简单重复。结论应
+该准确、完整、明确、精炼。在结论中要清楚地阐明论文中有那些自己完成的成果，特
+别是创新性成果；
+
+如果不可能导出应有的结论，也可以没有结论而进行必要的讨论。可以在结论或讨论中
+提出建议、研究设想、仪器设备改进意见、尚待解决的问题等。
+
+\subsection{致谢}
+
+可以在正文后对下列方面致谢：
+
+\begin{itemize}
+\item 国家科学基金、资助研究工作的奖学金基金、合作单位、资助或支持的企业、组织或个
+人；
+\item 协助完成研究工作和提供便利条件的组织或个人；
+\item 在研究工作中提出建议和提供帮助的人；
+\item 给予转载和引用权的资料、图片、文献、研究思想和设想的所有者；
+\item 其他应感谢的组织或个人。
+\end{itemize}
+
+\subsection{参考文献表}
+
+\subsubsection{专著著录格式}
+
+主要责任者，其他责任者，书名，版本，出版地：出版者，出版年
+
+例：1. 刘少奇，论共产党员的修养，修订2版，北京：人民出版社，1962
+
+\subsubsection{连续出版物中析出的文献著录格式}
+
+析出文献责任者，析出文献其他责任者，析出题名，原文献题名，版本：文献中的位置。
+
+例：2. 李四光，地壳构造与地壳运动，中国科学，1973 (4)：400－429
+
+参考文献采用顺序编码制，按论文正文所引用文献出现的先后顺序连续编码。
+
+\section{附录}
+
+附录是作为报告、论文主体的补充项目，并不是必需的。
+
+下列内容可以作为附录编于报告、论文后，也可以另编成册；
+
+\begin{enumerate}
+\item 为了整篇论文材料的完整，但编入正文又有损于编排的条理和逻辑性，这一材料
+包括比正文更为详尽的信息、研究方法和技术更深入的叙述，建议可以阅读的参考文献
+题录，对了解正文内容有用的补充信息等；
+\item 由于篇幅过大或取材于复制品而不便于编入正文的材料；
+\item 不便于编入正文的罕见珍贵资料；
+\item 对一般读者并非必要阅读，但对本专业同行有参考价值的资料；
+\item 某些重要的原始数据、数学推导、计算程序、框图、结构图、注释、统计表、计
+算机打印输出件等。
+\end{enumerate}
+
+附录与正文连续编页码。
+
+每一附录均另页起。
+
+\section{结尾部分 (必要时)}
+
+为了将论文迅速存储入电子计算机，可以提供有关的输入数据。可以编排分类索引、著者索
+引、关键词索引等。
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 书籍附件
+\backmatter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 参考文献。应放在\backmatter之后。
+
+% 推荐使用BibTeX，若不使用BibTeX时注释掉下面一句。
+\nocite{*}
+\bibliography{sample}
+
+% 不使用 BibTeX
+%\begin{thebibliography}{2}
+%
+%\bibitem{deng:01a}
+%{邓建松,彭冉冉,陈长松}.
+%\newblock {\em \LaTeXe{}科技排版指南}.
+%\newblock 科学出版社,书号:7-03-009239-2/TP.1516, 北京, 2001.
+%
+%\bibitem{wang:00a}
+%王磊.
+%\newblock {\em \LaTeXe{}插图指南}.
+%\newblock 2000.
+%\end{thebibliography}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 作者简历与科研成果页，应放在参考文献之后
+\begin{resume}
+% 论文作者身份简介，一句话即可。
+\begin{authorinfo}
+\noindent 韦小宝，男，汉族，1985年11月出生，江苏省扬州人。
+\end{authorinfo}
+% 论文作者教育经历列表，按日期从近到远排列，不包括将要申请的学位。
+\begin{education}
+\item[2007年9月 --- 2010年6月] 南京大学计算机科学与技术系 \hfill 硕士
+\item[2003年9月 --- 2007年6月] 南京大学计算机科学与技术系 \hfill 本科
+\end{education}
+% 论文作者在攻读学位期间所发表的文章的列表，按发表日期从近到远排列。
+\begin{publications}
+\item Xiaobao Wei, Jinnan Chen, ``Voting-on-Grid Clustering for Secure
+  Localization in Wireless Sensor Networks,'' in \textsl{Proc. IEEE International
+    Conference on Communications (ICC) 2010}, May. 2010.
+\item Xiaobao Wei, Shiba Mao, Jinnan Chen, ``Protecting Source Location Privacy
+  in Wireless Sensor Networks with Data Aggregation,'' in \textsl{Proc. 6th
+    International Conference on Ubiquitous Intelligence and Computing (UIC)
+    2009}, Oct. 2009.
+\end{publications}
+% 论文作者在攻读学位期间参与的科研课题的列表，按照日期从近到远排列。
+\begin{projects}
+\item 国家自然科学基金面上项目``无线传感器网络在知识获取过程中的若干安全问题研究''
+（课题年限~2010年1月 --- 2012年12月），负责位置相关安全问题的研究。
+\item 江苏省知识创新工程重要方向项目下属课题``下一代移动通信安全机制研究''
+（课题年限~2010年1月 --- 2010年12月），负责LTE/SAE认证相关的安全问题研究。
+\end{projects}
+\end{resume}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 生成《学位论文出版授权书》页面，应放在最后一页
+\makelicense
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
