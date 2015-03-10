@@ -443,7 +443,14 @@ LDA inference 过程
     
 \section{算法介绍}
    
-    我们使用了两种基于slot的domain classification算法
+    我们使用了两种基于slot的domain classification算法,一种是基于generic slot tagger的domain classification方法，一种是基于in-domain slot tagger的domain classification方法。
+    所谓generic slot tagger，对于所有的domain，使用条件随机场模型生成一个slot tagger，然后利用这个slot tagger对于每一个未知的query标注slot实体。
+    所谓in-domain slot tagger，对于每一个domain，使用条件随机场模型生成一个slot tagger，然后对于每一个未知的query，分别使用9个in-domain slot tagger之一对未知的query标注slot实体。
+    接下来对于已经标注好slot的数据，使用SVM算法进行分类。
+    对数据标注slot时候，我们使用条件随机场模型,对数据进行分类时候，我们使用支持向量机模型，接下来我们将依次介绍这两种模型。
+\subsection{条件随机场模型}
+\subsection{支持向量机模型}
+
 我们使用SVM算法作为我们的分类算法，SVM算法在工业界中使用广泛并且效果不错。在实际使用中，我们希望我们model训练时间足够短以及model足够小，可以减少存储空间的要求。由于我们的语料集非常大，特征数量多并且稀疏，所以我们考虑使用线性核的SVM，这样可以减少训练时间，同时为了减少生成的model的size。我们使用了L1 正则 L2 Loss的linear kernel SVM。
 我们的baseline使用的特征是提取query的ngram来得到，具体来说我们使用的是unigram，bigram，trigram组成的特征。
 Ngram是自然语言处理常用的语言模型。
