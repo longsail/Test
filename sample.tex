@@ -535,15 +535,15 @@ Raw query -> feature extraction --- unigram, bigram, trigram ---> 9 in-domain sl
     基于query以及slot的特征，标注了slot的query是“闹铃 设 在 <start\_date> 明 </start\_date> <start\_time> 早 2 点 </start\_time>”,对于词标注过slot的query提取unigram，bigram，trigram特征。unigram特征是[],bigram特征是[],trigram特征是[]。
 
 实验设计流程如下，
-1 首先对于训练集以及测试集进行数据预处理，包括1 使用分词工具分词，这里的分词工具是微软内部提供的，2 去除停用词。
-2 然后提取特征，我们的特征集合是在训练集上提取。对于测试集来讲，所有的不在特征集合的特征都被舍弃掉
-3 对于每一条query的特征进行归一化，归一化的好处是可以防止某一维或某几维对数据影响过大，其次是可以使程序可以运行更快。
-5 将特征处理成SVM使用的格式，特征提取方法已经在2.3.1.4讲过。
-6 在微软Cortana语料集中得到的特征数量为875w。接着我们在处理好的数据集中使用Liblinear，这里由于特征数量大，所以我们选取了线性核。为了防止随机性对于我们实验结果的影响，我们重复实验50次，取平均值作为我们最终的结果。
-7 我们的baseline实验，仅仅使用了query本身的ngram特征，得到的accuracy是86.5
-使用slot特征以后，我们的实验结果在86.5+1.9。
+
+1 对于给定的训练集以及测试集进行数据预处理，包括1 使用分词工具分词，这里的分词工具是微软内部提供的，2 去除停用词。
+2 提取特征，特征集合是在训练集上提取。对于测试集来讲，所有不在特征集合的特征都被舍弃掉，在微软给定的语料集上得到的特征数量维875w
+3 对于每一条query的特征进行归一化，归一化的好处是可以防止某一维或某几维对数据影响过大，其次是可以使程序可以运行更快。然后将特征处理成SVM使用的格式
+5 在处理好的训练集中使用LIBLINEAR训练SVM模型，由于特征数量大，所以我们选取了线性核，在测试集统计训练得到的模型的accuracy。为了防止随机性对于实验结果的影响，我们重复实验50次，取准确度的平均值作为最终的准确率。
+7 我们的baseline实验即是仅仅使用了query本身的ngram特征，得到的accuracy是86.5。使用了slot特征以后，我们的实验结果在86.5+1.9。
+
 实验总结，
-使用slot特征之后可以提升domain classification的accuracy，同时由于我们每个slot tagger中的slot数量比较少，CRF解码时间比较短，所以我们的总运行时间满足线上运行的要求。
+    使用slot特征之后可以提升domain classification的accuracy，同时由于每个domain的slot种类较少，因此CRF模型解码时间比较短，总运行时间满足线上运行的要求。
 
 
 \chapter{incremental learning using SVM}\label{chapter_smallworld}
