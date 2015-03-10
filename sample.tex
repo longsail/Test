@@ -518,8 +518,17 @@ Raw query -> feature extraction --- unigram, bigram, trigram ---> 9 in-domain sl
 \subsection{CRF模型训练}
 
     对于每个domain CRF model的训练过程是首先随机选取3000个sentences作为我们的训练数据用于训练我们的model，1800句作为我们的测试数据。最终我们每个domain的CRF model的F值》=90\%。
+
 \subsection{SVM模型训练}
     
+实验设计流程如下，
+
+1 对于给定的训练集以及测试集进行数据预处理，包括1 使用分词工具分词，这里的分词工具是微软内部提供的，2 去除停用词。
+2 提取特征，特征集合是在训练集上提取。对于测试集来讲，所有不在特征集合的特征都被舍弃掉，在微软给定的语料集上得到的特征数量维875w
+3 对于每一条query的特征进行归一化，归一化的好处是可以防止某一维或某几维对数据影响过大，其次是可以使程序可以运行更快。然后将特征处理成SVM使用的格式
+5 在处理好的训练集中使用LIBLINEAR训练SVM模型，由于特征数量大，所以我们选取了线性核，在测试集统计训练得到的模型的accuracy。为了防止随机性对于实验结果的影响，我们重复实验50次，取准确度的平均值作为最终的准确率。
+7 我们的baseline实验即是仅仅使用了query本身的ngram特征，得到的accuracy是86.5。使用了slot特征以后，我们的实验结果在86.5+1.9。使用slot特征之后可以提升domain classification的accuracy，同时由于每个domain的slot种类较少，因此CRF模型解码时间比较短，总运行时间满足线上运行的要求。
+
     我们使用SVM模型来做domain classification任务。一个典型的分类任务流程如下，使用训练语料集得到SVM的参数，使用测试集去测试SVM的分类能力。这里我们使用微软给定的语料集来实验。其中400w query作为训练数据，1w8 query作为测试数据。
    我们使用LIBLINEAR来训练SVM模型。LIBLINEAR是台湾大学林智仁组开发的一种线性分类器，可以用来处理具有数以百万计实例和特征的数据。LIBLINEAR支持L2正则L2损失的线性SVM分类器，L2正则L1损失的线性SVM分类器，L1正则L2损失的线性SVM分类器等等。LIBLINEAR跟LIBSVM具有很多相似地方，比如跟LIBSVM处理数据格式一致，使用方法类似。LIBLINEAR支持使用one-vs-rest，Crammer\&Singer策略SVM。同时LIBLINEAR接口丰富，支持MATLAB/Octave，Java，Python以及Ruby等等。LIBLINEAR使用分为训练过程以及预测过程。
     其中训练过程的使用方式是，Usage: train [options] training\_set\_file [model\_file]
@@ -530,21 +539,8 @@ Raw query -> feature extraction --- unigram, bigram, trigram ---> 9 in-domain sl
     如何提取特征，在此我们将slot看成是跟词一样的item，在提取特征时候，提取了三种不同类型的特征，然后组成最终的特征空间。我们使用的方法如下，我们首先提取query本身的ngram特征，其次提取slot集合的ngram特征，最后我们提取query跟slot一起的ngram特征。举例如下，对于如下标注好slot的query
 “闹铃 设 在 <start\_date> 明 </start\_date> <start\_time>  早 2 点 </start\_time>”
     基于query本身的特征是，query是“闹铃 设 在 明 早 2 点”，对此query提取unigram，bigram，trigram特征，unigram特征是[闹铃，设，在，明，早，2，点],bigram特征是[闹铃设，设在，在明，明早，早2，2点]，trigram特征是[闹铃设在，设在明，在明早，明早2，早2点]。
-    基于slot本身的特征是，slot集合是"<start\_date> </start\_date> <start\_time> </start\_time>",对此slot集合提取unigram，bigram，trigram特征,unigram特征是[<start\_date>, </start\_date>, <start\_time>, </start\_time>],bigram特征是
-[<start\_date> </start\_date>, </start\_date> <start\_time>, <start\_time> </start\_time>]。trigram特征是[<start\_date> </start\_date> <start\_time>, </start\_date> <start\_time> </start\_time>]。
-    基于query以及slot的特征，标注了slot的query是“闹铃 设 在 <start\_date> 明 </start\_date> <start\_time> 早 2 点 </start\_time>”,对于词标注过slot的query提取unigram，bigram，trigram特征。unigram特征是[],bigram特征是[],trigram特征是[]。
-
-实验设计流程如下，
-
-1 对于给定的训练集以及测试集进行数据预处理，包括1 使用分词工具分词，这里的分词工具是微软内部提供的，2 去除停用词。
-2 提取特征，特征集合是在训练集上提取。对于测试集来讲，所有不在特征集合的特征都被舍弃掉，在微软给定的语料集上得到的特征数量维875w
-3 对于每一条query的特征进行归一化，归一化的好处是可以防止某一维或某几维对数据影响过大，其次是可以使程序可以运行更快。然后将特征处理成SVM使用的格式
-5 在处理好的训练集中使用LIBLINEAR训练SVM模型，由于特征数量大，所以我们选取了线性核，在测试集统计训练得到的模型的accuracy。为了防止随机性对于实验结果的影响，我们重复实验50次，取准确度的平均值作为最终的准确率。
-7 我们的baseline实验即是仅仅使用了query本身的ngram特征，得到的accuracy是86.5。使用了slot特征以后，我们的实验结果在86.5+1.9。
-
-实验总结，
-    使用slot特征之后可以提升domain classification的accuracy，同时由于每个domain的slot种类较少，因此CRF模型解码时间比较短，总运行时间满足线上运行的要求。
-
+    基于slot本身的特征是，slot集合是"<start\_date> </start\_date> <start\_time> </start\_time>",对此slot集合提取unigram，bigram，trigram特征,unigram特征是[<start\_date>, </start\_date>, <start\_time>, </start\_time>],bigram特征是[<start\_date> </start\_date>, </start\_date> <start\_time>, <start\_time> </start\_time>]。trigram特征是[<start\_date> </start\_date> <start\_time>, </start\_date> <start\_time> </start\_time>]。
+    基于query以及slot的特征，标注了slot的query是“闹铃 设 在 <start\_date> 明 </start\_date> <start\_time> 早 2 点 </start\_time>”,对于词标注过slot的query提取unigram，bigram，trigram特征。unigram特征是[闹铃，设，在，<start\_date>，明，</start\_date>，<start\_time>，早，2，点，</start\_time>],bigram特征是[闹铃设，设在，在<start\_date>，<start\_date>明，明</start\_date>，<start\_date> <start\_time>,],trigram特征是[]。
 
 \chapter{incremental learning using SVM}\label{chapter_smallworld}
 
