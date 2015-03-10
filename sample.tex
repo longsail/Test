@@ -491,60 +491,51 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
 --- +slot -> places binary classifier
 .......
     这种流程处理的好处是对于domain classification来说可以灵活的加入更丰富的特征，结构化的信息可以容易的传递给binary classifier。
-    从微软给定的语料集来看，微软语音助手Cortana有9个domain，每个domain有大约10种domain相关的slot。所谓domain相关，举例说明如下，对于alarm domain，slot种类为，。。。。。。。对于places domain，slot种类为，。。。。。。其它domain类似。
-    9个domain slot种类总共是86个。上面实验中在人工标注slot的微软数据集的domain classification任务上可以得到的oracle accuracy为96\%。
-    在线上实际运行时，我们不仅需要考虑domain classificationd的准确率而且要考虑domain classification的处理时间。
-    处理逻辑是首先使用generic slot tagger对未知的query标注slot，然后使用SVM算法对标注过slot的未知query进行标注。
-    使用时间是t1，然后再使用SVM处理标注好的query，使用时间是t2。总得运行时间t = t1 + t2。由于CRF的加码时间跟slot相关，也即是o(Tn\^2),这里n指的是slot数量，由于slot数量比较多，在线上运行时候，CRF解码时间大于SVM预测时间，这对于线上是不能接受。所以我们首先需要做的是从86个slot中选取少量具有代表性的slot。
-经过我们讨论，我们选取了19个slot来作为代表。同时我们也想了解这19个slot对于我们分类的影响。基于此，我们首先对于语料集做了处理，对于标注的slot，我们只保留了这19种slot，其余的全部移除。然后在处理后的语料集中使用SVM算法结合slot特征，最终我们可以得到的oracle accuracy是91\%，相对于baseline来讲这也是一个非常显著的提升。
-接下来我们需要做的是，训练出来一个CRF model在实际中使用。我们首先了解的是F值为多少的CRF model对于我们的domain classification有提升作用，基于此我们做了一个模拟实验，在语料集上我们随机的对于每一条query的slot进行增加，删除，改变三个行动，
-也即当某个item没有slot时候，我们随机的给定一个slot，当某个item有slot时候，我们会选择删除这个slot或者使用其它slot替换此slot。然后我们计算模拟实验的F值，最后我们在这些处理后的语料集上使用SVM，观察F值与Accuracy的关系，下图是我们的模拟实验。。。。。。
+    从微软给定的语料集来看，微软语音助手Cortana有9个domain，每个domain有大约10种domain相关的slot。所谓domain相关，举例说明如下，对于alarm domain，slot种类为，。。。。。。。对于places domain，slot种类为，。。。。。。其它domain类似。9个domain slot种类总共是86个。上面实验中在人工标注slot的微软数据集的domain classification任务上可以得到的oracle accuracy为96\%。
+    在线上实际运行时，我们不仅需要考虑domain classificationd的准确率而且要考虑domain classification的处理时间。基于generic slot tagger的domain classification处理逻辑是首先使用generic slot tagger对未知的query标注slot，使用时间是t1，然后使用SVM算法对标注过slot的未知query进行分类，使用时间是t2。运行时间定义t = t1 + t2。使用CRF模型对未知query标注slot时，解码的时间复杂度是。。。，这里的n指的是slot数量。使用SVM模型对未知query预测分类是，分类的时间复杂度是。。。上面提到slot数量是86，基于此使用CRF模型对未知query标注slot时间远远大于使用SVM模型对未知query预测的时间，相比于之前没有使用generic slot tagger时候，时间增长太高。即使在上面的实验中使用人工标注slot的微软数据集的domain classification可以得到的orcale accucary为96\%,从时间上考虑，对于线上应用也是不能接受的。
+    为了满足线上时间需求，我们想到的是减少slot种类，从而可以减少generic slot tagger的解码时间。我们的方法是从86种slot中选取少量具有代表性的slot。经过讨论，我们选取了其中19种slot。接下来我们需要验证这19种slot是否可以提高domain classification准确率。基于此，我们设计了下面的实验，首先对于语料集做了相应处理，即是对于所有标注slot的query，只保留19种slot，其余的全部移除。然后在处理后的语料集中进行domain classification实验，可以得到的oracle accuracy是91\%，相对于baseline来讲这也是一个非常显著的提升。
+    接下来需要做的是基于微软语料集训练CRF model在实际中使用。为了了解CRF模型的F值也即slot标注效果对于domain classification的影响。基于此我们做了一个在微软给定的具有人工标注slot的数据集上模拟slot标注的实验，随机的对于每一条query的slot进行增加，删除，改变三个行为，以此来计算CRF模型的F值。具体的来说就是对于每一个query的每个item，当此item没有slot时，以一定的概率给定一个slot，当此item有slot时，以一定的概率选择删除或者使用其它slot替换此slot。然后在处理过的语料集上进行domain classification实验，观察不同的F值与Accuracy的关系，下图是我们的模拟实验。。。。。。
+    从图中曲线可以观察得知F值在60\%及以上，domain classification accuracy有提高。这意味着如果我们可以训练一个F值在60\%及以上的CRF model，domain classification准确率可以得到提高。实际上当使用F值为60\%至80\% CRF model时，domain classification的准确率并没有相应提高，对于我来说这是一个有待解决的问题。
 
-可以观察得知在F值有60\%的时候，我们accuracy得以提高，这将指导我们训练CRFmodel，我们的训练过程是从400w query中随机抽取10w条用来做训练数据，1w条用来做测试数据。然而当我们将crf model F值为60\%-80\%时候，我们并没有得到相应的accuracy。这是一个有待解决的问题。
+\subsection{基于in-domain slot tagger的domain classification模型}
 
-\subsection{in-domain slot tagger}
-
-In-domain slot model处理流程
-Raw query -> feature extraction --- unigram, bigram, trigram --- 9 in-domain slot model --- + slot by alarm slot tagger -> alarm binary classifier
+    在上一章介绍过，在微软给定的语料集中，总共有9个domain，每个domain大约有10中slot。每个domain标注的slot种类跟其它domain之间几乎没有重合的，也即可以认为slot种类是domain相关的。
+    所谓in-domain slot tagger指的是使用每一个domain的语料集，为每一个domain训练CRF模型。基于in-domain slot tagger的domain classification处理流程如下，
+Raw query -> feature extraction --- unigram, bigram, trigram ---> 9 in-domain slot model --- + slot by alarm slot tagger -> alarm binary classifier
  + slot by reminder slot tagger -> reminder binary classifier
  + slot by calender slot tagger -> calender binary classifier
  + slot by places slot tagger -> places binary classifier
 ......
+    因为每个domain中slot种类数量不多，每个domain可以容易的获取F值很高的CRF model。对于每个domain的CRF model，由于slot种类数量少，CRF model的解码时间在可以接受的范围内。
+    基于in-domain slot tagger的domain classification模型算法如下，
+    首先使用in-domain slot tagger对anti-domain的query标注slot，这里的anti-domain指的是除了此domain以外的其余全部domain，这样做的好处就是增加负例
+    然后使用in-domain语料集作为正例，anti-domain语料集作为负例，经过特征提取之后（后面介绍），使用SVM模型训练生成一个binary classifier。微软给定的语料集中9个domain，依此类推，可以获得9个binary classifier。
+    最后在线上运行时，对于每一个未知的query，首先由每一个in-domain的slot tagger对未知的query标注slot，然后由in-domain的binary classifier对此query进行预测打分，在使用SVM算法进行预测时候不仅可以给出类别，同时可以给出一个具体分数。对于每一个未知的query，由于有9个binary classifier，所以可以得到9个分数，我们选取对此query打分最高的domain作为此query的domain。经过实验验证，基于in-domain slot tagger的domain classification模型比baseline算法提高1.9\%。
 
-观察训练集之后，我们发现slot是跟domain相关的，也就是说对于我们9个domain来说，每个domain 标注的slot种类跟其它domain几乎没有重合的。我们想到了一种方法就是为每一个domain训练出一个CRF model，由于每个domain中slot数量不多，我们可以容易的获取F值很高的CRF model，对于每个domain CRF model的训练过程是首先随机选取3000个sentences作为我们的训练数据用于训练我们的model，1800句作为我们的测试数据。最终我们每个domain的CRF model的F值》=90%。
-结合in-domain slot tagger，我们首先使用in-domain的slot tagger来对anti-domain进行标注，这里anti-domain指的是除了某个domain以外的其余全部domain，这样做的好处就是增加负例。接着我们使用in-domain语料作为正例，anti-domain语料作为负例，提取特征之后（后面介绍），使用SVM我们训练出一个binary classifier。以此类推，因为我们有9个domain，所以我们可以获得9个binary classifier。在线上运行时，我们可以做到，对于每一个新来的query，首先由in-domain的slot tagger对query进行标注，然后再有in-domain的classifier对这个query进行预测打分，SVM在进行分类时候不仅可以给出类别，同时可以给出一个具体分数。由于我们有9个binary classifier，所以我们可以得到9个分数，最终我们选取分数最高的作为prediction domain。 最后我们可以得到比baseline高1.9个点的分类算法
+\section{实验设计以及结果}
+    
+    实验流程，首先基于微软给定的语料训练CRF model，然后在经过CRF model标注过的语料集中训练SVM model，然后使用SVM model在给定的测试集上测试。接下来将分别介绍CRF模型训练以及SVM模型训练
+\subsection{CRF模型训练}
 
-这种方法隐含的好处是因为我们每个in-domain的slot tagger中的slot 数量都在20以内，所以CRF解码时间在可以接受的范围内，对于9个in-domain slot tagger，我们可以并行进行标注以及分类预测，所以我们的运行时间取决于这9个里面最大的一个，在线上是可以运行的。
-如何提取slot特征，我们将slot看成是跟词一样的item，在提取特征时候，我们提取了三种不能类型的特征，然后组成最终的特征空间，我们使用的方法如下，我们首先提取query本身的特征，其次提取slot的特征，最后我们提取query跟slot一起的特征。举例如下，对于如下标注好slot的query
-“闹铃 设 在 《start\_date》 明 《/start\_date》 《start\_time>  早 2 点 《/start\_time>”
-我们首先提取query“闹铃 设 在 明 早 2 点”的特征，具体来说就是unigram，bigram，trigram然后我们提取slot集合《start\_data》 《/start\_data> <start\_time> </start\_time> 的unigram，bigram，trigram特征,，最后我们提取的特征是将标注好的slot的query看成是一个整体，我们来提取相应的unigram，bigram，trigram特征
+    对于每个domain CRF model的训练过程是首先随机选取3000个sentences作为我们的训练数据用于训练我们的model，1800句作为我们的测试数据。最终我们每个domain的CRF model的F值》=90\%。
+\subsection{SVM模型训练}
+    
+    我们使用SVM模型来做domain classification任务。一个典型的分类任务流程如下，使用训练语料集得到SVM的参数，使用测试集去测试SVM的分类能力。这里我们使用微软给定的语料集来实验。其中400w query作为训练数据，1w8 query作为测试数据。
+   我们使用LIBLINEAR来训练SVM模型。LIBLINEAR是台湾大学林智仁组开发的一种线性分类器，可以用来处理具有数以百万计实例和特征的数据。LIBLINEAR支持L2正则L2损失的线性SVM分类器，L2正则L1损失的线性SVM分类器，L1正则L2损失的线性SVM分类器等等。LIBLINEAR跟LIBSVM具有很多相似地方，比如跟LIBSVM处理数据格式一致，使用方法类似。LIBLINEAR支持使用one-vs-rest，Crammer\&Singer策略SVM。同时LIBLINEAR接口丰富，支持MATLAB/Octave，Java，Python以及Ruby等等。LIBLINEAR使用分为训练过程以及预测过程。
+    其中训练过程的使用方式是，Usage: train [options] training\_set\_file [model\_file]
+   这里的train是LIBLINEAR提供的训练工具，training\_set指的是训练语料集，model\_file指的是训练之后得到的模型文件。
+    其中预测过程的使用方式是，Usage: predict [options] test\_file model\_file output\_file
+   这里的predict是LIBLINEAR提供的预测工具，test\_file指的是测试语料集，model\_file是在训练过程中产生的模型，用于在测试语料集上预测，output\_file是trai测试语料test\_file上的预测输出。
 
-\subsection{实验设计以及结果}
+    如何提取特征，在此我们将slot看成是跟词一样的item，在提取特征时候，提取了三种不同类型的特征，然后组成最终的特征空间。我们使用的方法如下，我们首先提取query本身的ngram特征，其次提取slot集合的ngram特征，最后我们提取query跟slot一起的ngram特征。举例如下，对于如下标注好slot的query
+“闹铃 设 在 <start\_date> 明 </start\_date> <start\_time>  早 2 点 </start\_time>”
+    基于query本身的特征是，query是“闹铃 设 在 明 早 2 点”，对此query提取unigram，bigram，trigram特征，unigram特征是[闹铃，设，在，明，早，2，点],bigram特征是[闹铃设，设在，在明，明早，早2，2点]，trigram特征是[闹铃设在，设在明，在明早，明早2，早2点]。
+    基于slot本身的特征是，slot集合是"<start\_date> </start\_date> <start\_time> </start\_time>",对此slot集合提取unigram，bigram，trigram特征,unigram特征是[<start\_date>, </start\_date>, <start\_time>, </start\_time>],bigram特征是
+[<start\_date> </start\_date>, </start\_date> <start\_time>, <start\_time> </start\_time>]。trigram特征是[<start\_date> </start\_date> <start\_time>, </start\_date> <start\_time> </start\_time>]。
+    基于query以及slot的特征，标注了slot的query是“闹铃 设 在 <start\_date> 明 </start\_date> <start\_time> 早 2 点 </start\_time>”,对于词标注过slot的query提取unigram，bigram，trigram特征。unigram特征是[],bigram特征是[],trigram特征是[]。
 
-LIBLinear介绍
-LIBLINEAR is a linear classifier for data with millions of instances and features. It supports
-L2-regularized classifiers 
-L2-loss linear SVM, L1-loss linear SVM, and logistic regression (LR)
-L1-regularized classifiers (after version 1.4) 
-L2-loss linear SVM and logistic regression (LR)
-L2-regularized support vector regression (after version 1.9) 
-L2-loss linear SVR and L1-loss linear SVR.
-Main features of LIBLINEAR include
-Same data format as LIBSVM, our general-purpose SVM solver, and also similar usage
-Multi-class classification: 1) one-vs-the rest, 2) Crammer \& Singer
-Cross validation for model selection
-Probability estimates (logistic regression only)
-Weights for unbalanced data
-MATLAB/Octave, Java, Python, Ruby interfaces
-
-对于分类算法来讲，我们需要使用训练集得到SVM的参数，然后使用测试集去测试SVM的分类能力。这里我们使用微软Cortana 400w query作为我们的训练数据，1w8 query作为我们的测试数据。这里我们使用的是台湾大学林智仁开发的Liblinear。Liblinear使用主要包括train 以及predict
-SVM train 过程
-./train -s 2 training training\_model
-SVM predict 过程
-./predict training\_model test output
-这里train以及predict是Liblinear提供的训练以及测试工具，training指的是我们的训练语料，training\_model指的是训练之后得到的model。Test指的是我们的测试语料，output是training\_model在测试语料test上的预测输出。
 实验设计流程如下，
-1 首先我们对于训练集以及测试集进行数据预处理，包括1 使用分词工具分词，这里的分词工具是微软内部提供的，2 去除停用词。
+1 首先对于训练集以及测试集进行数据预处理，包括1 使用分词工具分词，这里的分词工具是微软内部提供的，2 去除停用词。
 2 然后提取特征，我们的特征集合是在训练集上提取。对于测试集来讲，所有的不在特征集合的特征都被舍弃掉
 3 对于每一条query的特征进行归一化，归一化的好处是可以防止某一维或某几维对数据影响过大，其次是可以使程序可以运行更快。
 5 将特征处理成SVM使用的格式，特征提取方法已经在2.3.1.4讲过。
@@ -553,8 +544,6 @@ SVM predict 过程
 使用slot特征以后，我们的实验结果在86.5+1.9。
 实验总结，
 使用slot特征之后可以提升domain classification的accuracy，同时由于我们每个slot tagger中的slot数量比较少，CRF解码时间比较短，所以我们的总运行时间满足线上运行的要求。
-
-\section{可以改进的地方}
 
 
 \chapter{incremental learning using SVM}\label{chapter_smallworld}
