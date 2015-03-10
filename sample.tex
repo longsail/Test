@@ -446,9 +446,19 @@ LDA inference 过程
     我们使用了两种基于slot的domain classification算法,一种是基于generic slot tagger的domain classification方法，一种是基于in-domain slot tagger的domain classification方法。
     所谓generic slot tagger，对于所有的domain，使用条件随机场模型生成一个slot tagger，然后利用这个slot tagger对于每一个未知的query标注slot实体。
     所谓in-domain slot tagger，对于每一个domain，使用条件随机场模型生成一个slot tagger，然后对于每一个未知的query，分别使用9个in-domain slot tagger之一对未知的query标注slot实体。
+    微软给定的语料集中每一条query已经标注好slot，为了验证slot特征是否可以提高domain classification的准确率，我们设计了基于人工标注slot的微软数据集的domain classification实验。通过这个实验我们得到了一个oracle结果，accuracy是96.5\%。相比于baseline结果，有大概10\%的绝对提升，有显著的提高，实验说明slot特征可以用于提高domain classification准确率。
+    实际上，对于在线上出现的大量的未知query，使用人工标注slot是不可行的。因此我们希望可以使用一种机器学习算法来帮助实现slot的自动标注，这里我们选择条件随机场算法（CRF）来实现slot的标注。
     接下来对于已经标注好slot的数据，使用SVM算法进行分类。
     对数据标注slot时候，我们使用条件随机场模型,对数据进行分类时候，我们使用支持向量机模型，接下来我们将依次介绍这两种模型。
 \subsection{条件随机场模型}
+
+条件随机场(CRF)由Lafferty等人于2001年提出，结合了最大熵模型和隐马尔可夫模型的特点，是一种无向图模型，近年来在分词、词性标注和命名实体识别等序列标注任务中取得了很好的效果。条件随机场是一个典型的判别式模型，其联合概率可以写成若干势函数联乘的形式，其中最常用的是线性链条件随机场。若让x=(x1，x2，…xn)表示被观察的输入数据序列，y=(y1，y2，…yn)表示一个状态序列，在给定一个输入序列的情况下，线性链的CRF模型定义状态序列的联合条件概率为
+p(y|x)=exp{} (2-14)
+Z(x)={} (2-15)
+其中:Z是以观察序列x为条件的概率归一化因子；fj(yi-1，yi，x，i)是一个任意的特征函数；是每个特征函数的权值。
+我们可以将slot标注认为是序列化标注问题，因此这里采用CRF作为我们的序列化标注模型。
+我们使用两种不同的slot生成方法，一种是generic slot tagger，这种方法是对于包含所有domain的语料集生成一个CRF model，然后利用这个CRF model标注未知的query。一种是in-domain的slot tagger，这种方法为每一个domain单独生成一个CRF model，因为Cortana中的domain数量有9个，所以我们有9个不同domain的CRF model。这样在遇到未知的query时候，9个不同domain的CRF model都要为这个query进行标注，最后我们得到的是经过9个经过标注过slot的query。
+接下来我们将首先介绍结合了generic slot model的方法，然后介绍in-domain slot model，最后比较两种不同方法优劣。
 \subsection{支持向量机模型}
 
 我们使用SVM算法作为我们的分类算法，SVM算法在工业界中使用广泛并且效果不错。在实际使用中，我们希望我们model训练时间足够短以及model足够小，可以减少存储空间的要求。由于我们的语料集非常大，特征数量多并且稀疏，所以我们考虑使用线性核的SVM，这样可以减少训练时间，同时为了减少生成的model的size。我们使用了L1 正则 L2 Loss的linear kernel SVM。
@@ -459,17 +469,7 @@ Ngram是自然语言处理常用的语言模型。
 在我们的后续实验过程中，结合slot作为特征来进行分类，我们可以得到的分类精确度比baseline可以提高大概1.9个点。
 下文中我们将支持向量机模型简称为SVM，将条件随机场模型简称为CRF。
 
-\subsection{基础算法介绍}
 
-在我们的domain classification任务中，我们主要使用了SVM和CRF算法，接下来我们将介绍SVM以及CRF
-
-\subsection{SVM介绍}
-
-In machine learning, support vector machines (SVMs, also support vector networks[1]) are supervised learning models with associated learning algorithms that analyze data and recognize patterns, used for classification and regression analysis. Given a set of training examples, each marked as belonging to one of two categories, an SVM training algorithm builds a model that assigns new examples into one category or the other, making it a non-probabilistic binary linear classifier. An SVM model is a representation of the examples as points in space, mapped so that the examples of the separate categories are divided by a clear gap that is as wide as possible. New examples are then mapped into that same space and predicted to belong to a category based on which side of the gap they fall on.
-In addition to performing linear classification, SVMs can efficiently perform a non-linear classification using what is called thekernel trick, implicitly mapping their inputs into high-dimensional feature spaces.
-More formally, a support vector machine constructs a hyperplane or set of hyperplanes in a high- or infinite-dimensional space, which can be used for classification, regression, or other tasks. Intuitively, a good separation is achieved by the hyperplane that has the largest distance to the nearest training data point of any class (so-called functional margin), since in general the larger the margin the lower the generalization error of the classifier.
-Whereas the original problem may be stated in a finite dimensional space, it often happens that the sets to discriminate are notlinearly separable in that space. For this reason, it was proposed that the original finite-dimensional space be mapped into a much higher-dimensional space, presumably making the separation easier in that space. To keep the computational load reasonable, the mappings used by SVM schemes are designed to ensure that dot products may be computed easily in terms of the variables in the original space, by defining them in terms of a kernel function  selected to suit the problem.[2] The hyperplanes in the higher-dimensional space are defined as the set of points whose dot product with a vector in that space is constant. The vectors defining the hyperplanes can be chosen to be linear combinations with parameters  of images of feature vectors that occur in the data base. With this choice of a hyperplane, the points  in the feature space that are mapped into the hyperplane are defined by the relation:  Note that if  becomes small as  grows further away from , each term in the sum measures the degree of closeness of the test point  to the corresponding data base point . In this way, the sum of kernels above can be used to measure the relative nearness of each test point to the data points originating in one or the other of the sets to be discriminated. Note the fact that the set of points  mapped into any hyperplane can be quite convoluted as a result, allowing much more complex discrimination between sets which are not convex at all in the original space.
-.
 SVM算法是一种经典的机器学习算法，是由Boster，Guyon，Vapnik在1992年提出来的，SVM算法的特点是可以同时最小化经验误差与最大化几何间隔。从几何意义上来讲SVM算法寻找一个超平面，这个超平面用来分离开数据点，因此超平面也被成为分离面。基于SVM的优良性质，SVM可以应用非常广泛，比如文本分类，蛋白质识别，手写数字识别等等。
 SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可以描述为最大化几何间隔，SVM形式很多，具体到我们的问题，我们使用的L1正则L2损失的SVM，SVM算法优化公式，L1+L2。
 由于使用了L1正则，我们可以得到稀疏模型，首先我们解释在SVM中使用正则项的目的是避免过拟合The feasible point that minimizes the loss is more likely to happen on the coordinates on graph (a) than on graph (b) since graph (a) is more angular.  This effect amplifies when your number of coefficients increases, i.e. from 2 to 200. The implication of this is that the L1 regularization gives you sparse estimates. Namely, in a high dimensional space, you got mostly zeros and a small number of non-zero coefficients. This is huge since it incorporates variable selection to the modeling problem. In addition, if you have to score a large sample with your model, you can have a lot of computational savings since you don't have to compute features(predictors) whose coefficient is 0
@@ -479,47 +479,23 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
 假设我们有n个类，One-vs-rest指的是我们将我们将其中的一个类作为正例，其余n-1个类作为负例，训练出一个binary classifier。依次类推，最后我们将会得到n个binary classifier。当遇到一个测试数据时候，我们同时使用这n个binary classifier，这样我们将会得到n个分值，选取分值最高所属的类作为测试数据的类。
 实际中我们使用的是one-vs-rest方法来做多分类。
 
-\subsection{CRF}
 
-Conditional random fields (CRFs) are a class of statistical modelling method often applied in pattern recognition and machine learning, where they are used for structured prediction. Whereas an ordinary classifier predicts a label for a single sample without regard to "neighboring" samples, a CRF can take context into account; e.g., the linear chain CRF popular in natural language processing predicts sequences of labels for sequences of input samples.
-CRFs are a type of discriminative undirected probabilistic graphical model. It is used to encode known relationships between observations and construct consistent interpretations. It is often used for labeling or parsing of sequential data, such as natural language text or biological sequences[1] and in computer vision.[2] Specifically, CRFs find applications in shallow parsing,[3] named entity recognition[4] and gene finding, among other tasks, being an alternative to the related hidden Markov models (HMMs). In computer vision, CRFs are often used for object recognition and image segmentation.
-Lafferty, McCallum and Pereira[1] define a CRF on observations  and random variables  as follows:
-Let  be a graph such that
-, so that  is indexed by the vertices of . Then  is a conditional random field when the random variables , conditioned on , obey the Markov property with respect to the graph: , where  means that  and  are neighbors in .
-What this means is that a CRF is an undirected graphical model whose nodes can be divided into exactly two disjoint sets  and , the observed and output variables, respectively; the conditional distribution  is then modeled.
-Inference[edit]
-For general graphs, the problem of exact inference in CRFs is intractable. The inference problem for a CRF is basically the same as for an MRF and the same arguments hold.[5] However there exist special cases for which exact inference is feasible:
-If the graph is a chain or a tree, message passing algorithms yield exact solutions. The algorithms used in these cases are analogous to the forward-backward and Viterbi algorithm for the case of HMMs.
-If the CRF only contains pair-wise potentials and the energy is submodular, combinatorial min cut/max flow algorithms yield exact solutions.
-If exact inference is impossible, several algorithms can be used to obtain approximate solutions. These include:
-Loopy belief propagation
-Alpha expansion
-Mean field inference
-Linear programming relaxations
-Parameter Learning[edit]
-Learning the parameters  is usually done by maximum likelihood learning for . If all nodes have exponential family distributions and all nodes are observed during training, this optimization is convex.[5] It can be solved for example using gradient descent algorithms, or Quasi-Newton methods such as the L-BFGS algorithm. On the other hand, if some variables are unobserved, the inference problem has to be solved for these variables. Exact inference is intractable in general graphs, so approximations have to be used.
+\subsection{基于genetic slot tagger的domain classification 模型}
 
-条件随机场(CRF)由Lafferty等人于2001年提出，结合了最大熵模型和隐马尔可夫模型的特点，是一种无向图模型，近年来在分词、词性标注和命名实体识别等序列标注任务中取得了很好的效果。条件随机场是一个典型的判别式模型，其联合概率可以写成若干势函数联乘的形式，其中最常用的是线性链条件随机场。若让x=(x1，x2，…xn)表示被观察的输入数据序列，y=(y1，y2，…yn)表示一个状态序列，在给定一个输入序列的情况下，线性链的CRF模型定义状态序列的联合条件概率为
-p(y|x)=exp{} (2-14)
-Z(x)={} (2-15)
-其中:Z是以观察序列x为条件的概率归一化因子；fj(yi-1，yi，x，i)是一个任意的特征函数；是每个特征函数的权值。
-我们可以将slot标注认为是序列化标注问题，因此这里采用CRF作为我们的序列化标注模型。
-我们使用两种不同的slot生成方法，一种是generic slot tagger，这种方法是对于包含所有domain的语料集生成一个CRF model，然后利用这个CRF model标注未知的query。一种是in-domain的slot tagger，这种方法为每一个domain单独生成一个CRF model，因为Cortana中的domain数量有9个，所以我们有9个不同domain的CRF model。这样在遇到未知的query时候，9个不同domain的CRF model都要为这个query进行标注，最后我们得到的是经过9个经过标注过slot的query。
-接下来我们将首先介绍结合了generic slot model的方法，然后介绍in-domain slot model，最后比较两种不同方法优劣。
-
-\subsection{generic slot model}
-
-Generic slot model处理流程
-Raw query -> feature extraction---unigram, bigram, trigram--->generic slot model 
+    所谓generic slot tagger指的是对于微软语音助手Cortana的9个domain，使用一个slot tagger对于未知的query标注slot。    
+    基于generic slot tagger的domain classification模型处理流程如下，
+    Raw query -> feature extraction---unigram, bigram, trigram--->generic slot model 
 --- +slot -> alarm binary classifier
 --- +slot -> reminder binary classifier
 --- +slot -> calender binary classifier
 --- +slot -> places binary classifier
 .......
-这种流程处理的好处是对于domain classification来说可以灵活的加入更丰富的特征，结构化的信息可以容易的传递给binary classifier。
-我们的语料集中已经标注好slot了，我们首先使用这些标注好的slot结合SVM得到一个oracle结果，这个oracle的accuracy是96.5\%。相比于baseline结果，有大概10\%的绝对提升，提升的非常显著，说明结合了slot特征可以提升我们的domain classification准确率。
-实际上，对于未知的大量的query，人工标注slot是不可行的。因此我们希望可以借助一种机器学习算法帮助我们实现自动的标注，这里我们选择条件随机场算法（CRF）来实现这一目的。
-从我们的语料集来看，我们有9个domain，所有的slot数目是86个。我们首先想到的是训练出来一个generic slot model。当遇到未知的query时候，使用一次generic slot model对于query进行标注。在线上实际运行时候，我们的处理逻辑是首先使用generic slot model对query进行标注，使用时间是t1，然后再使用SVM处理标注好的query，使用时间是t2。总得运行时间t = t1 + t2。由于CRF的加码时间跟slot相关，也即是o(Tn\^2),这里n指的是slot数量，由于slot数量比较多，在线上运行时候，CRF解码时间大于SVM预测时间，这对于线上是不能接受。所以我们首先需要做的是从86个slot中选取少量具有代表性的slot。
+    这种流程处理的好处是对于domain classification来说可以灵活的加入更丰富的特征，结构化的信息可以容易的传递给binary classifier。
+    从微软给定的语料集来看，微软语音助手Cortana有9个domain，每个domain有大约10种domain相关的slot。所谓domain相关，举例说明如下，对于alarm domain，slot种类为，。。。。。。。对于places domain，slot种类为，。。。。。。其它domain类似。
+    9个domain slot种类总共是86个。上面实验中在人工标注slot的微软数据集的domain classification任务上可以得到的oracle accuracy为96\%。
+    在线上实际运行时，我们不仅需要考虑domain classificationd的准确率而且要考虑domain classification的处理时间。
+    处理逻辑是首先使用generic slot tagger对未知的query标注slot，然后使用SVM算法对标注过slot的未知query进行标注。
+    使用时间是t1，然后再使用SVM处理标注好的query，使用时间是t2。总得运行时间t = t1 + t2。由于CRF的加码时间跟slot相关，也即是o(Tn\^2),这里n指的是slot数量，由于slot数量比较多，在线上运行时候，CRF解码时间大于SVM预测时间，这对于线上是不能接受。所以我们首先需要做的是从86个slot中选取少量具有代表性的slot。
 经过我们讨论，我们选取了19个slot来作为代表。同时我们也想了解这19个slot对于我们分类的影响。基于此，我们首先对于语料集做了处理，对于标注的slot，我们只保留了这19种slot，其余的全部移除。然后在处理后的语料集中使用SVM算法结合slot特征，最终我们可以得到的oracle accuracy是91\%，相对于baseline来讲这也是一个非常显著的提升。
 接下来我们需要做的是，训练出来一个CRF model在实际中使用。我们首先了解的是F值为多少的CRF model对于我们的domain classification有提升作用，基于此我们做了一个模拟实验，在语料集上我们随机的对于每一条query的slot进行增加，删除，改变三个行动，
 也即当某个item没有slot时候，我们随机的给定一个slot，当某个item有slot时候，我们会选择删除这个slot或者使用其它slot替换此slot。然后我们计算模拟实验的F值，最后我们在这些处理后的语料集上使用SVM，观察F值与Accuracy的关系，下图是我们的模拟实验。。。。。。
