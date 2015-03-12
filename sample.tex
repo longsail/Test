@@ -422,24 +422,33 @@ subsection{关键词短语提取模块}
 
 \section{研究背景}
 
-    随着智能手机的大量使用，语音交互将会越来越多的出现在人们的实际生活中，基于此语音助手的使用越来越普及。现在比较流行的语音助手有苹果公司开发的siri，谷歌公司开发的google now，而现在微软也推出一款叫做Cortana的语音助手。Cortana基于人工智能以及大数据的技术，尝试去理解用户的喜好和习惯，具有帮助用户进行日程安排，问题回答等等功能。
-    在Cortana的处理逻辑中包括一个称之为domain classification的模块。Domain classification模块需要处理经过speech recognition模块处理之后的短文本或者手写送过来的短文本。Domain classification模块负责对短文本进行分类。Domain classification模块的准确率非常重要，因为这是接下来对于query进行一系列更深入处理的入口。
-    微软的语音助手Cortana总共有9个domain，分别是alarm，places，reminder，calender，weather，......，web。Domain classification需要处理的是当每一个未知的query进来的时候，对此未知的query进行分类
-    分类是一种有监督学习算法，是机器学习中使用最普遍的一类算法。在分类算法中，广泛使用的有最近邻模型(K Nearest Neigoubor)，朴素贝叶斯模型（Naive Bayes），支持向量机模型（Support Vector Machine），神经网络模型（Neunaral Network），决策树模型Decision Tree等等。对于Cortana来说，处理的是文本或者更确切的说是短文本，因此可以将domain classification当做是文本分类的一种。对于文本分类来讲，处理数据的特点是数据规模比较大，特征比较稀疏，SVM算法经过几十年的使用实践，已经被证明可以在文本分类的领域中有效地使用。由于Cortana中的query长度非常短，特征比较稀疏，因此对于每一个query来讲，可以利用的特征数量比较少，基于此我们想到可以为query扩充特征，借助这些特征来提高domain classification的准确率。
-    实际上在微软的给定的语料中，每一条query都被人工标上slot，slot是一种实体领域相关。在domain classification中我尝试结合slot特征进行分类，希望slot特征可以帮助提高domain classification的准确度。实验证明，引入slot特征确实可以帮助提高domain classification准确率。
-    本章接下来的组织如下，首先我们将概述两种基于slot的算法以及两种算法中涉及到的SVM，CRF模型，然后依次详细介绍基于slot的算法，实验设计以及结果，最后总结两种方法的优劣。
+    随着智能手机的大量使用，语音助手类的应用将会越来越多的出现在人们的实际生活中，对于语音助手的研究越来越普及。现在比较流行的语音助手有苹果公司开发的Siri，谷歌公司开发的Google Now，而现在微软也推出一款叫做Cortana的语音助手。Cortana基于人工智能以及大数据的技术，尝试去理解用户的喜好和习惯，具有帮助用户进行日程安排，问题回答等等功能。
 
-    在SVM中引入核函数，具体说就是可以将非线性可分的数据扩展到更高维空间使得可以线性可分，这大大的扩展了SVM的能力，使得SVM应用更加广泛。然而对于数据规模大，特征数量多并且比较稀疏的语料来说，引入核函数固然可以取得不错的结果，但是却要付出很大的时间代价。有研究表名，在处理这种数据时，使用线性核的SVM可以取得相似的准确率，同时可以极大的减少训练时间。因此对于我们要解决的基于短文本的domain classification来说，可以使用结合linear kernel的SVM，处理时间非常快并且可以获得不错的准确率。在实验过程中我们选取台湾大学林智仁老师组开发的Liblinear作为我们的实验工具。LibLinear实现高效并且易于使用，可以极大的提高我们的实验效率，在这里我们要感谢Liblinear的开发者。
+    在Cortana的后台处理逻辑中包括一个称之为domain classification的模块。Domain classification模块需要处理的输入有经过speech recognition模块处理之后的短文本或者通过手写送过来的短信等短文本。Domain classification模块负责对输入短文本的进行分类，也就是将输入的短文本分配到相应的domain中去。举例来说，对于query"今天苏州下雨了吗"，domain classification模块需要将此query分类到weather domain，接下来将有其它模块对于分类过的query进行相应的处理。因此domain classification模块的准确率非常重要，这是接下来对于query进行一系列更深入处理的入口。微软的语音助手Cortana总共有9个domain，分别是alarm，places，reminder，calender，weather，note，date，news，web。因此domain classification模块需要处理的是对于每一个未知的query的输入，将此未知的query进行分类，分配到上面9个domian中对应的domain中去。
+
+    在domain classification中我们的处理的任务是分类。在机器学习领域，分类被认为是一种有监督学习算法，是使用最普遍的一类算法。分类算法通过对已经标注过类别的语料集分析，通过提取训练语料集的特征建立分类函数，从中发现分类的规则，因而可以用来对未知的数据预测类别。在实际应用中，分类算法使用非常广泛比如金融机构中的风险评估，客户类别的分类，搜索引擎中的文本分类以及软件项目中的漏洞挖掘分类。在分类算法中，广泛使用的有最近邻模型(K Nearest Neighbor)，朴素贝叶斯模型(Naive Bayes)，支持向量机模型(Support Vector Machine)，神经网络模型(Neural Network)，决策树模型(Decision Tree)等等。分类算法的评价指标有准确率，预测速度，可扩展行以及可解释性等等。
     
-\section{算法介绍}
+    对于微软语音助手Cortana的domain classification处理模块来说，处理的输入是文本或者更确切的说是短文本，因此可以将Cortana中的domain classification任务当做是文本分类的一种。对于文本分类来讲，数据的特点是数据规模比较大，特征比较稀疏，SVM算法经过几十年的使用实践，已经被证明可以在文本分类的领域中有效地使用。因此在domain classification任务中选择使用SVM算法。
+    
+    由于Cortana domain classification模块处理的输入query长度非常短，因此对于每一个query来讲，可以提取利用的特征数量比较少，基于此想到可以为query扩充特征，借助这些扩充的特征来提高domain classification的准确率。实际上在微软的给定的语料中，每一条query都被人工标上slot，slot是一种领域相关的实体，在后续章节中将会详细介绍slot概念。在domain classification任务中将会尝试对于标注了slot的query处理，提取相应的特征进行分类，希望提取的结合了slot特征可以帮助提高domain classification的准确度。实验证明，对每一条标注了slot的query进行分类确实可以帮助提高准确率。
+    
+    本章接下来的组织如下，首先我们将概述两种基于slot的分类算法以及两种算法中涉及到的SVM，CRF模型，然后依次详细介绍基于slot的分类算法，接着是实验设计以及结果，最后总结两种方法的优劣。
+
+    
+\section{基于slot的分类算法介绍}
    
-    我们使用了两种基于slot的domain classification算法,一种是基于generic slot tagger的domain classification方法，一种是基于in-domain slot tagger的domain classification方法。
-    所谓generic slot tagger，对于所有的domain，使用条件随机场模型生成一个slot tagger，然后利用这个slot tagger对于每一个未知的query标注slot实体。
-    所谓in-domain slot tagger，对于每一个domain，使用条件随机场模型生成一个slot tagger，然后对于每一个未知的query，分别使用9个in-domain slot tagger之一对未知的query标注slot实体。
-    微软给定的语料集中每一条query已经标注好slot，为了验证slot特征是否可以提高domain classification的准确率，我们设计了基于人工标注slot的微软数据集的domain classification实验。通过这个实验我们得到了一个oracle结果，accuracy是96.5\%。相比于baseline结果，有大概10\%的绝对提升，有显著的提高，实验说明slot特征可以用于提高domain classification准确率。
-    实际上，对于在线上出现的大量的未知query，使用人工标注slot是不可行的。因此我们希望可以使用一种机器学习算法来帮助实现slot的自动标注，这里我们选择条件随机场算法（CRF）来实现slot的标注。
-    接下来对于已经标注好slot的数据，使用SVM算法进行分类。
-    对数据标注slot时候，我们使用条件随机场模型,对数据进行分类时候，我们使用支持向量机模型，接下来我们将依次介绍这两种模型。
+    首先介绍slot概念，slot是一种实体领域相关，在研究背景这一章节中，我们已经介绍了Cortana共有9个domain。下面以alarm以及weather domain为例来介绍slot具体概念，在alarm domain slot中包括<alarm\_state>，<set\_alarm>，......，<start\_time>等等。在alarm domain已经标注了slot的query是。。。。。。在weather domain中slot包括<data\_range>，<weather\_condition>，......，<suitable\_for>等等。在weather domain中已经标注了slot的query是。。。。。。
+
+    我们使用了两种基于slot的domain classification算法,一种是基于generic slot tagger的domain classification方法，一种是基于in-domain slot tagger的domain classification方法。上面两种方法中的generic slot tagger以及in-domain slot tagger是一种使用条件随机场(CRF)模型训练之后得到的标注模型。
+    
+    所谓基于generic slot tagger的分类算法，首先对于所有的domain，使用条件随机场模型生成一个slot tagger，然后利用这个唯一的slot tagger对于每一个未知的query标注slot实体。接着使用支持向量机(SVM)算法，在已经标注了slot的语料集上训练分类器得到分类模型，最后使用得到的分类模型对于未知的query进行分类。
+
+    所谓基于in-domain slot tagger的分类算法，首先对于每一个domain，使用条件随机场模型生成一个slot tagger，然后对于每一个未知的query，分别使用9个in-domain slot tagger之一对未知的query标注slot实体。接着使用支持向量机(SVM)算法，在已经标注了slot的语料集上训练分类器得到分类模型，最后使用得到的分类模型对于未知query进行分类。
+    
+    微软给定的语料集中每一条query已经标注好slot，为了验证slot特征是否可以提高domain classification的准确率，我们设计了基于人工标注slot的微软数据集的domain classification实验。通过这个实验我们得到了一个oracle(ground truth)结果，accuracy是96.8\%。相比于baseline的准确率86.3\%结果，有超过10\%的绝对提升，这是非常显著的提高。通过这个实验说明了slot特征可以用于提高domain classification准确率。实际上，对于在线上出现的大量的未知query，使用人工标注slot是不可行的无论是人工成本或者时间成本都是不可接受的。因此我们希望可以使用一种机器学习算法来帮助实现slot的自动标注，在数据序列化标注中经常用的机器学习算法有隐马尔科夫模型(HMM),条件随机场模型(CRF)以及最大熵马尔科夫模型(MEMM)。基于条件随机场模型在微软使用广泛成熟并且已经效果不错，我们选择条件随机场算法(CRF)来实现slot的标注。
+    
+    无论对于基于generic slot tagger分类算法或者基于in-domain slot tagger的分类算法来说，处理流程都是首先对数据标注slot，使用条件随机场模型,然后对标注之后的数据进行分类，使用支持向量机模型。因此在接下来的章节中，我们将依次介绍条件随机场模型以及支持向量机模型。
+
 \subsection{条件随机场模型}
 
 条件随机场(CRF)由Lafferty等人于2001年提出，结合了最大熵模型和隐马尔可夫模型的特点，是一种无向图模型，近年来在分词、词性标注和命名实体识别等序列标注任务中取得了很好的效果。条件随机场是一个典型的判别式模型，其联合概率可以写成若干势函数联乘的形式，其中最常用的是线性链条件随机场。若让x=(x1，x2，…xn)表示被观察的输入数据序列，y=(y1，y2，…yn)表示一个状态序列，在给定一个输入序列的情况下，线性链的CRF模型定义状态序列的联合条件概率为
@@ -451,6 +460,7 @@ Z(x)={} (2-15)
 接下来我们将首先介绍结合了generic slot model的方法，然后介绍in-domain slot model，最后比较两种不同方法优劣。
 \subsection{支持向量机模型}
 
+    在SVM中引入核函数，具体说就是可以将非线性可分的数据扩展到更高维空间使得可以线性可分，这大大的扩展了SVM的能力，使得SVM应用更加广泛。然而对于数据规模大，特征数量多并且比较稀疏的语料来说，引入核函数固然可以取得不错的结果，但是却要付出很大的时间代价。有研究表名，在处理这种数据时，使用线性核的SVM可以取得相似的准确率，同时可以极大的减少训练时间。因此对于我们要解决的基于短文本的domain classification来说，可以使用结合linear kernel的SVM，处理时间非常快并且可以获得不错的准确率。在实验过程中我们选取台湾大学林智仁老师组开发的Liblinear作为我们的实验工具。LibLinear实现高效并且易于使用，可以极大的提高我们的实验效率，在这里我们要感谢Liblinear的开发者。
 我们使用SVM算法作为我们的分类算法，SVM算法在工业界中使用广泛并且效果不错。在实际使用中，我们希望我们model训练时间足够短以及model足够小，可以减少存储空间的要求。由于我们的语料集非常大，特征数量多并且稀疏，所以我们考虑使用线性核的SVM，这样可以减少训练时间，同时为了减少生成的model的size。我们使用了L1 正则 L2 Loss的linear kernel SVM。
 我们的baseline使用的特征是提取query的ngram来得到，具体来说我们使用的是unigram，bigram，trigram组成的特征。
 Ngram是自然语言处理常用的语言模型。
