@@ -484,8 +484,7 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
 
     所谓基于generic slot tagger的分类算法，首先对于所有的domain，使用条件随机场模型生成一个slot tagger，然后利用这个唯一的slot tagger对于每一个未知的query标注slot实体。接着使用支持向量机(SVM)算法，在已经标注了slot的语料集上训练分类器得到分类模型，最后使用得到的分类模型对于未知的query进行分类。
     
-    本章节组织如下，首先将介绍基于generic slot tagger的分类算法的处理流程。
-然后是算法性能分析，接下来是实验设计及结果。
+    本章节组织如下，首先将介绍基于generic slot tagger的分类算法的处理流程,然后是算法性能分析，接下来是实验设计及结果。
 
 \subsection{处理流程}
 
@@ -501,6 +500,7 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
 \subsection{算法分析}
 
     从微软给定的语料集来看，Cortana有9个domain，每个domain有大约10种domain相关的slot。所谓domain相关，即是每个domain标注的slot种类不同，举例说明如下，对于alarm domain，slot种类为<alarm\_date>，<set\_alarm>，......，<start\_time>等等。对于weather domain，slot种类为<date\_range>，<weather\_condition>，......，<suitable\_for>。其它domain类似，9个domain slot种类总共是86个。在研究背景这一章节中的实验表明在使用了人工标注slot的微软数据集的分类任务上可以得到的ground truth的准确率为96.8\%。在线上实际运行时，不仅需要考虑分类算法的准确率而且要考虑分类算法的预测时间。接下来将会统计没有使用slot的分类算法的处理时间以及基于generic slot tagger的分类算法的处理时间。
+
 \begin{enumerate}
  \item 假设没有使用slot的分类算法的处理时间为t1，它的处理逻辑是直接使用SVM算法对标注过的未知query进行分类，假设使用时间是tsvm，那么t1 = tsvm。
  \item 假设基于generic slot tagger的分类算法的处理时间为t2，它的处理逻辑是首先使用generic slot tagger对未知的query标注slot，假设使用时间是tcrf，然后使用SVM算法对标注过slot的未知query进行分类，假设使用时间是tsvm。总的运行时间定义为t2 = tcrf + tsvm。
@@ -614,48 +614,63 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
 
 \section{基于in-domain slot tagger的分类模型}
 
-    在上一章介绍过，在微软给定的语料集中，总共有9个domain，每个domain大约有10中slot。每个domain标注的slot种类跟其它domain之间几乎没有重合的，也即可以认为slot种类是domain相关的。
-    所谓in-domain slot tagger指的是使用每一个domain的语料集，为每一个domain训练CRF模型。基于in-domain slot tagger的domain classification处理流程如下，
-Raw query -> feature extraction --- unigram, bigram, trigram ---> 9 in-domain slot model --- + slot by alarm slot tagger -> alarm binary classifier
- + slot by reminder slot tagger -> reminder binary classifier
- + slot by calender slot tagger -> calender binary classifier
- + slot by places slot tagger -> places binary classifier
-......
-    因为每个domain中slot种类数量不多，每个domain可以容易的获取F值很高的CRF model。对于每个domain的CRF model，由于slot种类数量少，CRF model的解码时间在可以接受的范围内。
-    基于in-domain slot tagger的domain classification模型算法如下，
-    首先使用in-domain slot tagger对anti-domain的query标注slot，这里的anti-domain指的是除了此domain以外的其余全部domain，这样做的好处就是增加负例
-    然后使用in-domain语料集作为正例，anti-domain语料集作为负例，经过特征提取之后（后面介绍），使用SVM模型训练生成一个binary classifier。微软给定的语料集中9个domain，依此类推，可以获得9个binary classifier。
-    最后在线上运行时，对于每一个未知的query，首先由每一个in-domain的slot tagger对未知的query标注slot，然后由in-domain的binary classifier对此query进行预测打分，在使用SVM算法进行预测时候不仅可以给出类别，同时可以给出一个具体分数。对于每一个未知的query，由于有9个binary classifier，所以可以得到9个分数，我们选取对此query打分最高的domain作为此query的domain。经过实验验证，基于in-domain slot tagger的domain classification模型比baseline算法提高1.9\%。
+    在上一章介绍过，在微软给定的语料集中，总共有9个domain，每个domain大约有10种slot。每个domain的slot种类跟其它domain之间几乎没有重合的，也即slot是domain相关的。
 
-\section{实验设计以及结果}
+    所谓基于in-domain slot tagger的分类算法，首先对于每一个domain，使用条件随机场模型生成一个slot tagger，然后对于每一个未知的query，分别使用9个in-domain slot tagger之一对未知的query标注slot实体。接着使用支持向量机(SVM)算法，在已经标注了slot的语料集上训练分类器得到分类模型，最后使用得到的分类模型对于未知query进行分类。
     
-    实验流程，首先基于微软给定的语料训练CRF model，然后在经过CRF model标注过的语料集中训练SVM model，然后使用SVM model在给定的测试集上测试。接下来将分别介绍CRF模型训练以及SVM模型训练
-\subsection{CRF模型训练}
+    本章节组织如下，首先将介绍基于in-domain slot tagger的分类算法的处理流程,然后是算法性能分析，接下来是实验设计及结果。
 
-    对于每个domain CRF model的训练过程是首先随机选取3000个sentences作为我们的训练数据用于训练我们的model，1800句作为我们的测试数据。最终我们每个domain的CRF model的F值》=90\%。
+\subsection{处理流程}
 
-\subsection{SVM模型训练}
+    基于in-domain slot tagger的分类算法模型处理流程如下图所示，
+    \begin{figure}[htbp]
+      \centering
+      \includegraphics[width=0.5\textwidth]{}
+      \caption{}\label{fig:test1}
+    \end{figure}
     
-实验设计流程如下，
+    这种模型跟基于generic slot tagger的模型具有相同的好处是对于分类任务来说可以灵活的加入更丰富的特征，结构化的信息可以容易的传递给基础的二分类器。
 
-1 对于给定的训练集以及测试集进行数据预处理，包括1 使用分词工具分词，这里的分词工具是微软内部提供的，2 去除停用词。
-2 提取特征，特征集合是在训练集上提取。对于测试集来讲，所有不在特征集合的特征都被舍弃掉，在微软给定的语料集上得到的特征数量维875w
-3 对于每一条query的特征进行归一化，归一化的好处是可以防止某一维或某几维对数据影响过大，其次是可以使程序可以运行更快。然后将特征处理成SVM使用的格式
-5 在处理好的训练集中使用LIBLINEAR训练SVM模型，由于特征数量大，所以我们选取了线性核，在测试集统计训练得到的模型的accuracy。为了防止随机性对于实验结果的影响，我们重复实验50次，取准确度的平均值作为最终的准确率。
-7 我们的baseline实验即是仅仅使用了query本身的ngram特征，得到的accuracy是86.5。使用了slot特征以后，我们的实验结果在86.5+1.9。使用slot特征之后可以提升domain classification的accuracy，同时由于每个domain的slot种类较少，因此CRF模型解码时间比较短，总运行时间满足线上运行的要求。
+\subsection{算法介绍分析}
+    
+    在上面的介绍中，我们了解到Cortana有9个domain。在接下来的算法描述中，涉及到in-domain以及anti-domain概念，in-domain指的是9个domain中的任意一个domain，anti-domain指的是除了in-domain之外的其余所有domain。举例说明，假设alarm是in-domain，那么anti-domain指的是reminder，calender，palces，weather，web，date，news，note。那么in-domain slot tagger指的使用任意一个domain语料集训练出来的条件随机场模型。接下来介绍基于in-domain slot tagger的分类算法，分为训练过程以及预测过程具体如下，
 
-    我们使用SVM模型来做domain classification任务。一个典型的分类任务流程如下，使用训练语料集得到SVM的参数，使用测试集去测试SVM的分类能力。这里我们使用微软给定的语料集来实验。其中400w query作为训练数据，1w8 query作为测试数据。
-   我们使用LIBLINEAR来训练SVM模型。LIBLINEAR是台湾大学林智仁组开发的一种线性分类器，可以用来处理具有数以百万计实例和特征的数据。LIBLINEAR支持L2正则L2损失的线性SVM分类器，L2正则L1损失的线性SVM分类器，L1正则L2损失的线性SVM分类器等等。LIBLINEAR跟LIBSVM具有很多相似地方，比如跟LIBSVM处理数据格式一致，使用方法类似。LIBLINEAR支持使用one-vs-rest，Crammer\&Singer策略SVM。同时LIBLINEAR接口丰富，支持MATLAB/Octave，Java，Python以及Ruby等等。LIBLINEAR使用分为训练过程以及预测过程。
-    其中训练过程的使用方式是，Usage: train [options] training\_set\_file [model\_file]
-   这里的train是LIBLINEAR提供的训练工具，training\_set指的是训练语料集，model\_file指的是训练之后得到的模型文件。
-    其中预测过程的使用方式是，Usage: predict [options] test\_file model\_file output\_file
-   这里的predict是LIBLINEAR提供的预测工具，test\_file指的是测试语料集，model\_file是在训练过程中产生的模型，用于在测试语料集上预测，output\_file是trai测试语料test\_file上的预测输出。
+   基于in-domain slot tagger的分类算法的训练过程，
+   \begin{enumerate}
+     \item 使用in-domain slot tagger对anti-domain的query标注slot
+       \begin{enumerate}
+         \item in-domain语料集作为正例
+         \item 生成的anti-domain语料集作为负例
+       \end{enumerate}
+     \item 对于in-domain使用SVM模型训练生成一个二分类器
+     \item 基于Cortana的9个domain，训练出9个二分类器
+   \end{enumerate}
+  
+   基于in-domain slot tagger的分类算法的测试过程，
+   \begin{enumerate}
+     \item 使用每一个in-domain slot tagger对未知的query标注slot
+     \item 使用每一个in-domain的二分类器对标注slot的query预测打分
+     \item 比较所有的打分，将query的类设置为分数最高的in-domain
+   \end{enumerate}
+    
+    与基于generic slot tagger的分类算法一样，需要考虑线上运行时间，接下来将会统计没有使用slot的分类算法的处理时间以及基于in-domain slot tagger的分类算法的处理时间，具体如下：
+\begin{enumerate}
+ \item 假设没有使用slot的分类算法的处理时间为t1，它的处理逻辑是直接使用SVM算法对标注过的未知query进行分类，假设使用时间是tsvm，那么t1 = tsvm。
+ \item 假设基于in-domain slot tagger的分类算法的处理时间为t2，它的处理逻辑是首先使用每一个in-domain的slot tagger对未知的query标注slot，对于9个domain来讲这个过程是可以并行执行的，假设使用时间是tcrf=max(...)，然后使用SVM算法对标注过slot的未知query进行分类，假设使用时间是tsvm。总的运行时间定义为t2 = tcrf + tsvm。
+\end{enumerate}
 
-    如何提取特征，在此我们将slot看成是跟词一样的item，在提取特征时候，提取了三种不同类型的特征，然后组成最终的特征空间。我们使用的方法如下，我们首先提取query本身的ngram特征，其次提取slot集合的ngram特征，最后我们提取query跟slot一起的ngram特征。举例如下，对于如下标注好slot的query
-“闹铃 设 在 <start\_date> 明 </start\_date> <start\_time>  早 2 点 </start\_time>”
-    基于query本身的特征是，query是“闹铃 设 在 明 早 2 点”，对此query提取unigram，bigram，trigram特征，unigram特征是[闹铃，设，在，明，早，2，点],bigram特征是[闹铃设，设在，在明，明早，早2，2点]，trigram特征是[闹铃设在，设在明，在明早，明早2，早2点]。
-    基于slot本身的特征是，slot集合是"<start\_date> </start\_date> <start\_time> </start\_time>",对此slot集合提取unigram，bigram，trigram特征,unigram特征是[<start\_date>, </start\_date>, <start\_time>, </start\_time>],bigram特征是[<start\_date> </start\_date>, </start\_date> <start\_time>, <start\_time> </start\_time>]。trigram特征是[<start\_date> </start\_date> <start\_time>, </start\_date> <start\_time> </start\_time>]。
-    基于query以及slot的特征，标注了slot的query是“闹铃 设 在 <start\_date> 明 </start\_date> <start\_time> 早 2 点 </start\_time>”,对于词标注过slot的query提取unigram，bigram，trigram特征。unigram特征是[闹铃，设，在，<start\_date>，明，</start\_date>，<start\_time>，早，2，点，</start\_time>],bigram特征是[闹铃设，设在，在<start\_date>，<start\_date>明，明</start\_date>，<start\_date> <start\_time>,],trigram特征是[]。
+    因为每个domain中slot种类数量不多，每个domain不仅可以容易的获取F值很高的条件随机场模型。同时对于每个domain的条件随机场模型，由于slot种类数量少，因此条件随机场模型的解码时间在可以接受的范围内。
+    
+    接下来我们将会做一组实验，对比baseline分类模型与基于in-domain slot tagger的分类模型准确率。
+
+\subsection{实验设计以及结果}
+    
+    基于in-domain slot tagger的分类算法与基于generic slot tagger的分类算法数据处理，特征提取等方式是一致的。不同在于，每个domain的条件随机厂模型的生成以及对于未知query的标注过程。接下来我们将简述不同之处。
+   
+    如何训练in-domain slot tagger
+    \begin{enumerate}
+      \item 对于每个domain首先随机选取3000个sentences作为训练数据，1000个句子作为测试数据。
+      \item 每个domain的CRF model的F值》=90\%。
 
 \chapter{incremental learning using SVM}\label{chapter_smallworld}
 
