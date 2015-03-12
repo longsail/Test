@@ -495,14 +495,25 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
     
     这种流程处理的好处是对于domain classification任务来说可以灵活的加入更丰富的特征，结构化的信息可以容易的传递给binary classifier。
 
-    从微软给定的语料集来看，Cortana有9个domain，每个domain有大约10种domain相关的slot。所谓domain相关，举例说明如下，对于alarm domain，slot种类为<alarm\_date>，<set\_alarm>，......，<start\_time>等等。对于weather domain，slot种类为<date\_range>，<weather\_condition>，......，<suitable\_for>。其它domain类似，9个domain slot种类总共是86个。在研究背景这一章节中的实验表明在人工标注slot的微软数据集的domain classification任务上可以得到的ground truth 的 accuracy为96.8\%。
+    从微软给定的语料集来看，Cortana有9个domain，每个domain有大约10种domain相关的slot。所谓domain相关，即是每个domain标注的slot种类不同，举例说明如下，对于alarm domain，slot种类为<alarm\_date>，<set\_alarm>，......，<start\_time>等等。对于weather domain，slot种类为<date\_range>，<weather\_condition>，......，<suitable\_for>。其它domain类似，9个domain slot种类总共是86个。在研究背景这一章节中的实验表明在使用了人工标注slot的微软数据集的domain classification任务上可以得到的ground truth的准确率为96.8\%。在线上实际运行时，我们不仅需要考虑分类算法的准确率而且要考虑分类算法的预测时间。接下来将会统计没有使用slot的分类算法的处理时间以及基于generic slot tagger的分类算法的处理时间。
+    假设没有使用slot的分类算法的处理时间为t1，它的处理逻辑是直接使用SVM算法对标注过的未知query进行分类，假设使用时间是tsvm，那么t1 = tsvm。
 
-    在线上实际运行时，我们不仅需要考虑domain classificationd的准确率而且要考虑domain classification的预测时间。基于generic slot tagger的分类算法的处理逻辑是首先使用generic slot tagger对未知的query标注slot，使用时间是t1，然后使用SVM算法对标注过slot的未知query进行分类，使用时间是t2。总的运行时间定义为t = t1 + t2。使用CRF模型对未知query标注slot时，解码的时间复杂度是。。。，这里的n指的是slot数量。使用SVM模型对未知query预测分类是，分类的时间复杂度是。。。上面提到slot数量是86，基于此使用CRF模型对未知query标注slot时间远远大于使用SVM模型对未知query预测的时间，相比于之前没有使用generic slot tagger时候，时间增长太高。即使在上面的实验中使用人工标注slot的微软数据集的domain classification可以得到的orcale accucary为96\%,从时间上考虑，对于线上应用也是不能接受的。
-    为了满足线上时间需求，我们想到的是减少slot种类，从而可以减少generic slot tagger的解码时间。我们的方法是从86种slot中选取少量具有代表性的slot。经过讨论，我们选取了其中19种slot。接下来我们需要验证这19种slot是否可以提高domain classification准确率。基于此，我们设计了下面的实验，首先对于语料集做了相应处理，即是对于所有标注slot的query，只保留19种slot，其余的全部移除。然后在处理后的语料集中进行domain classification实验，可以得到的oracle accuracy是91\%，相对于baseline来讲这也是一个非常显著的提升。
+    假设基于generic slot tagger的分类算法的处理时间为t2，它的处理逻辑是首先使用generic slot tagger对未知的query标注slot，假设使用时间是tcrf，然后使用SVM算法对标注过slot的未知query进行分类，假设使用时间是tsvm。总的运行时间定义为t2 = tcrf + tsvm。
     
-    接下来需要做的是基于微软语料集训练CRF model在实际中使用。为了了解CRF模型的F值也即slot标注效果对于domain classification的影响。基于此我们做了一个在微软给定的具有人工标注slot的数据集上模拟slot标注的实验，随机的对于每一条query的slot进行增加，删除，改变三个行为，以此来计算CRF模型的F值。具体的来说就是对于每一个query的每个item，当此item没有slot时，以一定的概率给定一个slot，当此item有slot时，以一定的概率选择删除或者使用其它slot替换此slot。然后在处理过的语料集上进行domain classification实验，观察不同的F值与Accuracy的关系，下图是我们的模拟实验。。。。。。
+    相比于没有使用slot的分类算法，基于generic slot tagger的分类算法时间上将会多出使用CRF模型对未知query标注slot的时间tcrf。如果tcrf小于tsvm，那么我们是可以接受的，然而使用CRF模型对未知query标注slot时，解码的时间复杂度是。。。，这里的n指的是slot种类数量，上面提到过Cortana总共有86种slot。使用SVM模型对未知query预测分类是，预测的时间复杂度是。。。。基于此使用CRF模型对未知query标注slot时间大于使用SVM模型对未知query预测的时间，相比于之前没有使用generic slot tagger时候，时间增长太高。即使在上面的实验中使用人工标注slot的微软数据集的分类算法可以得到的ground truth的准确率为96.8\%,从时间上考虑，对于线上应用也是不能接受的。
+
+    为了满足线上时间需求，我们想到的是减少slot种类，从而可以减少generic slot tagger的解码时间。我们的方法是从86种slot中选取少量具有代表性的slot。经过讨论，选取了其中19种slot。接下来需要验证这19种slot是否可以提高domain classification准确率。基于此，我们设计了下面的实验，首先对于语料集做了相应处理，即是对于所有标注slot的query，只保留19种slot，其余的全部移除。然后在处理后的语料集中进行分类算法的实验，可以得到的ground truth准确率是91\%，相对于baseline的准确率86.3\%来讲这也是一个非常显著的提升。
     
-    从图中曲线可以观察得知F值在60\%及以上，domain classification accuracy有提高。这意味着如果我们可以训练一个F值在60\%及以上的CRF model，domain classification准确率可以得到提高。实际上当使用F值为60\%至80\% CRF model时，domain classification的准确率并没有相应提高，对于我来说这是一个有待解决的问题。
+    接下来关注基于微软语料集训练的CRF model在实际中使用的效果。为了了解CRF模型的F值也即slot标注效果对于domain classification的影响。我们做了一个在微软语料集上模拟slot标注的实验，模拟序列化标注的行为，我们随机的对于每一条query的slot进行增加，删除，改变三个行为。具体的来说就是对于每一个query的每个词，当此词没有slot时，以一定的概率给定一个slot，当此词有slot时，以一定的概率选择删除slot或者使用其它slot替换此slot，经过如此处理之后计算模拟标注slot的F值。基于模拟实验，可以生成虚拟的F值范围为40\%-60\%之间标注模型。最后在处理过的语料集上进行分类算法实验，观察模拟实验得到的标注模型的不同的F值与准确率的关系，下图是我们的模拟实验。
+    \begin{figure}[htbp]
+      \centering
+      \includegraphics[width=0.5\textwidth]{}
+      \caption{}\label{fig:test1}
+    \end{figure}
+
+    
+    从图中曲线可以观察得知F值在60\%及以上，分类算法的准确率有提高。这意味着如果可以训练得到一个F值在60\%及以上的CRF模型，分类模型的准确率可以得到提高。接下来是我们的实验设计。
+    实际上当使用F值为60\%至80\% CRF model时，domain classification的准确率并没有相应提高，对于我来说这是一个有待解决的问题。
 
 \section{基于in-domain slot tagger的分类模型}
 
