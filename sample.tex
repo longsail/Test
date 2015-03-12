@@ -520,9 +520,8 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
     
     从图中曲线可以观察得知F值在60\%及以上，分类算法的准确率有提高。这意味着如果可以训练得到一个F值在60\%及以上的CRF模型，分类模型的准确率可以得到提高。接下来是我们的实验设计。
 
-\subsection{实验设计及结果}
+\subsection{实验设计}
 
- 我们的baseline实验即是仅仅使用了query本身的ngram特征，得到的accuracy是86.5。使用了slot特征以后，我们的实验结果在86.5+1.9。使用slot特征之后可以提升domain classification的accuracy，同时由于每个domain的slot种类较少，因此CRF模型解码时间比较短，总运行时间满足线上运行的要求。
     我们使用SVM模型来做domain classification任务。一个典型的分类任务流程如下，使用训练语料集得到SVM的参数，使用测试集去测试SVM的分类能力。这里我们使用微软给定的语料集来实验。其中有400w query作为训练数据，1w8 query作为测试数据。我们使用LIBLINEAR来训练SVM模型，LIBLINEAR是台湾大学林智仁组开发的一种线性分类器，可以用来处理具有数以百万计实例和特征的数据。LIBLINEAR支持L2正则L2损失的线性SVM分类器，L2正则L1损失的线性SVM分类器，L1正则L2损失的线性SVM分类器等等。LIBLINEAR跟LIBSVM具有很多相似地方，比如跟LIBSVM处理数据格式一致，使用方法类似。对于多分类算法，LIBLINEAR支持使用one-vs-rest，Crammer\&Singer等等策略。同时LIBLINEAR接口丰富，支持MATLAB/Octave，Java，Python以及Ruby等等。LIBLINEAR使用分为训练过程以及预测过程如下，
 \begin{enumerate}
     \item 训练过程的使用方式Usage: train [options] training\_set\_file [model\_file]
@@ -539,11 +538,7 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
 	\item output\_file是trai测试语料test\_file上的预测输出
       \end{enumrate}
 \end{enumerate}
-
-    如何提取特征，在此我们将slot看成是跟词一样的item，在提取特征时候，提取了三种不同类型的特征，然后组成最终的特征空间。我们使用的方法如下，我们首先提取query本身的ngram特征，其次提取slot集合的ngram特征，最后我们提取query跟slot一起的ngram特征。举例如下，对于如下标注好slot的query
-“闹铃 设 在 <start\_date> 明 </start\_date> <start\_time>  早 2 点 </start\_time>”
-    基于query本身的特征是，query是“闹铃 设 在 明 早 2 点”，对此query提取unigram，bigram，trigram特征，unigram特征是[闹铃，设，在，明，早，2，点],bigram特征是[闹铃设，设在，在明，明早，早2，2点]，trigram特征是[闹铃设在，设在明，在明早，明早2，早2点]。
-    基于slot本身的特征是，slot集合是"<start\_date> </start\_date> <start\_time> </start\_time>",对此slot集合提取unigram，bigram，trigram特征,unigram特征是[<start\_date>, </start\_date>, <start\_time>, </start\_time>],bigram特征是[<start\_date> </start\_date>, </start\_date> <start\_time>, <start\_time> </start\_time>]。trigram特征是[<start\_date> </start\_date> <start\_time>, </start\_date> <start\_time> </start\_time>]。
+    
      为了防止随机性对于实验结果的影响，我们重复实验50次，取准确度的平均值作为最终的准确率。实验设计流程如下，
 \begin{enumerate}
   \item 对于给定语料进行数据预处理，处理过程如下，
@@ -569,8 +564,53 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
       \item 在测试集上测试SVM模型，记录模型的准确率
     \end{enumerate}
 \end{enumerate}
+    
+    基于以上实验流程，我们分别实现了baseline模型以及基于generic slot tagger的模型。这两种模型的区别仅仅是使用的特征不同，对于baseline模型来讲，我们仅仅使用是文本特征，对于基于generic slot tagger的模型来讲，我们将query中的slot看成跟词一样的item，在特征提取过程中，提取了三种类型的特征。在特征提取的策略上，对于两种模型都是提取了ngram的特征，不同的地方是基于generic slot tagger的模型利用了slot实体。我们以query"闹铃 设 在 <start\_date> 明 </start\_date> <start\_time> 早 2 点 </start\_time>"为例，讲述两种模型的特征提取方法。
+    对于baseline模型的特征提取，我们提取了文本的unigram，bigram以及trigram特征，具体如下，
+    \begin{enumerate}
+      \item unigram特征[“闹铃”，“设”，“在”，“明”，“早”，“2”，“点”]
+      \item bigram特征[“闹铃 设”，“设 在”，“在 明”，“明 早”，“早 2”，“2 点”]
+      \item trigram特征[“闹铃 设 在”，“设 在 明”，“在 明 早”，“明 早 2”，“早 2 点”]
+    \end{enumerate}
 
-实际上当使用F值为60\%至80\% CRF model时，domain classification的准确率并没有相应提高，对于我来说这是一个有待解决的问题。
+   
+    对于基于generic slot tagger模型的特征提取，首先提取query本身的ngram特征，其次提取slot集合的ngram特征，最后提取query跟slot一起的ngram特征。具体如下表示。
+\begin{enumerate}
+  \item 基于query本身的特征
+    \begin{enumerate}
+      \item unigram特征是[“闹铃”，“设”，“在”，“明”，“早”，“2”，“点”]
+      \item bigram特征是[“闹铃 设”，“设 在”，“在 明”，“明 早”，“早 2”，“2点”]
+      \item trigram特征是[“闹铃 设 在”，“设 在 明”，“在 明 早”，“明 早 2”，“早 2 点”]
+    \end{enumerate}
+  \item 基于slot本身的特征
+    
+   基于上述query提取的slot集合是"<start\_date> </start\_date> <start\_time> </start\_time>",对此slot集合提取unigram，bigram，trigram特征
+    \begin{enumerate}
+      \item unigram特征是["<start\_date>", "</start\_date>","<start\_time>", "</start\_time>"]
+      \item bigram特征是["<start\_date> </start\_date>","</start\_date> <start\_time>", "<start\_time> </start\_time>"]
+      \item trigram特征是["<start\_date> </start\_date> <start\_time>", "</start\_date> <start\_time> </start\_time>"]
+    \end{enumerate} 
+  \item 基于query以及slot的特征
+   
+   在上述的query中，我们将slot跟单词同样对待，对此query提取unigram，bigram，trigram特征。
+   \begin{enumerate}
+     \item unigram特征是["闹铃"，"设"，"在"，"<start\_date>"，"明"，"</start\_date>"，"<start\_time>"，"早"，"2"，"点"，"</start\_time>"]
+     \item bigram特征是["闹铃 设"，"设 在"，"在 <start\_date>"，"<start\_date> 明"，"明 </start\_date>"，"<start\_date> <start\_time>",],
+     \item trigram特征是[]
+
+\section{实验结果分析}
+
+    对于baseline模型，我们取得了86.3\%的准确率。
+    
+    对于基于generic slot tagger的分类模型，使用模拟的F值为60\%-80\%的模型进行标注时候，我们得到的标注模型的F值跟分类算法的准确率之间的关系如下图所示，
+
+    \begin{figure}[htbp]
+      \centering
+      \includegraphics[width=0.5\textwidth]{}
+      \caption{}\label{fig:test1}
+    \end{figure}
+    
+    然而实际上在使用F值为60\%至80\% CRF模型对query进行标注，然后在标注之后上的语料进行分类算法的实验时得到的分类的准确率是86.1\%,并没有相应提高。这是一个需要未来解决的问题。由于基于generic slot tagger的分类模型没有取得预期的提高，接下来我们使用了基于in-domain slot tagger的分类模型，并且取得了准确率上的提高,我们将在下一章中进行介绍。
 
 \section{基于in-domain slot tagger的分类模型}
 
