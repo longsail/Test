@@ -317,24 +317,14 @@
     TextRank首先是一种无监督的方法，。。。。
 
 
-\section{基于LDA以及PAGERANK的关键词短语提取算法}
+\section{基于LDA以及PageRank的关键词短语提取算法}
 
-    首先基于微博构建word graph，我们将每条微博的单词视为节点，单词之间的联系视为一条边，这样可以基于微博构建出图。
-
-    其次基于LDA模型，假设微博语料上有n个topic，使用LDA得到每个单词在每一个topic下的概率值，因此可以得到n个topic下面每个单词的权值。
+    基于LDA以及Pageank的关键词短语提取算法基本流程是，首先基于微博构建词图(word graph)WG，后面会介绍词图的构建方法。其次基于LDA模型，给定n个topic，在词图WG上得到n个topic的概率分布以及每个单词在每一个topic下的概率值。接着基于词图WG以及每一个topic下单词的概率值，在词图(word graph)上运行改进的PageRank算法。由于改进的PageRank算法可以利用n个不同的topic下的单词分布，经过迭代收敛之后可以获取n个具有已经排好序的单词的词图。接着使用基于LDA以及PageRank的关键词短语提取算法提取关键词短语。
     
-    接着基于word graph以及每个单词在每一个topic下的权值，可以得到n个word graph。在n个word graph上运行PAGERANK算法，最终在每一个word graph中都可以得到稳定的图，同时可以得到此图中已经排好序词的权重。我们基于一个假设就是关键词短语一般是名词短语出现，因此可以根据正则表达式从微博中匹配出名词短语，然后根据关键词短语中每一个词在在每一个topic下的权值wi,根据第i个topic在文档中的分布概率ti，统计关键词短语在所有topic下出现的权重。。。。。。最终可以得到所有关键词短语的topic权值，我们选取top n关键词短语输出。最后将的关键词短语使用可视化工具D3.js可视化出来。
-    
-    算法流程如下:
-    构建word graph-> 使用LDA 获取每个topic下面的单词的概率-> 对于每一个word graph运行改进的page rank算法-> 关键词短语排序 -> 关键词短语可视化输出
-    
-    本章的组织如下，首先介绍如何构建word graph，然后简单介绍关键词短语提取中使用的LDA模型以及PAGERANK模型
+    本章的组织如下，首先介绍算法中涉及到的LDA以及Pageank模型，然后介绍关键词短语提取算法。
 
-\subsection{构建word graph}
-
-    首先介绍窗口概念，窗口是以当前词作为源点，以接下里的若干个词作为终点，以"I Love Nanjing University very much"中的单词I为例。假设窗口为1，那么可以得到边是[I->love]，窗口为2，可以得到的边是[I->Nanjing，I->university]，窗口为3，可以得到的边是[I->love，I->Nanjing，I-university]。在构建基于微博的word graph时候，需要将一定数量的微博放在同一个文本里，以此文本为单位构建word graph。综上，可以得知word graph的节点是词，word graph的边是词之间的联系，边上的权重是边出现的次数。
  
-\subsection{LDA模型}
+\subsection{LDA模型介绍}
 
 LDA是一种主题模型，一种无监督学习算法，是由Blei，Andrew Ng，Michael提出来的，它可以将文档的主题按照概率分布的形式给出。在LDA中，一篇文档是这样产生的，首先我们根据狄利克雷分布得到主题分布，从主题的多项式分布中得到文档第j个词的主题zj，然后我们从狄利克雷分布中取样生成主题zj的词语分布，最终我们根据这个词语分布得到某个单词。
 LDA（Latent Dirichlet Allocation）是一种文档主题生成模型，也称为一个三层贝叶斯概率模型，包含词、主题和文档三层结构。所谓生成模型，就是说，我们认为一篇文章的每个词都是通过“以一定概率选择了某个主题，并从这个主题中以一定概率选择某个词语”这样一个过程得到。文档到主题服从多项式分布，主题到词服从多项式分布。[1] 
@@ -352,7 +342,7 @@ p(w|d)=p(w|t)*p(t|d)
 
 我们使用LDA期望得到文档的主题分布以及某个主题下面的单词分布。
 
-\subsection{PAGERANK模型}
+\subsection{PAGERANK模型介绍}
 
 Pagerank算法是google用来进行对网页进行排序的算法，pagerank的做法首先将网页建模成图，图中的每个节点都有入度以及出度，所以我们的每一个点的权重是由指向这些点来决定的，然后再加上一项是随机因子，保证每个节点有相同的概率挑往其他节点。经过迭代之后我们每一个节点可以得到稳定的权值。Pagerank每个节点的入度是由那些指向节点的节点数量，每个节点的出度指的是当前节点指向的节点的数量。
 
@@ -367,41 +357,65 @@ Pagerank每个节点跳往其他节点是概率是相同的，这里我们做出
 
 \subsection{关键词提取算法}
 
-根据上面的算法，我们最终可以得到每个topic下面每个词语基于pagerank的权值，我们有一个经验上的认识就是关键词短语通常会是名词短语。所以我们会首先根据正则表达式抽取出名词短语，然后计算名词短语的权重，最终进行排序。
 我们的计算公式是
 。。。。。。
 
 \section{关键词短语提取系统设计}
 
-    关键键词短语提取系统总共包括数据获取模块，关键词短语提取模块，前端展示模块。
-    数据获取模块，主要包括微博登陆模块，爬取模块，存储模块，主要使用python语言结合mongodb数据库进行开发。
-    关键词短语提取模块，主要包括数据预处理模块，topic mode模块，pagerank模块，主要使用python语言结合gensim开发，
-    前端展示模块，需要将关键词短语可视化的展示出来，使用了python语言的tornado库结合bootstrap库以及D3.js库开发。
+    关键键词短语提取系统总共包括数据获取模块，关键词短语提取模块，前端展示模块。下面将简单的介绍
     
+    \begin{enumerate}
+      \item 数据获取模块
+	\begin{enumerate}
+	   \item 包括微博登陆模块，爬取模块，存储模块
+	   \item 使用python语言结合mongodb数据库进行开发
+        \end{enumerate}
+     \item 关键词短语提取模块
+       \begin{enumerate}
+	 \item 包括数据预处理模块，topic mode模块，pagerank模块
+         \item 使用python语言结合gensim开发
+       \end{enumerate}
+     \item  前端展示模块
+       \begin{enumerate} 
+         \item 将关键词短语可视化的展示出来
+         \item 使用了tornado库结合bootstrap库以及D3.js库开发
+       \end{enumerate}
+    \end{enumerate}
+
+    本章接下来将依次简略介绍这3个模块。
 
 \subsection{数据获取模块}
    
     数据获取模块，主要包括微博登陆模块，爬取模块，存储模块，主要使用python语言结合MongoDB数据库进行开发。
+    
     MongoDB是一种文件导向数据库管理系统，由C++撰写而成，以此来解决应用程序开发社区中的大量现实问题。2007年10月，MongoDB由10gen团队所发展。2009年2月首度推出。MongoDB是一种非结构化数据库，也称为文档型数据库，MongoDB支持key-value的存储模式，这里key可以是我们的搜索关键字，value是基于关键词搜索出来的weibo。MongDB是一种典型的NOSQL数据库，什么是NOSQL数据库以及NOSQL数据库与传统的SQL数据库区别是什么？
-    NoSQL，指的是非关系型的数据库。NoSQL有时也称作Not Only SQL的缩写，是对不同于传统的关系型数据库的数据库管理系统的统称。NoSQL用于超大规模数据的存储。（例如谷歌或Facebook每天为他们的用户收集万亿比特的数据）。这些类型的数据存储不需要固定的模式，无需多余操作就可以横向扩展。今天我们可以通过第三方平台（如：Google,Facebook等）可以很容易的访问和抓取数据。用户的个人信息，社交网络，地理位置，用户生成的数据和用户操作日志已经成倍的增加。我们如果要对这些用户数据进行挖掘，那SQL数据库已经不适合这些应用了, NoSQL数据库的发展也却能很好的处理这些大的数据。
-\
-subsection{关键词短语提取模块}
+
+\subsection{关键词短语提取模块}
     
     关键词短语提取模块，主要包括数据预处理模块，topic mode模块，pagerank模块，主要使用python语言结合gensim开发，具体是topic model模块的LDA模型由Gensim提供实现。
+    
     Gemsim是Radim 힀eh킁힂ek开发的python包，里面有丰富的接口。
+
     LDA训练使用方法，LDA train usage: Lda = ldaModel(corpus, num\_topics=100)
     LDA预测使用方法，LDA inference usage 。。。。。。
 
 \subsection{前端展示模块}
     
     前端展示模块需要将关键词短语可视化，这里使用了python的tornado库结合boostrap库以及D3.js开发。
+    
     Tornado是FriendFeed开发并且由Facebook开源的Web服务框架，它是非阻塞形式的服务器，而且速度相当快。
+    
     Bootstrap库由Twitter开发并且开源的前端开发框架，具有简洁，直观，强悍的特点，对于我们开发帮助很大。
+    
     D3.js是由stanford大学开发的开源工具，应用非常广泛，可视化操作简单，现在已经是主流的数据可视化工具。D3.js是一个基于数据的操作文档的JavaScript库，可以让你绑定任何数据到DOM，支持DIV这种图案生成，也支持SVG这种图案的生成，D3帮助使用者屏蔽了浏览器差异，因此可以做到代码简洁[cpoy],选择D3作为我们的可视化工具的原因有1庞大的用户基数，在github上目前上的关注人数已经超过了2w人，是非常受欢迎的项目。2社区是友好开放的，由于D3本身是一个开源的库，因此在社区里分享很活跃。3 资料丰富，D3拥有数以千计的实例，大量的教程，方便使用者轻松容易的做出自己想做的应用。
 
 
 \section{实验设计及分析}
 
+\subsection{构建word graph}
+
+    首先介绍窗口概念，窗口是以当前词作为源点，以接下里的若干个词作为终点，以"I Love Nanjing University very much"中的单词I为例。假设窗口为1，那么可以得到边是[I->love]，窗口为2，可以得到的边是[I->Nanjing，I->university]，窗口为3，可以得到的边是[I->love，I->Nanjing，I-university]。在构建基于微博的word graph时候，需要将一定数量的微博放在同一个文本里，以此文本为单位构建word graph。综上，可以得知word graph的节点是词，word graph的边是词之间的联系，边上的权重是边出现的次数。
+根据上面的算法，我们最终可以得到每个topic下面每个词语基于pagerank的权值，我们有一个经验上的认识就是关键词短语通常会是名词短语。所以我们会首先根据正则表达式抽取出名词短语，然后计算名词短语的权重，最终进行排序。
     下面将依次介绍TFIDF，TextRank以及基于LDA和PageRank方法的关键词短语实验
 
 \subsection{基于LDA以及PageRank的关键词短语提取}
