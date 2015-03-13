@@ -304,9 +304,12 @@
     
     基于TFIDF的关键词短语提取算法流程如下，
     \begin{enumerate}
-      \item
-
-
+      \item 将所有微博合并至一篇文档
+      \item 使用正则表达式提取文档中的名词短语
+      \item 计算名词短语的TFIDF值，进行排序
+      \item 提取top N的名词短语作为关键词短语
+    \end{enumerate}
+      
     TFIDF的优点是实现简单并且效果不错因而在实际中使用非常广泛，缺点就是TFIDF算法中并没有体现出单词的位置信息，因此存在改进的机会。
 
 \subsection{基于TEXTRANK的关键词短语提取方法}
@@ -317,10 +320,14 @@
 \section{基于LDA以及PAGERANK的关键词短语提取算法}
 
     首先基于微博构建word graph，我们将每条微博的单词视为节点，单词之间的联系视为一条边，这样可以基于微博构建出图。
+
     其次基于LDA模型，假设微博语料上有n个topic，使用LDA得到每个单词在每一个topic下的概率值，因此可以得到n个topic下面每个单词的权值。
+    
     接着基于word graph以及每个单词在每一个topic下的权值，可以得到n个word graph。在n个word graph上运行PAGERANK算法，最终在每一个word graph中都可以得到稳定的图，同时可以得到此图中已经排好序词的权重。我们基于一个假设就是关键词短语一般是名词短语出现，因此可以根据正则表达式从微博中匹配出名词短语，然后根据关键词短语中每一个词在在每一个topic下的权值wi,根据第i个topic在文档中的分布概率ti，统计关键词短语在所有topic下出现的权重。。。。。。最终可以得到所有关键词短语的topic权值，我们选取top n关键词短语输出。最后将的关键词短语使用可视化工具D3.js可视化出来。
+    
     算法流程如下:
     构建word graph-> 使用LDA 获取每个topic下面的单词的概率-> 对于每一个word graph运行改进的page rank算法-> 关键词短语排序 -> 关键词短语可视化输出
+    
     本章的组织如下，首先介绍如何构建word graph，然后简单介绍关键词短语提取中使用的LDA模型以及PAGERANK模型
 
 \subsection{构建word graph}
