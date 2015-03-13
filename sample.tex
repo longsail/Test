@@ -386,28 +386,38 @@ Pagerank每个节点跳往其他节点是概率是相同的，这里我们做出
 
 \subsection{数据获取模块}
    
-    数据获取模块，主要包括微博登陆模块，爬取模块，存储模块，主要使用python语言结合MongoDB数据库进行开发。
-    
-    MongoDB是一种文件导向数据库管理系统，由C++撰写而成，以此来解决应用程序开发社区中的大量现实问题。2007年10月，MongoDB由10gen团队所发展。2009年2月首度推出。MongoDB是一种非结构化数据库，也称为文档型数据库，MongoDB支持key-value的存储模式，这里key可以是我们的搜索关键字，value是基于关键词搜索出来的weibo。MongDB是一种典型的NOSQL数据库，什么是NOSQL数据库以及NOSQL数据库与传统的SQL数据库区别是什么？
+    数据获取模块，主要包括微博登陆模块，爬取模块，存储模块，主要使用python语言结合MongoDB数据库进行开发。接下来将简单介绍每个模块功能，
+    \begin{enumerate}
+      \item 微博登录模块负责模拟登录微博，接下来就可以正常的爬取数据。
+      \item 爬取模块负责根据关键字进行微博爬取，将爬取数据到的数据存储到数据库。
+      \item 存储模块负责模拟存储爬取的微博，并且确保存储安全，效率高
+    \end{enumerate}
+
+    由于存储微博类似于存取文档，因此这里选择使用文档数据库MongoDB，MongoDB是一种文件导向数据库管理系统，MongoDB是一种非结构化数据库，也称为文档型数据库，MongoDB支持key-value的存储模式，这里key可以是我们的搜索关键字，value是基于关键词搜索出来的weibo。
 
 \subsection{关键词短语提取模块}
     
-    关键词短语提取模块，主要包括数据预处理模块，topic mode模块，pagerank模块，主要使用python语言结合gensim开发，具体是topic model模块的LDA模型由Gensim提供实现。
+    关键词短语提取模块，主要包括数据预处理模块，关键词短语算法模块，主要使用python语言结合gensim开发。接下来将简单的介绍每个模块的功能，
+    \begin{enumerate}
+      \item 数据预处理模块负责清理数据，包括分词，去除停用词等。
+      \item 关键词短语模块负责使用相关算法计算名词短语权重，并且依据权重排序
+    \end{enumerate}
     
-    Gemsim是Radim 힀eh킁힂ek开发的python包，里面有丰富的接口。
-
-    LDA训练使用方法，LDA train usage: Lda = ldaModel(corpus, num\_topics=100)
-    LDA预测使用方法，LDA inference usage 。。。。。。
+    在关键词短语算法模块中使用了LDA模型，我们利用开源工具包Gensim中的LDA实现，Gemsim是Radim 힀eh킁힂ek开发的python包，里面有丰富的接口。对于Gensim的LDA的使用如下，
+    \begin{enumerate}
+      \item LDA训练使用方法,LDA train usage: Lda = ldaModel(corpus, num\_topics=100)
+      \item LDA预测使用方法，LDA inference usage 。。。。。。
+    \end{enumerate}
 
 \subsection{前端展示模块}
     
-    前端展示模块需要将关键词短语可视化，这里使用了python的tornado库结合boostrap库以及D3.js开发。
+    前端展示模块需要将关键词短语可视化，这里使用了python的tornado库结合boostrap库以及D3.js库开发。前端开发使用的是Tornado以及boostrap库，可视化使用的D3.js库。下面将依次介绍。
     
     Tornado是FriendFeed开发并且由Facebook开源的Web服务框架，它是非阻塞形式的服务器，而且速度相当快。
     
     Bootstrap库由Twitter开发并且开源的前端开发框架，具有简洁，直观，强悍的特点，对于我们开发帮助很大。
     
-    D3.js是由stanford大学开发的开源工具，应用非常广泛，可视化操作简单，现在已经是主流的数据可视化工具。D3.js是一个基于数据的操作文档的JavaScript库，可以让你绑定任何数据到DOM，支持DIV这种图案生成，也支持SVG这种图案的生成，D3帮助使用者屏蔽了浏览器差异，因此可以做到代码简洁[cpoy],选择D3作为我们的可视化工具的原因有1庞大的用户基数，在github上目前上的关注人数已经超过了2w人，是非常受欢迎的项目。2社区是友好开放的，由于D3本身是一个开源的库，因此在社区里分享很活跃。3 资料丰富，D3拥有数以千计的实例，大量的教程，方便使用者轻松容易的做出自己想做的应用。
+    D3.js是由stanford大学开发的开源工具，应用非常广泛，可视化操作简单，是主流的数据可视化工具。D3.js是一个基于数据的操作文档的JavaScript库，可以让你绑定任何数据到DOM，支持DIV这种图案生成，也支持SVG这种图案的生成，D3帮助使用者屏蔽了浏览器差异，因此可以做到代码简洁[cpoy]。
 
 
 \section{实验设计及分析}
