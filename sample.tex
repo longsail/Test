@@ -282,7 +282,7 @@
 \chapter{基于LDA和PageRank的关键词短语提取算法}\label{chapter_smallworld}
 \section{研究背景}
 
-    近些年来随着社交网络的兴起，对于社交网络的研究以及基于社交网络的应用越来越多，在中国新浪微博的用户数量活跃度最高，随着新浪微博的使用越来越来普及，新浪微博每时每刻都在产生大量的数据，如何利用这些数据是一件非常有意义的事情。当然现在基于新浪微博上的上的应用已经非常丰富了，例如政府可以对于社会热点事件进行舆情分析，企业主可以从实时获取自己的产品在微博上的反响，广告主可以根据用户过去的浏览以及关注历史向用户定向推荐广告。然而无论是舆情分析，产品反馈亦或是广告推荐，关键词提取对于这些应用来说都会有很大的帮助。虽然关键词的描述能力已经很强并且已经有了很多成熟的方法，但是毕竟关键词包含的信息量不大，关键词短语带有更多的信息并且描述能力更好。基于此我们希望可以基于某个关键词，首先在新浪微博上爬取一批数量的微博，然后在爬取到的微博上提取出来相应的关键词短语，这些关键词短语可以用于舆情分析，产品反馈，广告推荐，同时这些关键词短语还可以尝试用来做微博上的的分类，推荐以及用于预测微博上的热点事件发生等等应用。
+    近些年来随着社交网络的兴起，对于社交网络的研究以及基于社交网络的应用越来越多，在中国新浪微博的用户数量活跃度最高，随着新浪微博的使用越来越来普及，新浪微博每时每刻都在产生大量的数据，如何利用这些数据是一件非常有意义的事情。当然现在基于新浪微博上的上的应用已经非常丰富了，例如政府可以对于社会热点事件进行舆情分析，企业主可以实时获取自己的产品在微博上的反响，广告主可以根据用户过去的浏览以及关注历史向用户定向推荐广告。然而无论是舆情分析，产品反馈亦或是广告推荐，关键词提取对于这些应用来说都会有很大的帮助。关键词的描述能力已经很强并且已经有了很多成熟的方法，但是毕竟关键词包含的信息量不大，关键词短语带有更多的信息并且描述能力更好。基于此我们希望可以基于某个关键词，首先在新浪微博上爬取一批数量的微博，然后在爬取到的微博上提取出来相应的关键词短语，这些关键词短语可以用于舆情分析，产品反馈，广告推荐，同时这些关键词短语还可以尝试用来做微博上的的分类，推荐以及用于预测微博上的热点事件发生等等应用。
 
     对于长文本来说，文本处理相对容易并且长文本上的关键词短语的提取已经有了不错的研究。对于新浪微博，将会遇到下面的问题，微博长度比传统的文本短，有一部分微博没有有用的信息，微博上的主题更加多样化。我们希望可以利用长文本分析的技术同时结合短文本的特点开发出一套关键词短语提取系统。同时伴随着可视化技术的发展以及可视化可以给用户带来直观的感受，我们将自己处理的结果使用可视化工具呈现出来。
     本章接下来的组织如下，首先我们将阐述关键词短语提取的相关工作TFIDF，TEXTRANK。然后我们将详细介绍基于LDA和PAGERANK的关键词短语提取算法。接着简略的介绍系统架构，最后是实验设计以及总结。
@@ -338,14 +338,6 @@ p(w|d)=p(w|t)*p(t|d)
 \subsection{PAGERANK模型}
 
 Pagerank算法是google用来进行对网页进行排序的算法，pagerank的做法首先将网页建模成图，图中的每个节点都有入度以及出度，所以我们的每一个点的权重是由指向这些点来决定的，然后再加上一项是随机因子，保证每个节点有相同的概率挑往其他节点。经过迭代之后我们每一个节点可以得到稳定的权值。Pagerank每个节点的入度是由那些指向节点的节点数量，每个节点的出度指的是当前节点指向的节点的数量。
-PageRank is a link analysis algorithm and it assigns a numerical weighting to each element of a hyperlinked set of documents, such as the World Wide Web, with the purpose of "measuring" its relative importance within the set. The algorithm may be applied to any collection of entities with reciprocal quotations and references. The numerical weight that it assigns to any given element E is referred to as the PageRank of E and denoted by  Other factors like Author Rank can contribute to the importance of an entity.
-A PageRank results from a mathematical algorithm based on the webgraph, created by all World Wide Web pages as nodes and hyperlinks as edges, taking into consideration authority hubs such as cnn.com or usa.gov. The rank value indicates an importance of a particular page. A hyperlink to a page counts as a vote of support. The PageRank of a page is defined recursively and depends on the number and PageRank metric of all pages that link to it ("incoming links"). A page that is linked to by many pages with high PageRank receives a high rank itself.
-The PageRank algorithm outputs a probability distribution used to represent the likelihood that a person randomly clicking on links will arrive at any particular page. PageRank can be calculated for collections of documents of any size. It is assumed in several research papers that the distribution is evenly divided among all documents in the collection at the beginning of the computational process. The PageRank computations require several passes, called "iterations", through the collection to adjust approximate PageRank values to more closely reflect the theoretical true value.
-
-A probability is expressed as a numeric value between 0 and 1. A 0.5 probability is
-commonly expressed as a "50\% chance" of something happening. Hence, a PageRank of 0.5 means there is a 50\% chance that a person clicking on a random link will be directed to the document with the 0.5 PageRank.
-PageRank can be computed either iteratively or algebraically. The iterative method can be viewed as the power iteration method[24][25] or the power method. The basic mathematical operations performed are identical.
-Depending on the framework used to perform the computation, the exact implementation of the methods, and the required accuracy of the result, the computation time of these methods can vary greatly.
 
 Pagerank算法的优化公式
 。。。。。
