@@ -770,9 +770,9 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
      \item 第一个分类器，使用1/10的数据作为训练集，训练出分类器I1。记录I1在的训练时间以及在测试集上的准确率。
      \item 第二个分类器，使用2/10的数据作为训练集同时使用分类器I1的参数作为第二个分类器参数的初始值，训练出分类器I2。记录I2的训练时间以及在测试集上的准确率。
      \item 第十个分类器，使用完整的语料集作为训练集同时使用分类器I9的参数作为第十个分类器参数的初始值，训练出分类器I10。记录I10的训练时间以及在测试集上的准确率。
-
-\subsection{实验设计}
-
+	   
+\subsection{实验设计流程}
+    
     对于non-incremental learning方法和incremental learning方法中的每一个分类器，对于其中的训练集以及测试集的处理方法一致，具体如下，
 
     \begin{enumerate}
@@ -781,15 +781,27 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
 	  \item 使用微软提供的分词工具分词
 	  \item 去除停用词
 	\end{enumerate}
-     \item 提取文本特征，这里使用的是文本的ngram特征包括unigram，bigram，trigram特征。举例说明，
-	   对于query "今天 苏州 天气  好",unigram特征是[今天，苏州，天气，好]，bigram特征是[今天 苏州，苏州 天气，天气 好],trigram特征是[今天 苏州 天气，苏州 天气 好]。特征集合是在训练集上提取。对于测试集来讲，所有的不在特征集合的特征都被舍弃掉。
-    3 对于每一条query的提取到的特征进行归一化，归一化的好处是可以防止某一维或某几维对数据影响过大，其次是可以使程序可以运行更快。然后将特征处理成SVM使用的格式。
-    4 使用LIBLINEAR在训练集上训练出SVM模型，在测试集上测试模型的准确率。
-    5 记录使用LIBLINEAR训练出SVM模型的时间，以及在测试集上的准确率。
+     \item 提取文本特征，特征提取方法跟上一章节实验中方法一致
+     \item 对于提取到的文本特征进行归一化
+       \begin{enumerate}
+         \item 可以防止某一维或某几维对数据影响过大
+         \item 可以使程序可以运行更快，减少训练时间
+	 \item 将特征处理成LIBLINEAR数据处理格式
+       \end{enumerate}
+     \item 使用LIBLINEAR在训练集上训练出SVM模型，在测试集上测试模型的准确率
+     \item 记录使用LIBLINEAR训练出SVM模型的时间以及在测试集上的准确率
+   \end{enumerate}
+
+\subsection{实验结果分析}
 
     实验结果如下图所示：
-    。。。。。。。。。。。
-    对于non-incremental learning方法和incremental learning方法分别训练出10个分类器，同时对于每一个分类器记录了训练时间以及准确率。基于此，我们比较每个分类器的训练时间以及准确率。从准确率的角度上看，non-incremental learning以及incremental learning方法取得准确率类似，误差在。。。，从训练时间的角度看，incremental learning方法的训练时间远远小于non-incremental learning方法。基于以上实验结果，可以证实incremental learning方法可以在线上使用。
+    \begin{figure}[htbp]
+      \centering
+      \includegraphics[width=0.5\textwidth]{}
+      \caption{}\label{fig:test1}
+    \end{figure}
+
+    对于两种不同的训练方法，我们分别训练出10个分类器，同时记录了每一个分类器的训练时间以及准确率。然后我们比较了两种不同训练方法得到的对应的每个分类器的训练时间以及准确率。从准确率的角度上看，non-incremental learning以及incremental learning方法取得准确率类似，误差在。。。，从训练时间的角度看，incremental learning方法的训练时间远远小于non-incremental learning方法。基于以上实验结果，可以证实incremental learning方法可以在线上使用。
 
 \section{总结}
 
