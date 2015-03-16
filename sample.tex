@@ -353,11 +353,11 @@ p(w|d)=p(w|t)*p(t|d)
 
     基于LDA和PageRank的关键词短语算法中使用的LDA模型以及PageRank模型已经在上面两节中介绍过了。下面我们阐述具体的算法。
 
-    首先在微博上运行LDA算法，得到微博上的n个主题分布以及每个主题下面的单词分布。
+    首先在微博上运行LDA算法，得到微博上的n个主题分布以及每个主题下面的单词分布。我们已经在上面的章节中介绍过LDA模型。
     
     其次基于微博构建词图，在词图上运行修改后的PageRank算法，原始的PageRank每个节点跳往其他节点是概率是相同的，这里做出的修改是，将这一项修改为单词(节点)在某个topic下面的概率分布，这样单词在跳转时候会倾向于跳转跟此topic相关的词语，我们使用$G=\left(V,E\right)$来表示有文档表示的图，其中的节点集合$V=\{w_1,w_2,\dots,w_N$，边的结合$\left(w_i,w_j\right) \in E$如果$w_i$和$w_j$之间有一条链接，在词图中每一个节点表示单词，每一条边表示单词之间的边，接下来我们使用$e\left(w_i,w_j\right)$来表示链接$\left(w_i,w_j\right)$之间的权重，节点$w_i$的初度表示为$O\left(w_i\right) = \sum{j:w_i \rightarrow w_j} e\left(w_i,w_j\right)$，在原始的PageRank中单词$w_i$的得分$R\left(w_i\right)$的数学公式是$R\left( w_i \right) = \lamda \sum{j:w_j \ rightarrow w_i} \frac{e\left(w_j,w_i\right)}{O\left(w_j\right)}+\left(1-\lamda\right)\frac{1}{\vert V \vert}$，其中$\lamda$指的是衰减因子，取值范围0到1，$\vert V \vert$指的是节点的总数，衰减因子暗示每一个节点都有相同的概率$\left(1-\lamde\right)\frac{1}{\vert V \vert}$跳转到其它的节点。修改后的PageRank数学公式是$R_z\left( w_i \right) = \lamda \sum_{j:w_j \rightarrow w_i} \frac{e\left(w_j, w_i\right)}{O\left(w_j\right)}R_z\left(w_j\right)+\left( 1-\lamda \right)p_z\left(w_i\right)$。这里我们将$\left(1-\lamda\right)\frac{1}{\vert V \vert}$修改为$\left( 1-\lamda\right)p_z\left(w_i\right)$。这里跳转的概率不再是一致的，而是使用了单词在某一个主题下面的概率，这样节点在跳转时会倾向于跳转到同一个主题下面的单词。
     
-    在词图上运行改进的PageRank算法之后，可以得到每个主题下面的单词排序。基于关键词短语一般是名词短语这个假设，对经过分词之后的语料进行词性标注，接着使用正则表达式$\left(adjective\right)*\left(noun\right)+$抽取所有的名词短语，对于某一个名词短语首先计算一个主题下面的权重，使用的公式如下$R_z\left(p\right) = \sum{w_i \in p} R_z\let(w_i\right)$，这里的$p$指的是名词短语，$w_i$指的是名词短语中的单词，$R_z\left(w_i\right)$指的是单词$w_i$在主题$z$上的经过排序之后的权重。考虑到文档中的n个主题分布，那么名词短语的最终权重需要考虑n个不同的主题分布，最终使用下面这个公式对所有的关键词短语排序，$R\left(p\right) = \sum{z=1}^K R_z\left(p\right) \times pr\left(z \vert d \right)$。这里的$R_z\left(p\right)$指的是名词短语在一个主题下的权重，$pr\left(z\vertd\right)$指的是某个主题在文档的概率分布，$R\left(p\right)$指的是考虑了文档中的主题分布之后，名词短语最终的权重。
+    在词图上运行改进的PageRank算法之后，可以得到每个主题下面的单词排序。基于关键词短语一般是名词短语这个假设，对经过分词之后的语料进行词性标注，词性标注指的是对于句子中的每个词都指派一个合适的词性，也就是要确定每个词是名词、动词、形容词或者其它词性的过程。[copy]接着使用正则表达式$\left(adjective\right)*\left(noun\right)+$抽取所有的名词短语，对于某一个名词短语首先计算一个主题下面的权重，使用的公式如下$R_z\left(p\right) = \sum{w_i \in p} R_z\let(w_i\right)$，这里的$p$指的是名词短语，$w_i$指的是名词短语中的单词，$R_z\left(w_i\right)$指的是单词$w_i$在主题$z$上的经过排序之后的权重。考虑到文档中的n个主题分布，那么名词短语的最终权重需要考虑n个不同的主题分布，最终使用下面这个公式对所有的关键词短语排序，$R\left(p\right) = \sum{z=1}^K R_z\left(p\right) \times pr\left(z \vert d \right)$。这里的$R_z\left(p\right)$指的是名词短语在一个主题下的权重，$pr\left(z\vertd\right)$指的是某个主题在文档的概率分布，$R\left(p\right)$指的是考虑了文档中的主题分布之后，名词短语最终的权重。
     
 
 \section{关键词短语提取系统设计}
@@ -422,45 +422,46 @@ p(w|d)=p(w|t)*p(t|d)
 
 \section{实验设计及分析}
   
-    在关键词短语提取的实验中，我们尝试了3种方法，接下来依次介绍基于TFIDF关键词短语提取算法，基于TextRank的关键词短语提取算法以及基于LDA和PageRank方法的关键词短语提取算法的实验设计以及结果。
+    在关键词短语提取的实验中，我们尝试了2种方法，接下来依次介绍基于TFIDF关键词短语提取算法，基于LDA和PageRank方法的关键词短语提取算法的实验设计以及结果。
 
 \subsection{基于TFIDF的关键词短语提取方法}
-
-    1 采用与LDARank相同的微博预处理方法。
-    2 我们根据TFIDF的计算公式，依次计算item的TF以及IDF，然后计算每个词的权重。
-    3 使用相同的正则表达式，提取名词短语
-    4 使用下面的计算公式来计算名词短语的最终权重。。。。。。。
-
-\subsection{基于TextRank的关键词短语提取方法}
-    。。。。。。
+    
+    基于TFIDF的关键词短语提取算法流程，如下，
+    \begin{enumerate}
+      \item 新浪微博数据预处理，包括，
+	\begin{enumerate}
+	  \item 去除重复的微博
+	  \item 将所有的微博合并到一个文档里面
+	  \item 使用分词工具进行微博分词
+	  \item 去除停用词以及标点符号
+         \end{enumerate}
+      \item 使用正则表达式提取名词短语
+	\begin{enumerate}
+	  \item 正则表达式是$\left(adjective\right)*\left(nouns\right)+$
+	\end{enumerate}
+      \item 对于名词短语根据TFIDF计算公式计算的权重
+    \end{enumerate}	
 
 \subsection{基于LDA以及PageRank的关键词短语提取算法}
   
     基于LDA以及PageRank的关键词短语提取算法流程，如下，
     \begin{enumerate}
-       \item 新浪微博数据预处理，包括，
-	 \begin{enumerate}
-	    \item 去除重复的微博
-	    \item 将所有的微博合并到一个文档里面
-	    \item 使用分词工具进行微博分词
-	    \item 去除停用词以及标点符号
-         \end{enumerate}
+       \item 新浪微博数据预处理,与TFIDF的方法一致
        \item 使用处理后的微博构建词图,后面将详细介绍词图构建
-       \item 利用LDA算法获取文档的topic分布以及topic下面单词的概率分布
-       \item 使用Pageank算法利用
-       \item 使用正则表达式抽取文档中名词短语，根据权重计算公式计算短语权重
-	 \begin{enumerate}
-	   \item 正则表达式。。。。。。
-	   \item 权重公式。。。。。。
-         \end{enumerate}
+       \item 利用LDA算法获取文档的主题分布以及主题下面单词的概率分布
+       \item 使用改进后的PageRank算法计算每个主题下面的单词排序
+       \item 使用词性标注工具对文档进行词性标注
+       \item 使用正则表达式抽取名词短语，正则表达式跟TFIDF方法一致
+       \item 依据上文中的名词短语权重计算公式计算最终的权重
     \end{enumerate}
     
     在算法流程中提到了词图的构建，下面介绍怎么构建词图，
 
     首先介绍窗口概念，窗口是以当前词作为源点，以接下里的若干个词作为终点，接着以"I Love Nanjing University very much"中的单词I为例介绍词图。假设窗口为1，那么可以得到边是["I->love"]，窗口为2，可以得到的边是["I->Nanjing"，"I->university"]，窗口为3，可以得到的边是["I->love"，"I->Nanjing"，"I-university"]。在构建基于微博的词图时候，需要将一定数量的微博放在同一个文本里，以此文本为单位构建词图。
 
-
 \section{总结}
+
+    在本章节中，我们在新浪微博语料集上实现了基于LDA和PageRank的关键词短语提取算法，算法效果不错。
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{domain classification using slot feature based SVM}\label{chapter_smallworld}
@@ -469,15 +470,15 @@ p(w|d)=p(w|t)*p(t|d)
 
     随着智能手机的大量使用，语音助手类的应用将会越来越多的出现在人们的实际生活中，对于语音助手的研究越来越普及。现在比较流行的语音助手有苹果公司开发的Siri，谷歌公司开发的Google Now，而现在微软也推出一款叫做Cortana的语音助手。Cortana基于人工智能以及大数据的技术，尝试去理解用户的喜好和习惯，具有帮助用户进行日程安排，问题回答等等功能。
 
-    在Cortana的后台处理逻辑中包括一个称之为domain classification的模块。Domain classification模块需要处理的输入有经过speech recognition模块处理之后的短文本或者通过手写送过来的短信等短文本。Domain classification模块负责对输入短文本的进行分类，也就是将输入的短文本分配到相应的domain中去。举例来说，对于query"今天苏州下雨了吗"，domain classification模块需要将此query分类到weather domain，接下来将有其它模块对于分类过的query进行相应的处理。因此domain classification模块的准确率非常重要，这是接下来对于query进行一系列更深入处理的入口。微软的语音助手Cortana总共有9个domain，分别是alarm，places，reminder，calender，weather，note，date，news，web。因此domain classification模块需要处理的是对于每一个未知的query的输入，将此未知的query进行分类，分配到上面9个domian中对应的domain中去。
+    在Cortana的后台处理逻辑中包括一个称之为领域分类(domain classification)的模块。领域分类模块需要处理的输入有经过语音识别模块处理之后的短文本或者通过手写送过来的短信等短文本。领域分类模块负责对输入短文本的进行分类，也就是将输入的短文本分配到相应的类中去。举例来说，对于查询(query),"今天苏州下雨了吗"，领域分类模块需要将此查询分类到天气领域，接下来将有其它模块对于分类过的查询进行相应的处理。因此领域分类模块的准确率非常重要，这是接下来对于查询进行一系列更深入处理的入口。微软的语音助手Cortana总共有9个领域，分别是$alarm，places，reminder，calender，weather，note，date，news，web$。因此领域分类模块需要处理的是对于每一个未知的查询输入，将此未知的查询进行分类，分配到上面9个领域中对应的领域中去。
 
-    在domain classification中我们的处理的任务是分类。在机器学习领域，分类被认为是一种有监督学习算法，是使用最普遍的一类算法。分类算法通过对已经标注过类别的语料集分析，通过提取训练语料集的特征建立分类函数，从中发现分类的规则，因而可以用来对未知的数据预测类别。在实际应用中，分类算法使用非常广泛比如金融机构中的风险评估，客户类别的分类，搜索引擎中的文本分类以及软件项目中的漏洞挖掘分类。在分类算法中，广泛使用的有最近邻模型(K Nearest Neighbor)，朴素贝叶斯模型(Naive Bayes)，支持向量机模型(Support Vector Machine)，神经网络模型(Neural Network)，决策树模型(Decision Tree)等等。分类算法的评价指标有准确率，预测速度，可扩展行以及可解释性等等。
+    在领域分类中我们的处理的任务是分类。在机器学习领域，分类被认为是一种有监督学习算法，是使用最普遍的一类算法。分类算法通过对已经标注过类别的语料集分析，通过提取训练语料集的特征建立分类函数，从中发现分类的规则，因而可以用来对未知的数据预测类别。在实际应用中，分类算法使用非常广泛比如金融机构中的风险评估，客户类别的分类，搜索引擎中的文本分类以及软件项目中的漏洞挖掘分类。在分类算法中，广泛使用的有最近邻模型(K Nearest Neighbor)，朴素贝叶斯模型(Naive Bayes)，支持向量机模型(Support Vector Machine)，神经网络模型(Neural Network)，决策树模型(Decision Tree)等等。分类算法的评价指标有准确率，预测速度，可扩展行以及可解释性等等。
     
-    对于微软语音助手Cortana的domain classification处理模块来说，处理的输入是文本或者更确切的说是短文本，因此可以将Cortana中的domain classification任务当做是文本分类的一种。对于文本分类来讲，数据的特点是数据规模比较大，特征比较稀疏，SVM算法经过几十年的使用实践，已经被证明可以在文本分类的领域中有效地使用。因此在domain classification任务中选择使用SVM算法。
+    对于微软语音助手Cortana的领域分类处理模块来说，处理的输入是文本或者更确切的说是短文本，因此可以将Cortana中的领域分类任务当做是文本分类的一种。对于文本分类来讲，数据的特点是数据规模比较大，特征比较稀疏，支持向量机(SVM)算法经过几十年的使用实践，已经被证明可以在文本分类的领域中有效地使用。因此在领域分类任务中选择使用支持向量机算法。
     
-    由于Cortana domain classification模块处理的输入query长度非常短，因此对于每一个query来讲，可以提取利用的特征数量比较少，基于此想到可以为query扩充特征，借助这些扩充的特征来提高domain classification的准确率。实际上在微软的给定的语料中，每一条query都被人工标上slot，slot是一种领域相关的实体，在后续章节中将会详细介绍slot概念。在domain classification任务中将会尝试对于标注了slot的query处理，提取相应的特征进行分类，希望提取的结合了slot特征可以帮助提高domain classification的准确度。实验证明，对每一条标注了slot的query进行分类确实可以帮助提高准确率。
+    由于Cortana中的领域分类模块处理的输入查询长度非常短，因此对于每一个查询来讲，可以提取利用的特征数量比较少，基于此想到可以为查询扩充特征，借助这些扩充的特征来提高领域分类的准确率。实际上在微软的给定的语料中，每一条查询都被人工标上slot，slot是一种领域相关的实体，在后续章节中将会详细介绍slot概念。在领域分类任务中将会尝试对于标注了slot的查询处理，提取相应的特征进行分类，希望提取的结合了slot特征可以帮助提高领域分类的准确度。实验证明，对每一条标注了slot的查询进行分类确实可以帮助提高准确率。
     
-    本章接下来的组织如下，首先我们将概述两种基于slot的分类算法以及两种算法中涉及到的SVM，CRF模型，然后依次详细介绍基于slot的分类算法以及实验设计和结果，最后总结两种方法的优劣。
+    本章接下来的组织如下，首先我们将概述两种基于slot的分类算法以及两种算法中涉及到的条件随机场模型，支持向量机模型，然后依次详细介绍基于slot的分类算法以及实验设计和结果，最后总结两种方法的优劣。
 
     
 \section{基于slot的分类算法介绍}
