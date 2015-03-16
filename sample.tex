@@ -301,7 +301,8 @@
 \subsection{基于TFIDF的关键词短语提取方法}
 
     TFIDF是一种统计方法，在信息检索中使用比较广泛，可以用来评估一个词对于一个文件集合的重要程度。TFIDF主要思想就是，如果某个词在一篇文档中出现的频率高，在其它文档中出现的次数比较少，就认为这个词具有很好的区分能力。TFIDF中TF（term frequency）指的是某个词在文档中出现的频率，IDF（inverse document frequency）指的是如果包含某个词条t的文档n数目很少，那么IDF就越大，同时可以说明词条t具有很好的区分能力。
-    TFIDF= TF*IDF，TF计算公式。。。。。。，IDF计算公式。。。。。。
+
+    TFIDF的计算公式是TFIDF= TF*IDF，词频(TF)指的是某一个给定的词语在该文件中出现的频率。这个数字是对词数的归一化，以防止它偏向长的文件。[copy],对于在某一个特定文件里的词语$t_i$来说，它的重要性可表示为$tf_i,_j = \frac{n_i,_j}{\sum_{k} n_k,_j}$，以上$n_i,_j$是该词在文件$d_j$中的出现次数，而分母则是在文件$d_j$中所有字词的出现次数之和。逆向文件频率(IDF)是一个词语普遍重要性的度量，可以表示为$idf_i = log\frac{\vert D \vert}{\vert \{j：t_i \in d_j \}\vert}$，其中$\vert D \vert:$ 是语料库中的文件总数。$\vert\{ j : t_i \in d_j\}\vert:$，包含词语$t_i$的文件数目。[copy]
     
     基于TFIDF的关键词短语提取算法流程如下，
     \begin{enumerate}
