@@ -757,10 +757,11 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
 
     对于原始问题求解，首先给定参数w随机初始值，然后参数迭代直至收敛。在原始问题中，SVM的参数w的维度跟数据变化无关，跟特征数量一致。当训练数据增加时候，对于incremental learning算法有以下两个假设，第一个假设是，特征数量没有发生变化，因此对于原始问题需要求解的参数数量也没有发生变化。第二个假设是，新增加的数据跟原始数据服从于同一分布。因为求解原始问题的优化算法是一种迭代算法，因此好的初始值可以减少迭代次数从而减少训练时间。对于原始的训练集$\left(y_i,x_i\right),i=1,\dots,l$，假设$w^*$是原始问题的最优解，基于以上假设当增加新的数据时，可以利用$w^*$来作为新的模型参数的初始值也即$\bar{w}=w^*$。
 
-    当新数据进来后优化公式是$\min\limits_{w} \frac{1}{2}w^Tw+C\sum_{i=1}^(l+k) \xi\left(w;x_i,y_i\right)$，原始问题的初始值是$\frac{1}{2}\bar{w}^T\bar{w}+C\sum_{i=1}^l \xi\left(\bar{w};x_i,y_i\right)+C\sum_{i=l+1}^(l+k)\xi\left(\bar{w};x_i,y_i\right)$。
+    当新数据进来后优化公式是$\min\limits_{w} \frac{1}{2}w^Tw+C\sum_{i=1}^{l+k} \xi\left(w;x_i,y_i\right)$，原始问题的初始值是$\frac{1}{2}\bar{w}^T\bar{w}+C\sum_{i=1}^l \xi\left(\bar{w};x_i,y_i\right)+C\sum_{i=l+1}^{l+k}\xi\left(\bar{w};x_i,y_i\right)$。
+
 \subsection{SVM对偶问题介绍}
     
-    对于对偶问题求解，SVM的优化公式是。。。。。。。。
+给定训练集$\left(y_i,x_i\right) \in \{-1,1\} \times R^n$，最优化参数$w$可以表示为带有系数$\alpha$的训练样本的线性组合，也即$w=\sum_{i=1}^l y_i\alpha_ix_i$。
     
     support vector，增加新的数据后，A是跟数据相关的，当增加新的数据时候，A的数量也会发生变化，因此面临的问题是不能确定怎样给新增加的A很好的赋值。同时对于对偶问题也可以直观的理解为，我们是求support vector，当我们增加新的数据时候，最终求出的support vector可能会有很大的变化，从而会引起时间上的增加。同时求解对偶问题的时候，我们需要保存一个matrix，这个matrix在实际实现的时候，难度比较大。
     
