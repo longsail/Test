@@ -761,9 +761,9 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
 
 \subsection{SVM对偶问题介绍}
     
-给定训练集$\left(y_i,x_i\right) \in \{-1,1\} \times R^n$，最优化参数$w$可以表示为带有系数$\alpha$的训练样本的线性组合，也即$w=\sum_{i=1}^l y_i\alpha_ix_i$。
+    给定训练集$\left(y_i,x_i\right) \in \{-1,1\} \times R^n$，最优化参数$w$可以表示为带有系数$\alpha$的训练样本的线性组合，也即$w=\sum_{i=1}^l y_i\alpha_ix_i$。我们可以解决基于$\alpha$的优化问题，也就是SVM问题的对偶形式,$\max\limits_{\alpha} f^D\left(\alpha\right) \equiv \sum_{i=1}^l h\left(\alpha_i,C\right)-\frac{1}{2}\sum_{i=1}^l \sum_{j=1}^l \alpha_i\alpha_j K\left(i,j\right)-\sum_{i=1}^l \frac{\alpha_i^2}{2}d$,$0 \le \alpha_i \le U$,$\forall i=1,\dots,l$，这里的$K\left(i,j\right)=y_iy_jx^T_ix_j$,同时对于L2损失的SVM来讲，$U=\infty$,$d=\frac{1}{2C}$,$h\left(\alpha_i,C\right)=\alpha_i$。
     
-    support vector，增加新的数据后，A是跟数据相关的，当增加新的数据时候，A的数量也会发生变化，因此面临的问题是不能确定怎样给新增加的A很好的赋值。同时对于对偶问题也可以直观的理解为，我们是求support vector，当我们增加新的数据时候，最终求出的support vector可能会有很大的变化，从而会引起时间上的增加。同时求解对偶问题的时候，我们需要保存一个matrix，这个matrix在实际实现的时候，难度比较大。
+    对于对偶问题，我们求解的参数是$\alpha$,当增加新的数据后，当增加新的数据时，$\alpha$的数量也会发生变化。这里我们假设增加的新的训练集如下$\(y_i,x_i),i = l+1,\dots,l+k$,下面的$\bar{\alpha}$可以视为初始的解，$\bar{alpha} = \[\alpha^*_1,\dots,\alpha^*_l,0,\dots,0]^T \in R^\left(l+k\right) \times l$因此面临的问题是不能确定怎样给新增加的A很好的赋值。同时对于对偶问题也可以直观的理解为，我们是求support vector，当我们增加新的数据时候，最终求出的support vector可能会有很大的变化，从而会引起时间上的增加。同时求解对偶问题的时候，我们需要保存一个matrix，这个matrix在实际实现的时候，难度比较大。
     
     综上，在求解基于SVM的incremetal learning问题时候选择求解svm原始问题。
 
