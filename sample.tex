@@ -347,19 +347,13 @@ p(w|d)=p(w|t)*p(t|d)
 
     PageRank算法是Google用来进行对网页进行排序的算法，PageRank算法是一种链接分析的算法，它将会给予超链接网页集合中的每一个网页一个数值权重，这个权重可以用来衡量此网页在超链接网页集合中的重要性。PageRank算法的做法首先将网页建模成图，图中的每个节点(网页)都有入度以及出度，每一个点的权重是由指向这些点来决定的，然后再加上一项是随机因子，保证每个节点有相同的概率挑往其他节点。经过迭代之后每一个节点可以得到稳定的权值。PageRank每个节点的入度是指向此节点的节点数量，每个节点的出度指的是当前节点指向的其它节点的数量。
 
-    Pagerank算法的数学公式表示是，$ PR\left(p_i\right) = \frac{1-d}{N}+d\sum_{p_j \in M\left(p_i\right)} \frac{PR\left(p_j\right)}{L\left(p_j\right)}$
-
-
-改进后的pagerank算法
-
-Pagerank每个节点跳往其他节点是概率是相同的，这里我们做出的修改是，将这一项修改为每个单词在某个topic下面的权值，这样单词在跳转时候会倾向于跳转跟某个topic相关的词语。
-修改后的pagerank优化公式是
-。。。。。
+    PageRank算法输出一个概率分布，用来表示人们随机点击一个链接的概率。Pagerank算法的数学公式表示是，$ PR\left(p_i\right) = \frac{1-d}{N}+d\sum_{p_j \in M\left(p_i\right)} \frac{PR\left(p_j\right)}{L\left(p_j\right)}$$P_1,p_2,...,p_N$是被研究的页面，$M\left(p_i\right)$是链入$p_i$的页面的集合， $L\left(p_j\right)$是$p_j$链出页面的数量，$N$是所有页面的集合。
 
 \subsection{关键词提取算法}
 
-我们的计算公式是
-。。。。。。
+    基于LDA和PageRank的关键词短语算法中使用的LDA模型以及PageRank模型已经在上面两节中介绍过了。下面我们阐述具体的算法。
+
+    首先在微博上运行LDA算法，得到微博上的n个主题分布以及每个主题下面的单词分布。其次基于微博构建词图，在词图上运行修改后的PageRank算法，原始的PageRank每个节点跳往其他节点是概率是相同的，这里做出的修改是，将这一项修改为单词(节点)在某个topic下面的概率分布，这样单词在跳转时候会倾向于跳转跟此topic相关的词语，原始的PageRank数学公式是$R\left( w_i \right) = \lamda \sum{j:w_j \ rightarrow w_i} \frac{e\left(w_j,w_i\right)}{O\left(w_j\right)}+\left(1-\lamda\right)\frac{1}{\vert V \vert}$，修改后的PageRank数学公式是$R_z\left( w_i \right) = \lamda \sum_{j:w_j \rightarrow w_i} \frac{e\left(w_j, w_i\right)}{O\left(w_j\right)}R_z\left(w_j\right)+\left( 1-\lamda \right)p_z\left(w_i\right)$。经过
 
 \section{关键词短语提取系统设计}
 
