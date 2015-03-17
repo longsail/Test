@@ -761,13 +761,13 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
     
     对于优化算法，经常使用的有两种，一种是一阶优化算法，这种算法的优点是每次迭代代价比较小，具体来说就是求解一阶导数的代价较低，缺点是迭代次数比较多。另一种是二阶优化算法，这种算法的优点是迭代次数比较少，因为这里求解的是二阶导数，是梯度的梯度，缺点每次迭代的代价比较大，具体来说要求Hessian矩阵的逆矩阵。
     
-    由于需要求解的优化公式具有非常好的性质，具体的说求解的优化函数是一种凸函数，具有全局最优解，尤其需要注意的是求解的SVM是L2正则L2Loss函数，可以容易的求得优化函数的一阶导数以及二阶导数，因此可以使用一系列高效的优化算法。这里选择两种求解SVM问题比较高效的优化算法，通过比较两种优化算法在求解优化函数的时间同时关注两种优化算法求解的SVM模型在测试集上的准确率，最后确定一种比较好的的优化算法。这两种优化算法是$Coordinate Descent Method for Large-scale L2 loss Linear SVM$中提到的Coordinate Descent Method优化算法，$Trust Region Newton Method for Large-scale Logistic Regression$提高的trust region newton method优化算法。
+    由于需要求解的优化公式具有非常好的性质，具体的说求解的优化函数是一种凸函数，具有全局最优解，尤其需要注意的是求解的SVM是L2正则L2Loss函数，可以容易的求得优化函数的一阶导数以及二阶导数，因此可以使用一系列高效的优化算法。这里选择两种求解SVM问题比较高效的优化算法，通过比较两种优化算法在求解优化函数的时间同时关注两种优化算法求解的SVM模型在测试集上的准确率，最后确定一种比较好的的优化算法。这两种优化算法是$Coordinate Descent Method for Large-scale L2 loss Linear SVM$中提到的坐标梯度下降优化算法，$Trust Region Newton Method for Large-scale Logistic Regression$提高的置信域牛顿优化算法。
 
-\subsection{坐标梯度优化算法}
+\subsection{坐标梯度下降优化算法}
 
-在$Coordinate Descent Method for Large-scale L2-loss Linear Support Vector Machines$中提到的坐标梯度优化算法可以用来解决SVM的原始问题，并且相当高效。Incremental learning算法中求解是L2正则L2损失的SVM形式如下，$\min\limits_{w} f\left(w\right) = \frac{1}{2}w^\intercal w+ C\sum_{j=1}^l \max\left(1-y_jw^\intercal x_j,0\right)^2$,L2损失SVM是分段二次凸函数，一阶可微但不是二阶可微的。坐标梯度优化算法是一种迭代算法，通过每一轮对参数$w$进行迭代计算，产生序列$\{w^k\}_{k=0}^{\infty}$，直至参数收敛。
-
-坐标梯度算法每次通过解决子问题来更新参数w的一个变量，如果可以高效的解决这个子问题那么坐标梯度算法将会很有竞争力。对于L2损失的SVM，子问题是最小化单变量的分段二次函数，这个函数一阶可微但是二阶不可微。形式化表示为$w_i \leftarrow w_i + \arg\min_{d} f\left(w+de_i\right)$。坐标梯度下降算法中使用了牛顿方法来近似的求解上述子问题并且具有线性的收敛速度[5]
+    在$Coordinate Descent Method for Large-scale L2-loss Linear Support Vector Machines$中提到的坐标梯度下降优化算法可以用来解决SVM的原始问题，并且相当高效。Incremental learning算法中求解是L2正则L2损失的SVM形式如下，$\min\limits_{w} f\left(w\right) = \frac{1}{2}w^\intercal w+ C\sum_{j=1}^l \max\left(1-y_jw^\intercal x_j,0\right)^2$,L2损失SVM是分段二次凸函数，一阶可微但不是二阶可微的。坐标梯度下降优化算法是一种迭代算法，通过每一轮对参数$w$进行迭代计算，产生序列$\{w^k\}_{k=0}^{\infty}$，直至参数收敛。
+    
+    坐标梯度下降算法每次通过解决子问题来更新参数w的一个变量，如果可以高效的解决这个子问题那么坐标梯度算法将会很有竞争力。对于L2损失的SVM，子问题是最小化单变量的分段二次函数，这个函数一阶可微但是二阶不可微。形式化表示为$w_i \leftarrow w_i + \arg\min_{d} f\left(w+de_i\right)$。坐标梯度下降算法中使用了牛顿方法来近似的求解上述子问题并且具有线性的收敛速度[5]
 
 
 \subsection{置信域牛顿优化算法}
