@@ -725,7 +725,7 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
    
    模型的泛化能力受两方面的影响，一方面是模型的复杂度，泛化能力跟模型的复杂度成反比，一方面是数据的规模，泛化能力跟数据规模成正比。大规模的数据对于提升模型的泛化能力很重要。这意味着如果我们可以将Cortana更新之后的数据全部利用起来，那么就可以帮助提升模型的泛化能力，具体到查询分类来讲就是可以提升使用支持向量机训练的分类模型对于未知查询的分类准确度。
    
-   利用大规模的数据训练算法模型的同时也伴随着另一个不能忽视的问题，随着可以利用的数据越来越多，在模型的训练时间上付出的代价越来越显著。对于分类任务来说即将面临的问题是一方面大规模的数据可以帮助训练出泛化能力更强的模型，另一方面如果每次都是重新开始训练模型，训练时间将会大大的增加，这对于在线上使用是不可以接受的。实际上，对于分类任务来讲，一方面我们已经在原始语料集上训练出了效果很好的模型，另一方面每周都会有大规模数据到来。为了提高分类模型的精确度，我们可以选择使用更新后的语料集来重新训练支持向量机(SVM)模型，这将伴随着一定的时间代价。同时我们希望可以利用一种算法，可以取得跟重新开始训练的模型一致的准确度并且大大的减少训练时间，至少可以满足现在的训练时间上的需求。台湾大学林智仁组发表了paper "Incremental and decremental training for linear classification",提出了一种incremental learning的算法。基本思想可以概述为训练新的分类模型时，一方面使用更新后的数据进行训练，另一方面利用之前使用原始数据训练出来的模型参数初始化新模型的参数。那么新的模型既可以取得跟使用更新之后的数据重新训练的模型一致的准确度又可以减少训练时间。我们期望可以在微软给定的数据集中应用这个算法，并且在微软的给定的语料集上重现出实验效果。
+   利用大规模的数据训练算法模型的同时也伴随着另一个不能忽视的问题，随着可以利用的数据越来越多，在模型的训练时间上付出的代价越来越显著。对于分类任务来说即将面临的问题是一方面大规模的数据可以帮助训练出泛化能力更强的模型，另一方面如果每次都是重新开始训练模型，训练时间将会大大的增加，这对于在线上使用是不可以接受的。实际上，对于分类任务来讲，一方面我们已经在原始语料集上训练出了效果很好的模型，另一方面每周都会有大规模数据到来。为了提高分类模型的精确度，我们可以选择使用更新后的语料集来重新训练支持向量机(SVM)模型，这将伴随着一定的时间代价。同时我们希望可以利用一种算法，可以取得跟重新开始训练的模型一致的准确度并且大大的减少训练时间，至少可以满足现在的训练时间上的需求。台湾大学林智仁组发表了paper$"Incremental and decremental training for linear classification"$,提出了一种incremental learning的算法。基本思想可以概述为训练新的分类模型时，一方面使用更新后的数据进行训练，另一方面利用之前使用原始数据训练出来的模型参数初始化新模型的参数。那么新的模型既可以取得跟使用更新之后的数据重新训练的模型一致的准确度又可以减少训练时间。我们期望可以在微软给定的数据集中应用这个算法，并且在微软的给定的语料集上重现出实验效果。
 
    本章接下来的组织如下，首先我们将概述基于支持向量机(SVM)的incremental learning算法，然后介绍incremental learning算法求解中涉及到的坐标梯度下降算法以及置信域的牛顿算法，接着阐述实验设计以及结果，最后进行总结。
 
@@ -733,27 +733,27 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
 
 \section{基于SVM的incremental learning算法}
 
-    我们求解的是基于SVM的incremental learning算法，SVM算法的求解方法可以分为原始问题解法和对偶问题解法。由于SVM的优化公式的形式属于凸优化范畴，对于凸函数来说存在着全局最优解。这意味着可以使用很多高效的优化算法来求解SVM算法的参数。上一章已经详细介绍了SVM算法，需要特别指出的是incremental learning算法中使用的SVM是L2正则L2损失函数形式。
+    我们求解的是基于SVM的incremental learning算法，在第二个章我们已经详细介绍过SVM，由于SVM的优化公式的形式属于凸优化范畴，对于凸函数来说存在着全局最优解。这意味着可以使用很多高效的优化算法来求解SVM算法的参数。需要特别指出的是incremental learning算法中使用的SVM是L2正则L2损失函数形式。SVM的求解算法可以分为基于原始问题的求解算法以及基于对偶问题的求解算法。
 
-    接下来将直接介绍SVM原始问题的形式以及求解方法，对偶问题的形式以及求解方法，两种问题的求解方法与incremental learning的联系。
+    接下来将直接介绍SVM原始问题的形式以及求解方法，对偶问题的形式以及求解方法以及这两种问题的求解方法与incremental learning的联系。
 
 \subsection{SVM原始问题介绍}
 
-    给定训练集$\left(y_i,x_i\right) \in \{-1, 1\} \times R^n, i = 1,\dots,l$,SVM原始问题的优化公式是$\min\limits_{w} f\left(w\right) where f\left(w\right)\equiv \frac{1}{2}w^Tw + C\sum{i=1}^l \xi\left(w;x_i;y_i\right)$, $\xi\left(w;x_i,y_i\right)$是损失函数，我们这里使用的是L2损失函数，也即$\xi_L2\left(w;x_i,y_i\right) \equiv \max\left(0,1-y_iw^Tx_i\right)^2$。L2损失函数的特点是可微但不是二次可微。许多凸优化算法考虑寻找最有的参数$w$。
+    给定训练集$\left(y_i,x_i\right) \in \{-1, 1\} \times R^n, i = 1,\dots,l$,SVM原始问题的优化公式是$\min\limits_{w} f\left(w\right) where f\left(w\right)\equiv \frac{1}{2}w^Tw + C\sum{i=1}^l \xi\left(w;x_i;y_i\right)$, $\xi\left(w;x_i,y_i\right)$是损失函数，这里使用的是L2损失函数，也即$\xi_L2\left(w;x_i,y_i\right) \equiv \max\left(0,1-y_iw^Tx_i\right)^2$。L2损失函数的特点是可微但不是二次可微。存在很多凸优化算法寻找最有的参数$w$。
 
    在原始问题中，SVM的参数w的维度跟数据变化无关，跟特征数量一致。当训练数据增加时候，对于incremental learning算法有以下两个假设，第一个假设是，特征数量没有发生变化，因此对于原始问题需要求解的参数数量也没有发生变化。第二个假设是，新增加的数据跟原始数据服从于同一分布。因为求解原始问题的优化算法是一种迭代算法，因此好的初始值可以减少迭代次数从而减少训练时间。对于原始的训练集$\left(y_i,x_i\right),i=1,\dots,l$，假设$w^*$是原始问题的最优解，基于以上假设当增加新的数据时，可以利用$w^*$来作为新的模型参数的初始值也即$\bar{w}=w^*$。
 
-    当新数据进来后优化公式是$\min\limits_{w} \frac{1}{2}w^Tw+C\sum_{i=1}^{l+k} \xi\left(w;x_i,y_i\right)$，原始问题的初始值是$\frac{1}{2}\bar{w}^T\bar{w}+C\sum_{i=1}^l \xi\left(\bar{w};x_i,y_i\right)+C\sum_{i=l+1}^{l+k}\xi\left(\bar{w};x_i,y_i\right)$。
+    新数据增加后的优化公式是$\min\limits_{w} \frac{1}{2}w^Tw+C\sum_{i=1}^{l+k} \xi\left(w;x_i,y_i\right)$，如果使用了原始数据训练出来的模型参数$w^\ast$作为新的优化问题的初始化参数，那么新的问题的初始值是$\frac{1}{2}\bar{w}^T\bar{w}+C\sum_{i=1}^l \xi\left(\bar{w};x_i,y_i\right)+C\sum_{i=l+1}^{l+k}\xi\left(\bar{w};x_i,y_i\right)$。
 
 \subsection{SVM对偶问题介绍}
     
-    给定训练集$\left(y_i,x_i\right) \in \{-1,1\} \times R^n$，最优化参数$w$可以表示为带有系数$\alpha$的训练样本的线性组合，也即$w=\sum_{i=1}^l y_i\alpha_ix_i$。我们可以解决基于$\alpha$的优化问题，也就是SVM问题的对偶形式,$\max\limits_{\alpha} f^D\left(\alpha\right) \equiv \sum_{i=1}^l h\left(\alpha_i,C\right)-\frac{1}{2}\sum_{i=1}^l \sum_{j=1}^l \alpha_i\alpha_j K\left(i,j\right)-\sum_{i=1}^l \frac{\alpha_i^2}{2}d$,$0 \le \alpha_i \le U$,$\forall i=1,\dots,l$，这里的$K\left(i,j\right)=y_iy_jx^T_ix_j$,同时对于L2损失的SVM来讲，$U=\infty$,$d=\frac{1}{2C}$,$h\left(\alpha_i,C\right)=\alpha_i$。
+    给定训练集$\left(y_i,x_i\right) \in \{-1,1\} \times R^n$，最优化参数$w$可以表示为带有系数$\alpha$的训练样本的线性组合，也即$w=\sum_{i=1}^l y_i\alpha_ix_i$。我们可以解决基于$\alpha$的优化问题，也就是SVM问题的对偶形式,$\max\limits_{\alpha} f^D\left(\alpha\right) \equiv \sum_{i=1}^l h\left(\alpha_i,C\right)-\frac{1}{2}\sum_{i=1}^l \sum_{j=1}^l \alpha_i\alpha_j K\left(i,j\right)-\sum_{i=1}^l \frac{\alpha_i^2}{2}d$,$0 \le \alpha_i \le U$,$\forall i=1,\dots,l$，这里的$K\left(i,j\right)=y_iy_jx^T_ix_j$,同时对于L2损失的SVM来讲有，$U=\infty$,$d=\frac{1}{2C}$,$h\left(\alpha_i,C\right)=\alpha_i$。
     
-    对于对偶问题，我们求解的参数是$\alpha$,当增加新的数据后，当增加新的数据时，$\alpha$的数量也会发生变化。这里我们假设增加的新的训练集如下$(y_i,x_i),i = l+1,\dots,l+k$,下面的$\bar{\alpha}$可以视为初始的解，$\bar{\alpha} = [\alpha^\ast_1,\dots,\alpha^\ast_l,0,\dots,0]^\intercal \in R^{\left(l+k\right) \times l}$对于$\bar{\alpha_{l+1}},\dots,\bar{\alpha_{l+k}}$可以在$[0,U]$之间任意取值，但是不能确定最好的赋值。这也是求解incremtal learning中的对偶问题面临的问题。
+    对于对偶问题，求解的参数是$\alpha$,$\alpha$的维度跟数据维度一致，因此当增加新的数据时，$\alpha$的数量会发生变化。这里假设增加的新的训练集如下$(y_i,x_i),i = l+1,\dots,l+k$,下面的$\bar{\alpha}$可以视为初始的解，$\bar{\alpha} = [\alpha^\ast_1,\dots,\alpha^\ast_l,0,\dots,0]^\intercal \in R^{\left(l+k\right) \times l}$对于$\bar{\alpha_{l+1}},\dots,\bar{\alpha_{l+k}}$可以在$[0,U]$之间任意取值，但是不能确定如何最好的赋值。这也是求解incremtal learning中的对偶问题面临的问题。
 
-    当新数据进来后优化公式是$\min\limits_{w} \frac{1}{2}w^\intercal w+C\sum_{i=1}^{l+k} \xi\left(w;x_i,y_i\right)$，假设我们对$\bar{\alpha_{l+1}},\dots,\bar{\alpha{l+k}}$取值为0，对偶问题的初始值是$\sum_{i=1}^l h\left(\alpha^\ast_i,C\right)+\sum_{i=l+1}^{l+k} h\left(0,C\right)-\frac{1}{2}[{\alpha^\ast}^\intercal O^\intercal]\left[{\begin{array}{ccccc} \bar{Q} & \vdots \\ \dots & \\ \end{array}}\right] = \frac{1}{2}\bar{w}^\intercal \bar{w}+C\sum{i=1}^l \xi\left(\bar{w};x_i,y_i\right)$
+    新数据进来后优化公式是$\min\limits_{w} \frac{1}{2}w^\intercal w+C\sum_{i=1}^{l+k} \xi\left(w;x_i,y_i\right)$，假设我们对$\bar{\alpha_{l+1}},\dots,\bar{\alpha{l+k}}$取值为0，那么增加新的数据之后优化公式的初始值是$\sum_{i=1}^l h\left(\alpha^\ast_i,C\right)+\sum_{i=l+1}^{l+k} h\left(0,C\right)-\frac{1}{2}[{\alpha^\ast}^\intercal O^\intercal]\left[{\begin{array}{ccccc} \bar{Q} & \vdots \\ \dots & \\ \end{array}}\right] = \frac{1}{2}\bar{w}^\intercal \bar{w}+C\sum{i=1}^l \xi\left(\bar{w};x_i,y_i\right)$
     
-    在paper$Incremental and decremental learning for linear classification$中提到，原始问题初始值相对于对偶问题初始值距离新的问题的最优值更近。以及对偶问题的初始值不好确定，综上，在求解基于SVM的incremetal learning问题时候选择求解svm原始问题。
+    在paper$Incremental and decremental learning for linear classification$中有证明，原始问题初始值相对于对偶问题初始值距离新的问题的最优值更近。同时对偶问题的初始值不好确定，综上，在求解基于SVM的incremetal learning问题时候选择求解svm原始问题。
 
 \section{incremental learning中的优化算法}
 
