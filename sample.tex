@@ -493,24 +493,25 @@ Z(x)={} (2-15)
 
 \subsection{支持向量机模型}
 
+    SVM算法是一种经典的机器学习算法，是由Boster，Guyon，Vapnik在1992年提出来的，SVM算法的特点是可以同时最小化经验误差与最大化几何间隔。从几何意义上来讲SVM算法寻找一个超平面，这个超平面用来分离开数据点，因此超平面也被成为分离面。基于SVM的优良性质，SVM可以应用非常广泛，比如文本分类，蛋白质识别，手写数字识别等等。SVM算法在文本分类中的应用非常广泛而且性能非常好。
+    
+    给定训练集$\left(y_i,x_i\right) \in \{-1,1\} \times R^n,i=1,\dots,l.$ SVM的优化公式如下所示,
+    
+    $\min\limits_{w} f\left(w\right)$ where $f\left(w\right\) \equiv \frac{1}{2} w^\intercal w+C\sum_{i=1}{l} \xi\left(w;x_i,y_i\right)$。这里的$\xi\left(w;x_i,y_i\right)$是损失函数。
+
+    对大规模的数据进行分类时，需要考虑模型训练时间以及模型大小，在领域分类这个任务上，选择使用L1正则的线性核分类器。接下来解释正则以及线性分类器的概念。在机器学习中，使用正则项是为了进行模型选择，主要目的是避免过拟合，常用的正则项有$L_1$以及$L_2$。我们通过下面的两张图来解释$L_1$,$L_2$正则项区别
+    传统上SVM是用来解决二分类的，怎么讲SVM用于多分类呢，方法有如下集中，one-vs-rest，one-vs-one以及。。。。。。
+假设我们有n个类，one-vs-one指的是我们从这n个类中选取两个类ni，nj出来，然后利用这两个类的数据训练出一个binary classifier。以此类推，我们将会有n\^2/2个分类器。当有测试数据时候，我们同时使用这么多分类器，然后得到n\^2/2个分数，选取分值最高所属的类作为测试数据的类。
+假设我们有n个类，One-vs-rest指的是我们将我们将其中的一个类作为正例，其余n-1个类作为负例，训练出一个binary classifier。依次类推，最后我们将会得到n个binary classifier。当遇到一个测试数据时候，我们同时使用这n个binary classifier，这样我们将会得到n个分值，选取分值最高所属的类作为测试数据的类。
+实际中我们使用的是one-vs-rest方法来做多分类。
     在SVM中引入核函数，具体说就是可以将非线性可分的数据扩展到更高维空间使得可以线性可分，这大大的扩展了SVM的能力，使得SVM应用更加广泛。然而对于数据规模大，特征数量多并且比较稀疏的语料来说，引入核函数固然可以取得不错的结果，但是却要付出很大的时间代价。有研究表名，在处理这种数据时，使用线性核的SVM可以取得相似的准确率，同时可以极大的减少训练时间。因此对于我们要解决的基于短文本的domain classification来说，可以使用结合linear kernel的SVM，处理时间非常快并且可以获得不错的准确率。在实验过程中我们选取台湾大学林智仁老师组开发的Liblinear作为我们的实验工具。LibLinear实现高效并且易于使用，可以极大的提高我们的实验效率，在这里我们要感谢Liblinear的开发者。
 我们使用SVM算法作为我们的分类算法，SVM算法在工业界中使用广泛并且效果不错。在实际使用中，我们希望我们model训练时间足够短以及model足够小，可以减少存储空间的要求。由于我们的语料集非常大，特征数量多并且稀疏，所以我们考虑使用线性核的SVM，这样可以减少训练时间，同时为了减少生成的model的size。我们使用了L1 正则 L2 Loss的linear kernel SVM。
-我们的baseline使用的特征是提取query的ngram来得到，具体来说我们使用的是unigram，bigram，trigram组成的特征。
-Ngram是自然语言处理常用的语言模型。
-我们的对比算法中使用了额外的slot特征，下面来解释下什么是slot，slot可以理解为一个实体，作为例子，我们以以下的query为例，“闹钟 设 在 明 早 2 点”，标注了slot之后的query为“闹铃 设 在 《start\_date》 明 《/start\_date》 《start\_time>  早 2 点 《/start\_time>”这里的<start\_date>, </start\_date>, <start\_time>, </start\_time>是slot。
-在处理未知的query时候，使用人工为未知的query标注slot是不切实际的。那么我们如何得到slot。上面我们提到过我们语料中400w query，这400w query中已经有标注好的slot数据，我们希望学习一种可以对query进行序列化标注的模型，这种经过学习过的模型可以给未知的query标注slot。常用的序列化标注模型，有隐马尔科夫模型HMM，条件随机场模型CRF，基于我们已经有实现好的高效的CRF model，这里我们选择使用CRF model来学习slot的标注。基于此我们可以使用crf模型来为未知的query预测slot。
+
 在我们的后续实验过程中，结合slot作为特征来进行分类，我们可以得到的分类精确度比baseline可以提高大概1.9个点。
 下文中我们将支持向量机模型简称为SVM，将条件随机场模型简称为CRF。
 
 
-SVM算法是一种经典的机器学习算法，是由Boster，Guyon，Vapnik在1992年提出来的，SVM算法的特点是可以同时最小化经验误差与最大化几何间隔。从几何意义上来讲SVM算法寻找一个超平面，这个超平面用来分离开数据点，因此超平面也被成为分离面。基于SVM的优良性质，SVM可以应用非常广泛，比如文本分类，蛋白质识别，手写数字识别等等。
-SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可以描述为最大化几何间隔，SVM形式很多，具体到我们的问题，我们使用的L1正则L2损失的SVM，SVM算法优化公式，L1+L2。
-由于使用了L1正则，我们可以得到稀疏模型，首先我们解释在SVM中使用正则项的目的是避免过拟合The feasible point that minimizes the loss is more likely to happen on the coordinates on graph (a) than on graph (b) since graph (a) is more angular.  This effect amplifies when your number of coefficients increases, i.e. from 2 to 200. The implication of this is that the L1 regularization gives you sparse estimates. Namely, in a high dimensional space, you got mostly zeros and a small number of non-zero coefficients. This is huge since it incorporates variable selection to the modeling problem. In addition, if you have to score a large sample with your model, you can have a lot of computational savings since you don't have to compute features(predictors) whose coefficient is 0
-所以通过使用L1正则我们可以得到一个稀疏化的模型，也即我们可以得到一个比较小的model。
-传统上SVM是用来解决二分类的，怎么讲SVM用于多分类呢，方法有如下集中，one-vs-rest，one-vs-one以及。。。。。。
-假设我们有n个类，one-vs-one指的是我们从这n个类中选取两个类ni，nj出来，然后利用这两个类的数据训练出一个binary classifier。以此类推，我们将会有n\^2/2个分类器。当有测试数据时候，我们同时使用这么多分类器，然后得到n\^2/2个分数，选取分值最高所属的类作为测试数据的类。
-假设我们有n个类，One-vs-rest指的是我们将我们将其中的一个类作为正例，其余n-1个类作为负例，训练出一个binary classifier。依次类推，最后我们将会得到n个binary classifier。当遇到一个测试数据时候，我们同时使用这n个binary classifier，这样我们将会得到n个分值，选取分值最高所属的类作为测试数据的类。
-实际中我们使用的是one-vs-rest方法来做多分类。
+
 
 
 \section{基于genetic slot tagger的分类模型}
@@ -522,11 +523,11 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
 \subsection{处理流程}
 
     基于generic slot tagger的领域分类模型处理流程如下图所示，
-    %\begin{figure}[htbp]
-    %  \centering
-    %  \includegraphics[width=0.5\textwidth]{}
-    %  \caption{}\label{fig:test1}
-    %\end{figure}
+    \begin{figure}[htbp]
+      \centering
+      \includegraphics[width=1.0\textwidth]{generic.jpg}
+      \caption{}\label{fig:test1}
+    \end{figure}
     
     这种流程处理的好处是对于领域分类任务来说可以灵活的加入更丰富的特征，结构化的信息可以容易的传递给二分类器。
 
@@ -544,11 +545,12 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
     为了满足线上时间需求，我们想到的是减少slot种类，从而可以减少generic slot tagger的解码时间。我们的方法是从86种slot中选取少量具有代表性的slot。经过讨论，选取了其中19种slot。接下来需要验证这19种slot是否可以提高领域分类的准确率。基于此，我们设计了下面的实验，对于语料集做了相应处理，即是对于所有标注slot的查询，只保留19种slot，其余的全部移除。然后在处理后的语料集中进行分类算法的实验，可以得到的ground truth准确率是91\%，相对于baseline的准确率86.3\%来讲这也是一个非常显著的提升。
     
     接下来关注基于微软语料集训练的条件随机场模型在实际中使用的效果。为了了解条件随机场模型的F值也即slot标注效果对于领域分类的影响。我们做了一个在微软语料集上模拟slot标注的实验，模拟序列化标注的行为，我们随机的对于每一条查询的slot进行增加，删除，改变三个行为。具体的来说就是对于每一个查询的每个词，当此词没有slot时，以一定的概率给定一个slot，当此词有slot时，以一定的概率选择删除slot或者使用其它slot替换此slot，经过如此处理之后计算模拟标注slot的F值。基于模拟实验，可以生成虚拟的F值范围为40\%-60\%之间标注模型。最后在处理过的语料集上进行分类算法实验，观察模拟实验得到的标注模型的不同的F值与准确率的关系，下图是我们的模拟实验。
-    %\begin{figure}[htbp]
-      %\centering
-      %\includegraphics[width=0.5\textwidth]{}
-      %\caption{}\label{fig:test1}
-    %\end{figure}
+    
+    \begin{figure}[htbp]
+      \centering
+      \includegraphics[width=1.0\textwidth]{simi.jpg}
+      \caption{}\label{fig:test1}
+    \end{figure}
 
     
     从图中曲线可以观察得知F值在60\%及以上，分类算法的准确率有提高。这意味着如果可以训练得到一个F值在60\%及以上的条件随机场模型，分类模型的准确率可以得到提高。接下来是我们的实验设计。
@@ -638,11 +640,11 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
     
     对于基于generic slot tagger的分类模型，使用模拟的F值为60\%-80\%的模型进行标注时候，我们得到的标注模型的F值跟分类算法的准确率之间的关系如下图所示，
 
-    %\begin{figure}[htbp]
-    %  \centering
-    %  \includegraphics[width=0.5\textwidth]{}
-    %  \caption{}\label{fig:test1}
-   % \end{figure}
+    \begin{figure}[htbp]
+      \centering
+      \includegraphics[width=1.0\textwidth]{simi.jpg}
+      \caption{}\label{fig:test1}
+    \end{figure}
     
     然而实际上在使用F值为60\%至80\% CRF模型对query进行标注，然后在标注之后上的语料进行分类算法的实验时得到的分类的准确率是86.1\%,并没有相应提高。这是一个需要未来解决的问题。由于基于generic slot tagger的分类模型没有取得预期的提高，接下来我们使用了基于in-domain slot tagger的分类模型，并且取得了准确率上的提高,我们将在下一章中进行介绍。
 
@@ -657,11 +659,11 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
 \subsection{处理流程}
 
     基于in-domain slot tagger的分类算法模型处理流程如下图所示，
-    %\begin{figure}[htbp]
-    %  \centering
-    %  \includegraphics[width=0.5\textwidth]{}
-    %  \caption{}\label{fig:test1}
-    %\end{figure}
+    \begin{figure}[htbp]
+      \centering
+      \includegraphics[width=1.0\textwidth]{in-domain.jpg}
+      \caption{}\label{fig:test1}
+    \end{figure}
     
     这种模型跟基于generic slot tagger的模型具有相同的好处是对于分类任务来说可以灵活的加入更丰富的特征，结构化的信息可以容易的传递给基础的二分类器。
 
@@ -726,7 +728,7 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
    
    模型的泛化能力受两方面的影响，一方面是模型的复杂度，泛化能力跟模型的复杂度成反比，一方面是数据的规模，泛化能力跟数据规模成正比。大规模的数据对于提升模型的泛化能力很重要。这意味着如果我们可以将Cortana更新之后的数据全部利用起来，那么就可以帮助提升模型的泛化能力，具体到查询分类来讲就是可以提升使用支持向量机训练的分类模型对于未知查询的分类准确度。
    
-   利用大规模的数据训练算法模型的同时也伴随着另一个不能忽视的问题，随着可以利用的数据越来越多，在模型的训练时间上付出的代价越来越显著。对于分类任务来说即将面临的问题是一方面大规模的数据可以帮助训练出泛化能力更强的模型，另一方面如果每次都是重新开始训练模型，训练时间将会大大的增加，这对于在线上使用是不可以接受的。实际上，对于分类任务来讲，一方面我们已经在原始语料集上训练出了效果很好的模型，另一方面每周都会有大规模数据到来。为了提高分类模型的精确度，我们可以选择使用更新后的语料集来重新训练支持向量机(SVM)模型，这将伴随着一定的时间代价。同时我们希望可以利用一种算法，可以取得跟重新开始训练的模型一致的准确度并且大大的减少训练时间，至少可以满足现在的训练时间上的需求。台湾大学林智仁组发表了paper$"Incremental and decremental training for linear classification"$,提出了一种incremental learning的算法。基本思想可以概述为训练新的分类模型时，一方面使用更新后的数据进行训练，另一方面利用之前使用原始数据训练出来的模型参数初始化新模型的参数。那么新的模型既可以取得跟使用更新之后的数据重新训练的模型一致的准确度又可以减少训练时间。我们期望可以在微软给定的数据集中应用这个算法，并且在微软的给定的语料集上重现出实验效果。
+   利用大规模的数据训练算法模型的同时也伴随着另一个不能忽视的问题，随着可以利用的数据越来越多，在模型的训练时间上付出的代价越来越显著。对于分类任务来说即将面临的问题是一方面大规模的数据可以帮助训练出泛化能力更强的模型，另一方面如果每次都是重新开始训练模型，训练时间将会大大的增加，这对于在线上使用是不可以接受的。实际上，对于分类任务来讲，一方面我们已经在原始语料集上训练出了效果很好的模型，另一方面每周都会有大规模数据到来。为了提高分类模型的精确度，我们可以选择使用更新后的语料集来重新训练支持向量机(SVM)模型，这将伴随着一定的时间代价。同时我们希望可以利用一种算法，可以取得跟重新开始训练的模型一致的准确度并且大大的减少训练时间，至少可以满足现在的训练时间上的需求。台湾大学林智仁组发表了论文"Incremental and decremental training for linear classification",在这篇论文里提出了一种incremental learning的算法。基本思想可以概述为训练新的分类模型时，一方面使用更新后的数据进行训练，另一方面利用之前使用原始数据训练出来的模型参数初始化新模型的参数。那么新的模型既可以取得跟使用更新之后的数据重新训练的模型一致的准确度又可以减少训练时间。我们期望可以在微软给定的数据集中应用这个算法，并且在微软的给定的语料集上重现出实验效果。
 
    本章接下来的组织如下，首先我们将概述基于支持向量机(SVM)的incremental learning算法，然后介绍incremental learning算法求解中涉及到的坐标梯度下降算法以及置信域的牛顿算法，接着阐述实验设计以及结果，最后进行总结。
 
@@ -740,21 +742,40 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
 
 \subsection{SVM原始问题介绍}
 
-    给定训练集$\left(y_i,x_i\right) \in \{-1, 1\} \times R^n, i = 1,\dots,l$,SVM原始问题的优化公式是$\min\limits_{w} f\left(w\right) where f\left(w\right)\equiv \frac{1}{2}w^Tw + C\sum{i=1}^l \xi\left(w;x_i;y_i\right)$, $\xi\left(w;x_i,y_i\right)$是损失函数，这里使用的是L2损失函数，也即$\xi_L2\left(w;x_i,y_i\right) \equiv \max\left(0,1-y_iw^Tx_i\right)^2$。L2损失函数的特点是可微但不是二次可微。存在很多凸优化算法寻找最有的参数$w$。
+    给定训练集$\left(y_i,x_i\right) \in \{-1, 1\} \times R^n, i = 1,\dots,l$,SVM原始问题的优化公式是
 
-   在原始问题中，SVM的参数w的维度跟数据变化无关，跟特征数量一致。当训练数据增加时候，对于incremental learning算法有以下两个假设，第一个假设是，特征数量没有发生变化，因此对于原始问题需要求解的参数数量也没有发生变化。第二个假设是，新增加的数据跟原始数据服从于同一分布。因为求解原始问题的优化算法是一种迭代算法，因此好的初始值可以减少迭代次数从而减少训练时间。对于原始的训练集$\left(y_i,x_i\right),i=1,\dots,l$，假设$w^*$是原始问题的最优解，基于以上假设当增加新的数据时，可以利用$w^*$来作为新的模型参数的初始值也即$\bar{w}=w^*$。
+    $\min\limits_{w} f\left(w\right)$,where $f\left(w\right)\equiv \frac{1}{2}w^Tw + C\sum{i=1}^l \xi\left(w;x_i;y_i\right)$, 
 
-    新数据增加后的优化公式是$\min\limits_{w} \frac{1}{2}w^Tw+C\sum_{i=1}^{l+k} \xi\left(w;x_i,y_i\right)$，如果使用了原始数据训练出来的模型参数$w^\ast$作为新的优化问题的初始化参数，那么新的问题的初始值是$\frac{1}{2}\bar{w}^T\bar{w}+C\sum_{i=1}^l \xi\left(\bar{w};x_i,y_i\right)+C\sum_{i=l+1}^{l+k}\xi\left(\bar{w};x_i,y_i\right)$。
+    $\xi\left(w;x_i,y_i\right)$是损失函数，这里使用的是L2损失函数，也即$\xi_L2\left(w;x_i,y_i\right) \equiv \max\left(0,1-y_iw^Tx_i\right)^2$。L2损失函数的特点是可微但不是二次可微。存在很多凸优化算法寻找最优的参数$w$。
+
+   在原始问题中，SVM的参数w的维度跟数据变化无关，跟特征数量一致。当训练数据增加时候，对于incremental learning算法有以下两个假设，第一个假设是，特征数量没有发生变化，因此对于原始问题需要求解的参数数量也没有发生变化。第二个假设是，新增加的数据跟原始数据服从于同一分布。因为求解原始问题的优化算法是一种迭代算法，因此好的初始值可以减少迭代次数从而减少训练时间。对于原始的训练集$\left(y_i,x_i\right),i=1,\dots,l$，假设$w^*$是原始问题的最优解，基于以上假设当增加新的数据时，可以利用$w^*$来作为新的模型参数的初始值也即$\bar{w}=w^*$。新数据增加后的优化公式是
+
+    $\min\limits_{w} \frac{1}{2}w^Tw+C\sum_{i=1}^{l+k} \xi\left(w;x_i,y_i\right)$，
+
+    如果使用了原始数据训练出来的模型参数$w^\ast$作为新的优化问题的初始化参数，那么新的问题的初始值是
+
+    $\frac{1}{2}\bar{w}^T\bar{w}+C\sum_{i=1}^l
+\xi\left(\bar{w};x_i,y_i\right)+C\sum_{i=l+1}^{l+k}\xi\left(\bar{w};x_i,y_i\right)$。
 
 \subsection{SVM对偶问题介绍}
     
-    给定训练集$\left(y_i,x_i\right) \in \{-1,1\} \times R^n$，最优化参数$w$可以表示为带有系数$\alpha$的训练样本的线性组合，也即$w=\sum_{i=1}^l y_i\alpha_ix_i$。我们可以解决基于$\alpha$的优化问题，也就是SVM问题的对偶形式,$\max\limits_{\alpha} f^D\left(\alpha\right) \equiv \sum_{i=1}^l h\left(\alpha_i,C\right)-\frac{1}{2}\sum_{i=1}^l \sum_{j=1}^l \alpha_i\alpha_j K\left(i,j\right)-\sum_{i=1}^l \frac{\alpha_i^2}{2}d$,$0 \le \alpha_i \le U$,$\forall i=1,\dots,l$，这里的$K\left(i,j\right)=y_iy_jx^T_ix_j$,同时对于L2损失的SVM来讲有，$U=\infty$,$d=\frac{1}{2C}$,$h\left(\alpha_i,C\right)=\alpha_i$。
+    给定训练集$\left(y_i,x_i\right) \in \{-1,1\} \times R^n$，最优化参数$w$可以表示为带有系数$\alpha$的训练样本的线性组合，也即$w=\sum_{i=1}^l y_i\alpha_ix_i$。我们可以解决基于$\alpha$的优化问题，也就是SVM问题的对偶形式，
+
+    $\max\limits_{\alpha} f^D\left(\alpha\right) \equiv \sum_{i=1}^l h\left(\alpha_i,C\right)-\frac{1}{2}\sum_{i=1}^l \sum_{j=1}^l \alpha_i\alpha_j K\left(i,j\right)-\sum_{i=1}^l \frac{\alpha_i^2}{2}d$,$0 \le \alpha_i \le U$,$\forall i=1,\dots,l$，
+
+    这里的$K\left(i,j\right)=y_iy_jx^T_ix_j$,同时对于L2损失的SVM来讲有，$U=\infty$,$d=\frac{1}{2C}$,$h\left(\alpha_i,C\right)=\alpha_i$。
     
     对于对偶问题，求解的参数是$\alpha$,$\alpha$的维度跟数据维度一致，因此当增加新的数据时，$\alpha$的数量会发生变化。这里假设增加的新的训练集如下$(y_i,x_i),i = l+1,\dots,l+k$,下面的$\bar{\alpha}$可以视为初始的解，$\bar{\alpha} = [\alpha^\ast_1,\dots,\alpha^\ast_l,0,\dots,0]^\intercal \in R^{\left(l+k\right) \times l}$对于$\bar{\alpha_{l+1}},\dots,\bar{\alpha_{l+k}}$可以在$[0,U]$之间任意取值，但是不能确定如何最好的赋值。这也是求解incremtal learning中的对偶问题面临的问题。
 
-    新数据进来后优化公式是$\min\limits_{w} \frac{1}{2}w^\intercal w+C\sum_{i=1}^{l+k} \xi\left(w;x_i,y_i\right)$，假设我们对$\bar{\alpha_{l+1}},\dots,\bar{\alpha{l+k}}$取值为0，那么增加新的数据之后优化公式的初始值是$\sum_{i=1}^l h\left(\alpha^\ast_i,C\right)+\sum_{i=l+1}^{l+k} h\left(0,C\right)-\frac{1}{2}[{\alpha^\ast}^\intercal O^\intercal]\left[{\begin{array}{ccccc} \bar{Q} & \vdots \\ \dots & \\ \end{array}}\right] = \frac{1}{2}\bar{w}^\intercal \bar{w}+C\sum{i=1}^l \xi\left(\bar{w};x_i,y_i\right)$
+    新数据进来后优化公式是，
     
-    在paper$Incremental and decremental learning for linear classification$中有证明，原始问题初始值相对于对偶问题初始值距离新的问题的最优值更近。同时对偶问题的初始值不好确定，综上，在求解基于SVM的incremetal learning问题时候选择求解svm原始问题。
+    $\min\limits_{w} \frac{1}{2}w^\intercal w+C\sum_{i=1}^{l+k} \xi\left(w;x_i,y_i\right)$，
+
+    假设我们对$\bar{\alpha_{l+1}},\dots,\bar{\alpha{l+k}}$取值为0，那么增加新的数据之后优化公式的初始值是，
+    
+    $\sum_{i=1}^l h\left(\alpha^\ast_i,C\right)+\sum_{i=l+1}^{l+k} h\left(0,C\right)-\frac{1}{2}[{\alpha^\ast}^\intercal O^\intercal]\left[{\begin{array}{ccccc} \bar{Q} & \vdots \\ \dots & \\ \end{array}}\right] = \frac{1}{2}\bar{w}^\intercal \bar{w}+C\sum_{i=1}^l \xi\left(\bar{w};x_i,y_i\right)$
+    
+    在论文"Incremental and decremental learning for linear classification"中有证明，原始问题初始值相对于对偶问题初始值距离新的问题的最优值更近。同时对偶问题的初始值不好确定，综上，在求解基于SVM的incremetal learning问题时候选择求解svm原始问题。
 
 \section{incremental learning中的优化算法}
 
@@ -762,95 +783,99 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
     
     对于优化算法，经常使用的有两种，一种是一阶优化算法，这种算法的优点是每次迭代代价比较小，具体来说就是求解一阶导数的代价较低，缺点是迭代次数比较多。另一种是二阶优化算法，这种算法的优点是迭代次数比较少，因为这里求解的是二阶导数，是梯度的梯度，缺点每次迭代的代价比较大，具体来说要求Hessian矩阵的逆矩阵。
     
-    由于需要求解的优化公式具有非常好的性质，具体的说求解的优化函数是一种凸函数，具有全局最优解，尤其需要注意的是求解的SVM是L2正则L2Loss函数，可以容易的求得优化函数的一阶导数以及二阶导数，因此可以使用一系列高效的优化算法。这里选择两种求解SVM问题比较高效的优化算法，通过比较两种优化算法在求解优化函数的时间同时关注两种优化算法求解的SVM模型在测试集上的准确率，最后确定一种比较好的的优化算法。这两种优化算法是$Coordinate Descent Method for Large-scale L2 loss Linear SVM$中提到的坐标梯度下降优化算法，$Trust Region Newton Method for Large-scale Logistic Regression$提高的置信域牛顿优化算法。
+    由于需要求解的优化公式具有非常好的性质，具体的说求解的优化函数是一种凸函数，具有全局最优解，尤其需要注意的是求解的SVM是L2正则L2Loss函数，可以容易的求得优化函数的一阶导数以及二阶导数，因此可以使用一系列高效的优化算法。这里选择两种求解SVM问题比较高效的优化算法，通过比较两种优化算法在求解优化函数的时间同时关注两种优化算法求解的SVM模型在测试集上的准确率，最后确定一种比较好的的优化算法。这两种优化算法是论文"Coordinate Descent Method for Large-scale L2 loss Linear SVM"中提到的坐标梯度下降优化算法，论文"Trust Region Newton Method for Large-scale Logistic Regression"提到的置信域牛顿优化算法。
 
 \subsection{坐标梯度下降优化算法}
     
     坐标梯度下降算法在每次迭代时，在当前点处沿一个坐标方向进行一维搜索以求得一个函数的局部极小值，在整个过程中循环使用不同的坐标方向。
 
-    在$Coordinate Descent Method for Large-scale L2-loss Linear Support Vector Machines$中提到的坐标梯度下降优化算法可以用来解决SVM的原始问题，并且相当高效。Incremental learning算法中求解是L2正则L2损失的SVM形式如下，$\min\limits_{w} f\left(w\right) = \frac{1}{2}w^\intercal w+ C\sum_{j=1}^l \max\left(1-y_jw^\intercal x_j,0\right)^2$,L2损失SVM是分段二次凸函数，一阶可微但不是二阶可微的。坐标梯度下降优化算法是一种迭代算法，通过每一轮对参数$w$进行迭代计算，产生序列$\{w^k\}_{k=0}^{\infty}$，直至参数收敛。
+    在论文"Coordinate Descent Method for Large-scale L2-loss Linear Support Vector Machines"中提到的坐标梯度下降优化算法可以用来解决SVM的原始问题，并且相当高效。Incremental learning算法中求解是L2正则L2损失的SVM形式如下，
+
+    $\min\limits_{w} f\left(w\right) = \frac{1}{2}w^\intercal w+ C\sum_{j=1}^l \max\left(1-y_jw^\intercal x_j,0\right)^2$
     
-    坐标梯度下降算法每次通过解决子问题来更新参数$w$的一个变量，如果可以高效的解决这个子问题那么坐标梯度算法将会很有竞争力。对于L2损失的SVM，子问题是最小化单变量的分段二次函数，这个函数一阶可微但是二阶不可微。形式化表示为$w_i \leftarrow w_i + \arg\min_{d} f\left(w+de_i\right)$。
+    L2损失SVM是分段二次凸函数，一阶可微但不是二阶可微的。坐标梯度下降优化算法是一种迭代算法，通过每一轮对参数$w$进行迭代计算，产生序列$\{w^k\}_{k=0}^{\infty}$，直至参数收敛。
+    
+    坐标梯度下降算法每次通过解决子问题来更新参数$w$的一个变量，如果可以高效的解决这个子问题那么坐标梯度算法将会很有竞争力。对于L2损失的SVM，子问题是最小化单变量的分段二次函数，这个函数一阶可微但是二阶不可微。子问题可以形式化表示为     
 
-坐标梯下降算法如下，
-\begin{algorithm}
-\caption{Coordinate descent algorithm for L2-SVM}\label{CD}
-\begin{algorithmic}[1]
-\Procedure{Coordinate descent procedure description}{}
-  \State Start with any initial $w^0$
-   \For{$k = 0,1,\dots$}
-     \For{$i = 1,2,\dots,n$}
-	   \State Fix $w^{k+1}_{1},\dots,w^{k+1}_{i-1},\dots,w^{k}_{n}$,approximately solve the sub-problem to obtain $w^{k+1}_{i}$
-        \Procedure{sub-problem procedure}{}
-	     \State Given $w^{k,i}$. Choose$\beta \in \left(0,1\right) \left(e.g.,\beta=0.5\right)$.
-	     \State Calculate the Newton direction $d=-D^{'}_{i}\left(0\right)/D^{''}_{i}\left(0\right)$
-	     \State Compute $\lambda = \max\{1,\beta,\beta^2,\dots\}$ such that $z = \lambda d$ statisfies $D_{i}\left(z\right) - D_{i}\left(0\right) \le -\sigma z^2$
-        \EndProcedure
-     \EndFor
-   \EndFor
-\EndProcedure
-\end{algorithmic}
-\end{algorithm}
+    $w_i \leftarrow w_i + \arg\min_{d} f\left(w+de_i\right)$。
+    
+    坐标梯度下降算法中使用了牛顿方法来近似的求解上述子问题并且在论文中证明基于坐标梯度下降求解SVM算法的时间复杂度是$O\left(nm\right)$[5]
 
-    坐标梯度下降算法中使用了牛顿方法来近似的求解上述子问题并且时间复杂度是$O\left(nm\right)$[5]
+    坐标梯下降算法如下，
+    \begin{algorithm}
+    \caption{Coordinate descent algorithm for L2-SVM}\label{CD}
+    \begin{algorithmic}[1]
+    \Procedure{Coordinate descent procedure description}{}
+      \State Start with any initial $w^0$
+      \For{$k = 0,1,\dots$}
+        \For{$i = 1,2,\dots,n$}
+	    \State Fix $w^{k+1}_{1},\dots,w^{k+1}_{i-1},\dots,w^{k}_{n}$,approximately solve the sub-problem to obtain $w^{k+1}_{i}$
+          \Procedure{sub-problem procedure}{}
+	      \State Given $w^{k,i}$. Choose$\beta \in \left(0,1\right) \left(e.g.,\beta=0.5\right)$.
+	      \State Calculate the Newton direction $d=-D^{'}_{i}\left(0\right)/D^{''}_{i}\left(0\right)$
+	      \State Compute $\lambda = \max\{1,\beta,\beta^2,\dots\}$ such that $z = \lambda d$ statisfies $D_{i}\left(z\right) - D_{i}\left(0\right) \le -\sigma z^2$
+          \EndProcedure
+        \EndFor
+      \EndFor
+    \EndProcedure
+    \end{algorithmic}
+    \end{algorithm}
 
-
+    
 \subsection{置信域牛顿优化算法}
    
     
     置信域牛顿优化算法解决的SVM问题与坐标梯度优化算法一致。对于牛顿方法来说，每一轮迭代的代价高同时具有很快的收敛速度。
 
-    置信域牛顿方法也是一种迭代算法，在每一轮迭代中对于参数$w$，TRON通过获得近似的牛顿步长$d$来获取置信域通过解决下面的子问题,
+    置信域牛顿方法也是一种迭代算法，在每一轮迭代中对于参数$w$，置信域牛顿优化算法通过获得近似的牛顿步长$d$来获取置信域通过解决下面的子问题,
 
-$\min_{d} q\left(d\right)$ subject to $\Vert d \Vert \le \Delta$， where $q\left(d\right) \equiv \Delta f\left(w\right)^\intercal+\frac{1}{2} d^\intercal \Delta^2 f\left(w\right)d$。
+    $\min_{d} q\left(d\right)$ subject to $\Vert d \Vert \le \Delta$， where $q\left(d\right) \equiv \Delta f\left(w\right)^\intercal+\frac{1}{2} d^\intercal \Delta^2 f\left(w\right)d$。
     
     这个子问题是通过共轭梯度下降进行求解的。置信域牛顿算法过程如下，
+    \begin{algorithm}
+    \caption{Trust region algorithm for L2-SVM}\label{TRON}
+    \begin{algorithmic}[1]
+    \Procedure{Trust region algorithm procedure description}{}
+      \State Start with any initial $w^0$
+       \For{$k = 0,1,\dots$}
+         \If{$\Delta f\left(w^k\right)=0$},stop
+           \State Find an approximate solution $s^k$ of the trust region sub-problem
+           \State $\min\limits_{s} q_k\left(s\right)$,subject to $\Vert s \Vert \le \Delta_k$
+           \State Compute $\rho_k$ via $\left(6\right)$
+           \State Update$w_k$ to $w_{k+1}$ according to $\left(7\right)$
+           \State Obtain $\Delta_{k+1}$ according to $\left(8\right)$
+         \EndIf
+       \EndFor
+    \EndProcedure
+    \end{algorithmic}
+    \end{algorithm}
 
-\begin{algorithm}
-\caption{Trust region algorithm for L2-SVM}\label{TRON}
-\begin{algorithmic}[1]
-\Procedure{Trust region algorithm procedure description}{}
-  \State Start with any initial $w^0$
-   \For{$k = 0,1,\dots$}
-     \If{$\Delta f\left(w^k\right)=0$},stop
-       \State Find an approximate solution $s^k$ of the trust region sub-problem
-       \State $\min\limits_{s} q_k\left(s\right)$,subject to $\Vert s \Vert \le \Delta_k$
-       \State Compute $\rho_k$ via $\left(6\right)$
-       \State Update$w_k$ to $w_{k+1}$ according to $\left(7\right)$
-       \State Obtain $\Delta_{k+1}$ according to $\left(8\right)$
-    \EndIf
-   \EndFor
-\EndProcedure
-\end{algorithmic}
-\end{algorithm}
-
-共轭梯度算法如下描述，
-
-\begin{algorithm}
-\caption{Conjugate gradient procedure for approximately solving the trust region sub-problem}\label{CG}
-\begin{algorithmic}[1]
-\Procedure{Conjugate gradient algorithm procedure description}{}
-  \State Given $\xi_k < 1,\Delta_k > 0. Let \bar{s}^0 = 0,r^0 = -\Delta f\left(w^k\right) and d^0 = r^0$
-   \For{$i = 0,1,\dots$}
-     \If{$\Vert r^i \Vert = \Vert \Delta f\left(w^k\right) + \Delta^2 f\left(w^k\right) \bar{s}^i \le \xi_k \Vert \Delta f\left(w^k\right) \Vert$}
-       \State output $s^k = \bar{s}^i $ and stop
-      \EndIf
-      \State $\alpha_i = \Vert r^i \Vert^2/\left(\left(d^i\right)^\intercal \Delta^2 f\left(w^k\right) d^i\right)$
-       \State $\bar{s}^{i+1} = \bar{s}^{i} + \alpha_i d^i$
-       \If $\Vert \bar{s}^{i+1} \Vert \ge \Delta_k$,compute $\tau$ such that
-         \State $\Vert \bar{s}^i + \tau d^i \Vert = \Delta_k$
-         \State output$s^k = \bar{s}^i + \tau d^i$ and stop
-       \EndIf
-
-       \State $r^{i+1} = r^{i} - \alpha_i \Delta^2 f\left(w^k\right) d^i$
-       \State $\beta_i = \Vert r^{i+1} \Vert^2 / \Vert r^i \Vert^2$
-       \State $d^{i+1} = r^{i+1} + \beta_i d^i$
-   \EndFor
-\EndProcedure
-\end{algorithmic}
-\end{algorithm}
+    在求解置信域的牛顿算法过程中需要求解子问题，子问题可以通过共轭梯度算法求解，共轭梯度下降算法如下描述，
+    \begin{algorithm}
+    \caption{Conjugate gradient procedure for approximately solving the trust region sub-problem}\label{CG}
+    \begin{algorithmic}[1]
+    \Procedure{Conjugate gradient algorithm procedure description}{}
+      \State Given $\xi_k < 1,\Delta_k > 0. Let \bar{s}^0 = 0,r^0 = -\Delta f\left(w^k\right) and d^0 = r^0$
+       \For{$i = 0,1,\dots$}
+         \If{$\Vert r^i \Vert = \Vert \Delta f\left(w^k\right) + \Delta^2 f\left(w^k\right) \bar{s}^i \le \xi_k \Vert \Delta f\left(w^k\right) \Vert$}
+           \State output $s^k = \bar{s}^i $ and stop
+         \EndIf
+         \State $\alpha_i = \Vert r^i \Vert^2/\left(\left(d^i\right)^\intercal \Delta^2 f\left(w^k\right) d^i\right)$
+         \State $\bar{s}^{i+1} = \bar{s}^{i} + \alpha_i d^i$
+         \If $\Vert \bar{s}^{i+1} \Vert \ge \Delta_k$,compute $\tau$ such that
+           \State $\Vert \bar{s}^i + \tau d^i \Vert = \Delta_k$
+           \State output$s^k = \bar{s}^i + \tau d^i$ and stop
+         \EndIf
+         \State $r^{i+1} = r^{i} - \alpha_i \Delta^2 f\left(w^k\right) d^i$
+         \State $\beta_i = \Vert r^{i+1} \Vert^2 / \Vert r^i \Vert^2$
+         \State $d^{i+1} = r^{i+1} + \beta_i d^i$
+       \EndFor
+    \EndProcedure
+    \end{algorithmic}
+    \end{algorithm}
 
 \section{实验设计以及结果分析}
+
 
     实验使用微软给定的语料集，其中400万条查询作为训练语料集，1.8万条查询作为测试语料集。为了防止随机性对于实验结果的影响重复实验50次，取平均的训练时间以及准确率作为做最终的结果。
 
@@ -860,54 +885,69 @@ $\min_{d} q\left(d\right)$ subject to $\Vert d \Vert \le \Delta$， where $q\lef
 
 \subsection{non-incremental learning训练方法}
 
-对于non-incremental learning训练方法，分别使用原始数据经过洗牌处理之后的$\frac{1}{10},\frac{2}{10},\frac{3}{10},\dots,\frac{10}{10}$的数据作为训练集，训练出分类器$X_1,X_2,X_3,\dots,X_10$。以第一个，第二个以及第十个分类器为例说明训练方法。
-    
-    \begin{enumerate}
-	    \item 第一个分类器，使用$\frac{1}{10}$数据作为训练集，重新开始训练出分类器$X_1$。记录$X_1$的训练时间以及在测试集上的准确率。
-	    \item 第二个分类器，使用$\frac{2}{10}$数据作为训练集，重新开始训练出分类器$X_2$。记录$X_2$的训练时间以及在测试集上的准确率。
-      \item 第十个分类器，使用完整的语料集作为训练集，重新开始训练出分类器$X_10$。记录$X_10$的训练时间以及在测试集上的准确率。
-    \end{enumerate}
+    对于non-incremental learning训练方法，分别使用原始数据经过洗牌处理之后的$\frac{1}{10},\frac{2}{10},\frac{3}{10},\dots,\frac{10}{10}$的数据作为训练集，训练出分类器$X_1,X_2,X_3,\dots,X_10$。以第一个，第二个以及第十个分类器为例说明训练方法。
+
+    \fbox{\begin{minipage}{32em}
+     1.第一个分类器，使用$\frac{1}{10}$数据作为训练集，重新开始训练出分类器$X_1$。记录$X_1$的训练时间以及在测试集上的准确率。\\
+     2.第二个分类器，使用$\frac{2}{10}$数据作为训练集，重新开始训练出分类器$X_2$。记录$X_2$的训练时间以及在测试集上的准确率。\\
+     3. $\dots \dots$\\
+     4.第十个分类器，使用完整的语料集作为训练集，重新开始训练出分类器$X_10$。记录$X_10$的训练时间以及在测试集上的准确率。
+    \end{minipage}}
 
 \subsection{incremental learning训练方法}
     
-对于incremental learning方法，分别使用原始数据洗牌之后的$\frac{1}{10},\frac{2}{10},\frac{3}{10},\dots,\frac{10}{10}$的数据作为训练集训练分类器，不同的是训练方法。以第一个，第二个，第十个分类器为例说明训练方法。
+    对于incremental learning方法，分别使用原始数据洗牌之后的$\frac{1}{10},\frac{2}{10},\frac{3}{10},\dots,\frac{10}{10}$的数据作为训练集训练分类器，不同的是训练方法。以第一个，第二个，第十个分类器为例说明训练方法。
+   
 
-   \begin{enumerate}
-	   \item 第一个分类器，使用$\frac{1}{10}$的数据作为训练集，训练出分类器$Y_1$。记录$Y_1$在的训练时间以及在测试集上的准确率
-	   \item 第二个分类器，使用$\frac{2}{10}$的数据作为训练集同时使用分类器$Y_1$的参数作为第二个分类器参数的初始值，训练出分类器$Y_2$。记录$Y_2$的训练时间以及在测试集上的准确率
-        \item 第十个分类器，使用完整的语料集作为训练集同时使用分类器$Y_9$的参数作为第十个分类器参数的初始值，训练出分类器$Y_10$。记录$Y_10$的训练时间以及在测试集上的准确率
-    \end{enumerate}
+   \fbox{\begin{minipage}{32em}
+    1.第一个分类器，使用$\frac{1}{10}$的数据作为训练集，训练出分类器$Y_1$。记录$Y_1$在的训练时间以及在测试集上的准确率\\
+    2.第二个分类器，使用$\frac{2}{10}$的数据作为训练集同时使用分类器$Y_1$的参数作为第二个分类器参数的初始值，训练出分类器$Y_2$。记录$Y_2$的训练时间以及在测试集上的准确率\\
+    3. $\dots \dots$\\
+    4.第十个分类器，使用完整的语料集作为训练集同时使用分类器$Y_9$的参数作为第十个分类器参数的初始值，训练出分类器$Y_10$。记录$Y_10$的训练时间以及在测试集上的准确率
+    \end{minipage}}
+
 \subsection{实验设计流程}
     
     对于non-incremental learning方法和incremental learning方法中的每一个分类器，对于其中的训练集以及测试集的处理方法一致，具体如下，
-
-    \begin{enumerate}
-      \item 训练集以及测试集进行数据预处理，具体如下
-	\begin{enumerate}
-	  \item 使用微软提供的分词工具分词
-	  \item 去除停用词
-	\end{enumerate}
-     \item 提取文本特征，特征提取方法跟上一章节实验中方法一致
-     \item 对于提取到的文本特征进行归一化
-       \begin{enumerate}
-         \item 可以防止某一维或某几维对数据影响过大
-         \item 可以使程序可以运行更快，减少训练时间
-	 \item 将特征处理成LIBLINEAR数据处理格式
-       \end{enumerate}
-     \item 使用LIBLINEAR在训练集上训练出SVM模型，在测试集上测试模型的准确率
-     \item 记录使用LIBLINEAR训练出SVM模型的时间以及在测试集上的准确率
-   \end{enumerate}
+    
+    \fbox{\begin{minipage}{32em}
+      \begin{enumerate}
+        \item 训练集以及测试集进行数据预处理，具体如下
+	   \begin{enumerate}
+	     \item 使用微软提供的分词工具分词
+	     \item 去除停用词
+	   \end{enumerate}
+        \item 提取文本特征，特征提取方法跟上一章节实验中方法一致
+        \item 对于提取到的文本特征进行归一化
+        \begin{enumerate}
+          \item 可以防止某一维或某几维对数据影响过大
+          \item 可以使程序可以运行更快，减少训练时间
+	   \item 将特征处理成LIBLINEAR数据处理格式
+        \end{enumerate}
+        \item 使用LIBLINEAR在训练集上训练出SVM模型，在测试集上测试模型的准确率
+        \item 记录使用LIBLINEAR训练出SVM模型的时间以及在测试集上的准确率
+      \end{enumerate}
+     \end{minipage}} 
 
 \subsection{实验结果分析}
+    
+    我们的实验结果比较的是两种不同方法在训练分类模型时候的时间以及准确率，
+    
+    时间的实验结果如下图所示：
+    \begin{figure}[htbp]
+      \centering
+      \includegraphics[width=1.0\textwidth]{time.jpg}\\
+      \caption{}\label{fig:time}
+    \end{figure}
+    
+    准确率的实验结果如下图所示：
+    \begin{figure}[htbp]
+      \centering
+      \includegraphics[width=1.0\textwidth]{accuracy.jpg}\\
+      \caption{}\label{fig:time}
+    \end{figure}
 
-    实验结果如下图所示：
-    %\begin{figure}[htbp]
-    %  \centering
-    %  \includegraphics[width=0.5\textwidth]{}
-    %  \caption{}\label{fig:test1}
-    %\end{figure}
-
-    对于两种不同的训练方法，我们分别训练出10个分类器，同时记录了每一个分类器的训练时间以及准确率。然后我们比较了两种不同训练方法得到的对应的每个分类器的训练时间以及准确率。从准确率的角度上看，non-incremental learning以及incremental learning方法取得准确率类似，误差在。。。，从训练时间的角度看，incremental learning方法的训练时间远远小于non-incremental learning方法。基于以上实验结果，可以证实incremental learning方法可以在线上使用。
+    对于两种不同的训练方法，我们分别训练出10个分类器，同时记录了每一个分类器的训练时间以及准确率。然后我们比较了两种不同训练方法得到的对应的每个分类器的训练时间以及准确率。从准确率的角度上看，non-incremental learning以及incremental learning方法取得准确率类似，误差几乎可以忽略不计，从训练时间的角度看，incremental learning方法的训练时间远远小于non-incremental learning方法。基于以上实验结果，可以证实incremental learning方法可以在线上使用。
 
 \section{总结}
 
