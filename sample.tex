@@ -13,7 +13,8 @@
 % 使用 blindtext 宏包自动生成章节文字
 % 这仅仅是用于生成样例文档，正式论文中一般用不到该宏包
 \usepackage[math]{blindtext}
-
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 设置《国家图书馆封面》的内容，仅博士论文才需要填写
 
@@ -771,27 +772,83 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
     
     坐标梯度下降算法每次通过解决子问题来更新参数$w$的一个变量，如果可以高效的解决这个子问题那么坐标梯度算法将会很有竞争力。对于L2损失的SVM，子问题是最小化单变量的分段二次函数，这个函数一阶可微但是二阶不可微。形式化表示为$w_i \leftarrow w_i + \arg\min_{d} f\left(w+de_i\right)$。
 
-    坐标梯下降算法如下，
-    Algorithm 1 Coordinate descent algorithm for L2-SVM
-    1. Start with any initial $w^0$
-    2. For $k = 0,1,\dots$
-           For $i = 1,2,\dots,n$
-	   Fix $w^{k+1}_{1},\dots,w^{k+1}_{i-1},\dots,w^{k}_{n}$ and approximately solve the sub-problem to obtain $w^{k+1}_{i}$
-	   \begin{enumerate}
-	     \item Given $w^{k,i}$. Choose$\beta \in \left(0,1\right) \left(e.g.,\bata=0.5\right)$.
-	     \item Calculate the Newton direction $d=-D^{'}_{i}\left(0\right)/D^{''}_{i}\left(0\right)$
-	     \item Compute $\lambda = \max\{1,\beta,\beta^2,\dots\}$ such that $z = \lambda d$ statisfies $D_{i}\left(z\right) - D_{i}\left(0\right) \le -\sigma z^2$
-           \end{enumerate}
+坐标梯下降算法如下，
+\begin{algorithm}
+\caption{Coordinate descent algorithm for L2-SVM}\label{CD}
+\begin{algorithmic}[1]
+\Procedure{Coordinate descent procedure description}{}
+  \State Start with any initial $w^0$
+   \For{$k = 0,1,\dots$}
+     \For{$i = 1,2,\dots,n$}
+	   \State Fix $w^{k+1}_{1},\dots,w^{k+1}_{i-1},\dots,w^{k}_{n}$,approximately solve the sub-problem to obtain $w^{k+1}_{i}$
+        \Procedure{sub-problem procedure}{}
+	     \State Given $w^{k,i}$. Choose$\beta \in \left(0,1\right) \left(e.g.,\beta=0.5\right)$.
+	     \State Calculate the Newton direction $d=-D^{'}_{i}\left(0\right)/D^{''}_{i}\left(0\right)$
+	     \State Compute $\lambda = \max\{1,\beta,\beta^2,\dots\}$ such that $z = \lambda d$ statisfies $D_{i}\left(z\right) - D_{i}\left(0\right) \le -\sigma z^2$
+        \EndProcedure
+     \EndFor
+   \EndFor
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
 
-	   坐标梯度下降算法中使用了牛顿方法来近似的求解上述子问题并且时间复杂度是$O\left(nm\right)$[5]
+    坐标梯度下降算法中使用了牛顿方法来近似的求解上述子问题并且时间复杂度是$O\left(nm\right)$[5]
 
 
 \subsection{置信域牛顿优化算法}
    
+    
     置信域牛顿优化算法解决的SVM问题与坐标梯度优化算法一致。对于牛顿方法来说，每一轮迭代的代价高同时具有很快的收敛速度。
 
-    在每一轮迭代中对于参数w，TRON获得近似的牛顿步长d来获取置信域通过解决下面的子问题,$\min_{d} q\left(d\right) subject to \Vert d \Vert \le \Delta， where q\left(d\right) \equivt \Delta f\left(w\right)^\intercal+\frac{1}{2} d^\intercal \Delta^2 f\left(w\right)d$。这个子问题是通过共轭梯度下降进行求解的。
+    置信域牛顿方法也是一种迭代算法，在每一轮迭代中对于参数$w$，TRON通过获得近似的牛顿步长$d$来获取置信域通过解决下面的子问题,
 
+$\min_{d} q\left(d\right)$ subject to $\Vert d \Vert \le \Delta$， where $q\left(d\right) \equiv \Delta f\left(w\right)^\intercal+\frac{1}{2} d^\intercal \Delta^2 f\left(w\right)d$。
+    
+    这个子问题是通过共轭梯度下降进行求解的。置信域牛顿算法过程如下，
+
+\begin{algorithm}
+\caption{Trust region algorithm for L2-SVM}\label{TRON}
+\begin{algorithmic}[1]
+\Procedure{Trust region algorithm procedure description}{}
+  \State Start with any initial $w^0$
+   \For{$k = 0,1,\dots$}
+     \If{$\Delta f\left(w^k\right)=0$},stop
+       \State Find an approximate solution $s^k$ of the trust region sub-problem
+       \State $\min\limits_{s} q_k\left(s\right)$,subject to $\Vert s \Vert \le \Delta_k$
+       \State Compute $\rho_k$ via $\left(6\right)$
+       \State Update$w_k$ to $w_{k+1}$ according to $\left(7\right)$
+       \State Obtain $\Delta_{k+1}$ according to $\left(8\right)$
+    \EndIf
+   \EndFor
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+共轭梯度算法如下描述，
+
+\begin{algorithm}
+\caption{Conjugate gradient procedure for approximately solving the trust region sub-problem}\label{CG}
+\begin{algorithmic}[1]
+\Procedure{Conjugate gradient algorithm procedure description}{}
+  \State Given $\xi_k < 1,\Delta_k > 0. Let \bar{s}^0 = 0,r^0 = -\Delta f\left(w^k\right) and d^0 = r^0$
+   \For{$i = 0,1,\dots$}
+     \If{$\Vert r^i \Vert = \Vert \Delta f\left(w^k\right) + \Delta^2 f\left(w^k\right) \bar{s}^i \le \xi_k \Vert \Delta f\left(w^k\right) \Vert$}
+       \State output $s^k = \bar{s}^i $ and stop
+      \EndIf
+      \State $\alpha_i = \Vert r^i \Vert^2/\left(\left(d^i\right)^\intercal \Delta^2 f\left(w^k\right) d^i\right)$
+       \State $\bar{s}^{i+1} = \bar{s}^{i} + \alpha_i d^i$
+       \If $\Vert \bar{s}^{i+1} \Vert \ge \Delta_k$,compute $\tau$ such that
+         \State $\Vert \bar{s}^i + \tau d^i \Vert = \Delta_k$
+         \State output$s^k = \bar{s}^i + \tau d^i$ and stop
+       \EndIf
+
+       \State $r^{i+1} = r^{i} - \alpha_i \Delta^2 f\left(w^k\right) d^i$
+       \State $\beta_i = \Vert r^{i+1} \Vert^2 / \Vert r^i \Vert^2$
+       \State $d^{i+1} = r^{i+1} + \beta_i d^i$
+   \EndFor
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
 
 \section{实验设计以及结果分析}
 
@@ -803,7 +860,7 @@ SVM算法在文本分类中的应用非常广泛而且性能非常好。SVM可�
 
 \subsection{non-incremental learning训练方法}
 
-对于non-incremental learning训练方法，分别使用原始数据经过洗牌处理之后的$\frac{1}{10}，\frac{2}{10}，\frac{3}{10}，\dots,\frac{10}{10}$的数据作为训练集，训练出分类器$X_1,X_2,X_3,\dots,X_10$。以第一个，第二个以及第十个分类器为例说明训练方法。
+对于non-incremental learning训练方法，分别使用原始数据经过洗牌处理之后的$\frac{1}{10},\frac{2}{10},\frac{3}{10},\dots,\frac{10}{10}$的数据作为训练集，训练出分类器$X_1,X_2,X_3,\dots,X_10$。以第一个，第二个以及第十个分类器为例说明训练方法。
     
     \begin{enumerate}
 	    \item 第一个分类器，使用$\frac{1}{10}$数据作为训练集，重新开始训练出分类器$X_1$。记录$X_1$的训练时间以及在测试集上的准确率。
