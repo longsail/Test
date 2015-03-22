@@ -712,7 +712,7 @@ Our experiments on three tasks are achieved good results.
 
     通过我们的模拟实验可以得知slot实体对于分类是有提高作用的，然而对于如何使用slot确有不同的方法。我们在实验过程中尝试了基于generic slot tagger的分类模型以及基于in-domain slot tagger的分类模型。基于generic slot tagger的分类模型没有达到预期，基于in-domain的slot tagger的分类模型可以提高分类的准确率，并且由于slot标注时间很短，可以满足线上的使用。
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{增量式学习在线性支持向量机中的使用}\label{chapter_smallworld}
+\chapter{增量式学习在线性支持向量机中的使用}\label{chapter_incremental}
 
 \section{研究背景}
 
@@ -862,9 +862,9 @@ Our experiments on three tasks are achieved good results.
 
     $\left(3\right)$ $\Delta_{k+1} \in [\sigma_1\min\{\Vert s^k \Vert,\Delta_k]~~~~if~~ \rho \le \eta_1,$
 
-    ~~~~$\Delta_{k+1} \in [\sigma_1\Delta_k,\sigma_3\Delta_k]~~~~~~~~~~~if~~\rho_k \in \left(\eta_1,\eta_2\right)$
+    ~~~~~~$\Delta_{k+1} \in [\sigma_1\Delta_k,\sigma_3\Delta_k]~~~~~~~~~if~~\rho_k \in \left(\eta_1,\eta_2\right)$
 
-    ~~~~$\Delta_{k+1} \in [\Delta_k,\sigma_3\Delta_k]~~~~~~~~~~~~~~~if~~\rho_k \ge \eta_2$
+    ~~~~~~$\Delta_{k+1} \in [\Delta_k,\sigma_3\Delta_k]~~~~~~~~~~~~~if~~\rho_k \ge \eta_2$
     
     在求解置信域的牛顿算法过程中需要求解子问题，子问题可以通过共轭梯度算法求解，共轭梯度下降算法如下描述，
     
@@ -902,7 +902,7 @@ Our experiments on three tasks are achieved good results.
 
 \subsection{non-incremental learning训练方法}
 
-    对于non-incremental learning训练方法，分别使用原始数据经过洗牌处理之后的$\frac{1}{10},\frac{2}{10},\frac{3}{10},\dots,\frac{10}{10}$的数据作为训练集，训练出分类器$X_1,X_2,X_3,\dots,X_10$。以第一个，第二个以及第十个分类器为例说明训练方法。
+    对于non-incremental learning训练方法，分别使用原始数据经过洗牌处理之后的$\frac{1}{10},\frac{2}{10},\frac{3}{10},\dots,\frac{10}{10}$的数据作为训练集，训练出分类器$X_1,X_2,X_3,\dots,X_{10}$。以第一个，第二个以及第十个分类器为例说明训练方法。
 
     \fbox{\begin{minipage}{32em}
      1.第一个分类器，使用$\frac{1}{10}$数据作为训练集，重新开始训练出分类器$X_1$。记录$X_1$的训练时间以及在测试集上的准确率。\\
@@ -920,7 +920,7 @@ Our experiments on three tasks are achieved good results.
     1.第一个分类器，使用$\frac{1}{10}$的数据作为训练集，训练出分类器$Y_1$。记录$Y_1$在的训练时间以及在测试集上的准确率\\
     2.第二个分类器，使用$\frac{2}{10}$的数据作为训练集同时使用分类器$Y_1$的参数作为第二个分类器参数的初始值，训练出分类器$Y_2$。记录$Y_2$的训练时间以及在测试集上的准确率\\
     3. $\dots \dots$\\
-    4.第十个分类器，使用完整的语料集作为训练集同时使用分类器$Y_9$的参数作为第十个分类器参数的初始值，训练出分类器$Y_10$。记录$Y_10$的训练时间以及在测试集上的准确率
+    4.第十个分类器，使用完整的语料集作为训练集同时使用分类器$Y_9$的参数作为第十个分类器参数的初始值，训练出分类器$Y_{10}$。记录$Y_{10}$的训练时间以及在测试集上的准确率
     \end{minipage}}
 
 \subsection{实验设计流程}
@@ -951,13 +951,34 @@ Our experiments on three tasks are achieved good results.
     我们的实验结果比较的是两种不同方法在训练分类模型时候的时间以及准确率，
     
     时间的实验结果如下图所示：
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
     \begin{figure}[htbp]
       \centering
       \includegraphics[width=1.0\textwidth]{time.jpg}\\
       \caption{}\label{fig:time}
     \end{figure}
-    
+
     准确率的实验结果如下图所示：
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
     \begin{figure}[htbp]
       \centering
       \includegraphics[width=1.0\textwidth]{accuracy.jpg}\\
@@ -974,7 +995,7 @@ Our experiments on three tasks are achieved good results.
 % 学位论文的正文应以《结论》作为最后一章
 \chapter{结论}\label{chapter_concludes}
 
-本文在第\ref{chapter_smallworld}章中，详细的介绍了基于LDA以及PageRank的关键词
+本文在第\ref{chapter_keyword}章中，详细的介绍了基于LDA以及PageRank的关键词
 短语提取算法，对于如何获取其中的数据，以及其中使用到的LDA模型和PageRank模型做
 了详细的介绍。使用了这种模型之后，通过在微博中引入话题模型，得到微博的话题分布
 以及每一个话题下面的文档分布，使用PageRank算法对每一个话题下面的单词排序，最终
@@ -983,7 +1004,7 @@ Our experiments on three tasks are achieved good results.
 分析以及实验证明，这种方法可以取得很不错的效果，基于此，可以将关键词短语用在舆情
 检测，用户反馈，广告推荐中。
 
-随后在第\ref{chapter_scalefree}章中，对于语音助手中的查询进行分类。因为要处理的
+随后在第\ref{chapter_classification}章中，对于语音助手中的查询进行分类。因为要处理的
 查询比较短，可以提取的特征比较少。因此想到通过引入slot实体来补充特征，从而可以
 提高分类的准确率。通过使用条件随机场模型来实现slot的自动标注，最终在分类时候应用
 到了slot特征取得了不错的结果
@@ -992,10 +1013,11 @@ Our experiments on three tasks are achieved good results.
 提高了1.9\%点.
 
 
-在第\ref{chapter_experiments}章中，由于语音助手经常更新数据，对于训练新的模型来
-说时间代价比较大，因此需要利用一种增量式的学习算法，可以在位置准确率不变的情况
-下实现训练时间的下降。我们利用了林智仁组的文章中提到的incremental算法，在微软的
-数据集上实现了该算法。实验结果可以减少50\%的时间，准确率几乎没有变化。
+在第\ref{chapter_incremental}章中，由于语音助手经常更新数据，因此每周新增的数据量
+非常巨大，对于使用新的数据重新训练新的模型来说时间代价比较大。因此需要利用一种增量
+式的学习算法，可以在维持准确率不变的情况下实现训练时间的下降。我们利用了林智仁组的
+文章中提到的incremental算法，在微软的数据集上实现了该算法。实验结果可以减少50\%的时间，
+准确率可以维持一致。
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 致谢，应放在《结论》之后
