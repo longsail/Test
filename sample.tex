@@ -146,12 +146,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 论文的中文摘要
 \begin{abstract}
-随着社交网络的发展，智能手机的普及。在社交网络比如新浪微博，qq等媒介上产生了非常多的数据
-，在智能手机上的语音助手比如Cortana，Siri上产生数据也非常多。这些数据有着相同的特点，比如
-是文本长度比较短。机器学习算法在传统的文本上已经有了成熟的发展及应用，在短文本还面临着挑战。
-在本文中，在短文本上进行关键词提取，分类以及增量式学习等任务，并且取得了不错的效果
+随着社交网络的发展，智能手机的普及,在社交网络上比如新浪微博，qq等媒介上产生了非常多的数据
+，在智能手机上的语音助手上比如Cortana，Siri上也产生了很多数据。这些数据有着相同的特点，文本长度比较短。
+机器学习算法在传统的长文本上已经有了比较成熟的发展及应用，然而在短文本上还面临着很多挑战。
+本文尝试对短文本上的关键词短语提取，查询分类以及增量式学习等任务进行深入研究并且在相关数据集上进行实验验证。
+我们的实验在三个任务上都取得了不错的效果。
 % 中文关键词。关键词之间用中文全角分号隔开，末尾无标点符号。
-\keywords{机器学习；短文本；关键词提取；分类}
+\keywords{机器学习；短文本；关键词提取；分类；增量式学习}
 \end{abstract}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -159,10 +160,11 @@
 \begin{englishabstract}
 \blindtext
 % 英文关键词。关键词之间用英文半角逗号隔开，末尾无符号。
-With the development of social networks, the popularity of smart phones. On social networks such as Sina Weibo, qq and other media to generate a lot of data
-On smartphones such as generating voice assistant Cortana, Siri data very much. These data have the same characteristics, such as
-Text length is relatively short. Machine learning algorithms on traditional text already has a mature development and application, in a short text is also facing challenges.
-In this paper, the short text keyword extraction, classification and incremental learning tasks, and achieved good results
+With the development of social networks, the popularity of smart phones, on social networks such as sina weibo,qq and other media to produce a lot of data.
+In the voice assistant such as Cortana, Siri also has generated a lot of data. These data have the same characteristics, the relatively short length of the text.
+Machine learning algorithms on traditional long text has been developed more mature development and application, but in the short text also faces many challenges.
+This paper attempts to keyword phrases on short text extraction, query classification and incremental learning tasks in-depth study and experimental verification on the relevant data sets.
+Our experiments on three tasks are achieved good results.
 \englishkeywords{Machine Learning, Short Text, Keyphrase Extraction, classification}
 \end{englishabstract}
 
@@ -171,30 +173,31 @@ In this paper, the short text keyword extraction, classification and incremental
 %
 \begin{preface}
 
-机器学习算法在长文本上的应用已经很多并且比较成熟了，随着社交网络的发展
-以及智能手机的普及，在这些平台上产生的数据量越来越多，如何利用这些数据
-以及怎样将机器学习算法应用在这些短文本数据上，越来越值得研究。本文从关
-键词提取，文本分类以及增量式学习三个任务尝试使用机器学算法来解决这些问
-问，并且取得了不错的记过。下面将分别阐述，
+随着社交网络的发展以及智能手机的普及，在这些平台上产生的短文本数据量越来越多。
+机器学习算法在长文本上的应用已经很多并且比较成熟，如何利用这些短文本数据以及
+怎样将机器学习算法应用在这些短文本数据上，越来越值得研究。本文尝试在关键词短语提取，
+查询分类以及增量式学习三个任务上使用机器学算法来解决这些问题，并且取得了不错的结果。
+下面将分别阐述，
 
 \begin{enumerate}
-\item 基于LDA以及PageRank模型在新浪微博上实现关键词短语的提取，对于新浪
-微博来讲，微博长度短或者微博信息量低，同时微博表达的主题多样化，这里通
-对新浪微博的语料使用话题模型获取话题分布以及话题下面的单词分布，同时配
-合PageRank算法，对每一个话题下面的单词排序，最终可以得到每个话题下面的
-单词排序，通过抽取名词短语，对短语中每个词在每一个话题下面的权重分布求和
-最终获取名词短语的排序。从而抽取出对应的关键词短语。
+\item 基于LDA以及PageRank模型在新浪微博上实现关键词短语的提取，对于新浪微博来讲，
+产生数据的特点是微博长度短或者微博信息量低，同时微博表达的主题多样化。通过对新浪
+微博的语料使用话题模型获取话题分布以及话题下面的单词分布，同时配合PageRank算法，
+对每一个话题下面的单词排序，最终可以得到每个话题下面的单词排序。通过使用正则表达式
+抽取名词短语，考虑微博的话题分布同时对短语中每个词在每一个话题下面的权重分布求和
+最终获取名词短语的排序，从而抽取出对应的关键词短语。
 
-\item 基于Slot以及SVM模型实现查询分类，由于查询分长短，可以提取的有效特征
-比较少，因此通过引入slot这种实体来丰富特征。基于数据庞大，手工标注slot是
-不可行的，因此通过使用CRF来完成slot的标注。最终在分类实验中结合slot之后可
-以提高分类的准确度。
+\item 基于Slot以及SVM模型实现查询分类，由于查询长度比较短，可以提取的有效特征
+比较少，通过引入slot这种实体来丰富特征。基于数据庞大，手工标注slot是不可行的。
+通过给每一个领域训练CRF模型，对于未知的查询分别标注slot，抽取包含slot的特征，
+使用SVM分类器，最终在分类实验中结合slot之后提高分类的准确度。
 
-\item 基于SVM的增量式学习减少分类时间，随着语音助手使用越来越普及，产生的
-数据量越来越多，如果想使用每次更新之后的新数据来重新训练模型，那么将会有很
-大的时间代价。因此需要一种增量式的学习算法来减少训练时间的同时保持准确率不
-下降，通过使用前一个模型的最优参数来初始化数据更新之后的模型参数，从而可以
-减少训练时间。
+\item 基于SVM的增量式学习减少分类时间，随着语音助手使用越来越普及，产生的数据量
+越来越多，如果想使用每次更新之后的新数据来重新训练模型，那么将会有很大的时间代价
+因此需要一种增量式的学习算法来减少模型训练时间的同时保持准确率不下降。当新的数据
+增加时候，通过使用前一个模型的最优参数来初始化数据更新之后的模型参数形成新的优化
+问题，接着选择相应的优化算法来求解新的优化问题。在我们的实验中验证了当有新的数据
+增加时候，使用上面描述的算法，在保持准确率一致的情况下训练时间大大减少。
 \end{enumerate}
 
 
@@ -228,56 +231,61 @@ In this paper, the short text keyword extraction, classification and incremental
 \chapter{绪论}\label{chapter_introduction}
 \section{研究背景}
 
-我的毕业设计focus在机器学习算法在短文本上的应用，随着社交网络的兴起，类似于weibo或者dialogue query这种短文本越来越多的出现在人们的生活当中，对于研究者来说面临着以下诸多挑战，首先随着新浪微博以及cortana在的大量使用，每天产生巨大的数据，我们如何去获取这些数据，另一方面，无论是微博还是dialogue query本身的长度非常短，传统的文本处理方法是否依然适用。
-在这里我们期望将传统的文本处理方法在短文本应用起来。这里我将选择三种在短文本中的应用去介绍，他们是关键词短语提取，domain classification以及incremental learning。对于三种应用，我将从研究背景，相关研究，算法介绍，实验设计以及未来可能改进的地方等等加以介绍。
-本文的结构组织如下，第一章主要介绍基于LDA和PageRank的方法在关键词短语提取中的应用，这里我们将从数据爬取，算法设计，结果展示三个方面来介绍。其中在算法设计过程中我们借鉴了LDA以及pagerank，我们会对此两种算法做简单的介绍。在结果展示中我们为了呈现更直观的结果，我们将结果可视化出来。
-第二章主要介绍domain classification using slot feature，首先我们将会阐述何为domain classification，何为slot feature，这一章我们将从算法设计，以及实验结果两方面来展示，在算法设计过程中我们使用SVM算法以及CRF算法，所以我们会对SVM以及CRF算法做详细的介绍。
-第三章介绍incremental learning的知识，首先我们将会阐述何为incremental learning。Incremental learning与domain classification的联系以及我们为什么需要incremental learning。在incremental learning的实验中我们使用了两种优化算法，我们会首先阐述优化算法在机器学习中的意义，对于使用的两种优化算法我们将会做详细的介绍，最后我们总结了实验结果。
+    传统的机器学习算法在长文本上有有很多成熟的应用，比如关键词提取，文本分类等等。那么随着社交网络的兴起以及智能手机的普及，类似于微博或者语音查询这种短文本越来越多的出现在人们的生活当中，对于研究者来说面临着以下诸多挑战，首先随着社交网络的兴起以及智能手机的普及，每天都在产生巨大的数据，如何去获取这些数据，另一方面，无论是微博还是语音查询本身的文本长度非常短，传统的文本处理方法是否适合。
+
+    我们期望传统的机器学习方法可以在短文本应用起来。这里选择三种典型的应用去介绍，它们是关键词短语提取，领域查询分类以及增量式学习算法。对于三种应用，我将从研究背景，相关研究，算法介绍，实验设计以及未来可能改进的地方等等加以介绍。
+    
+    本文的结构组织如下，第一章介绍基于LDA和PageRank的方法在关键词短语提取中的应用，将从数据爬取，算法设计，结果展示三个方面来介绍。其中在算法设计过程中我们借鉴了LDA以及PageRank，我们会对此两种算法做简单的介绍。第二章介绍实体特征在领域查询分类中的使用，这一章将从算法设计，以及实验结果两方面来展示，在算法设计过程中使用了SVM算法以及CRF算法，对于这两种算法将会有简单的介绍。第三章介绍增量式学习，首先我们将会阐述何为增量式学习，增量式学习与领域查询分类的联系，然后介绍实验中使用的两种优化算法，最后我们总结了实验结果。
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{基于LDA和PageRank的关键词短语提取算法}\label{chapter_smallworld}
+\chapter{基于LDA和PageRank的关键词短语提取算法}\label{chapter_keyword}
 \section{研究背景}
 
-近些年来随着社交网络的兴起，对于社交网络的研究以及基于社交网络的应用越来越多，在中国新浪微博的用户数量活跃度最高，随着新浪微博的使用越来越来普及，新浪微博每时每刻都在产生大量的数据，如何利用这些数据是一件非常有意义的事情。当然现在基于新浪微博上的上的应用已经非常丰富了，例如政府可以对于社会热点事件进行舆情分析，企业主可以实时获取自己的产品在微博上的反馈，广告主可以根据用户过去的浏览以及关注历史向用户定向推荐广告。然而无论是舆情分析，产品反馈亦或是广告推荐，关键词提取对于这些应用来说都会有很大的帮助。关键词的描述能力已经很强并且已经有了很多成熟的关键词提取方法，我们认为关键词短语带有更多的信息并且描述能力更好。因此我们希望可以基于某个关键词，首先在新浪微博上爬取一批数量的微博，然后在爬取到的微博上提取出来相应的关键词短语，这些关键词短语可以用于舆情分析，产品反馈，广告推荐，同时这些关键词短语还可以尝试用来做微博上的的分类，推荐以及用于预测微博上的热点事件发生等等应用。
+    近些年来随着社交网络的兴起，对于社交网络的研究以及基于社交网络的应用越来越多，在中国新浪微博的用户数量活跃度最高，随着新浪微博的使用越来越来普及，新浪微博每时每刻都在产生大量的数据，如何利用这些数据是一件非常有意义的事情。当然现在基于新浪微博上的上的应用已经非常丰富了，例如政府可以对于社会热点事件进行舆情分析，企业主可以实时获取自己的产品在微博上的反馈，广告主可以根据用户过去的浏览以及关注历史向用户定向推荐广告。然而无论是舆情分析，产品反馈亦或是广告推荐，关键词提取对于这些应用来说都会有很大的帮助。关键词的描述能力已经很强并且已经有了很多成熟的关键词提取方法，我们认为关键词短语带有更多的信息并且描述能力更好。因此我们希望可以基于某个关键词，首先在新浪微博上爬取一批数量的微博，然后在爬取到的微博上提取出来相应的关键词短语，这些关键词短语可以用于舆情分析，产品反馈，广告推荐，同时这些关键词短语还可以尝试用来做微博上的的分类，推荐以及用于预测微博上的热点事件发生等等应用。
 
-对于长文本来说，文本处理相对容易并且长文本上的关键词短语的提取已经有了不错的研究。对于新浪微博，将会遇到下面的问题，微博长度比传统的文本短，有一部分微博没有有用的信息，微博上的主题更加多样化。我们希望可以利用长文本分析的技术同时结合短文本的特点在微博上面实现关键词短语算法。同时伴随着可视化技术的发展以及可视化可以给用户带来直观的感受，我们将自己处理的结果使用可视化工具呈现出来。
+    对于长文本来说，文本处理相对容易并且长文本上的关键词短语的提取已经有了不错的研究。对于新浪微博，将会遇到下面的问题，微博长度比传统的文本短，有一部分微博没有有用的信息，微博上的主题更加多样化。我们希望可以利用长文本分析的技术同时结合短文本的特点在微博上面实现关键词短语算法。同时伴随着可视化技术的发展以及可视化可以给用户带来直观的感受，我们将自己处理的结果使用可视化工具呈现出来。
 
-本章接下来的组织如下，首先我们将阐述关键词短语提取的相关工作TFIDF，TEXTRANK等关键词提取方法。其次我们将详细介绍基于LDA和PageRank的关键词短语提取算法。然后简略的介绍系统架构，接着描述实验设计以及结果，最后总结本章。
+    本章接下来的组织如下，首先我们将阐述关键词短语提取的相关工作TFIDFK等关键词提取方法。其次我们将详细介绍基于LDA和PageRank的关键词短语提取算法。然后简略的介绍系统架构，接着描述实验设计以及结果，最后总结本章。
 
 \section{关键词短语提取相关工作}
 
-在介绍关键词短语之前首先介绍关键词提取的概念。关键词提取指的是从一篇或者一批文档中提取出来的词语，这些词语可以概括文档的中心思想，被广泛的用在建立索引，文档概要等应用中。关键词短语指的是由两个及以上的词语组成基于关键词提取的方法，不再关注提取单一的词语而是将关注点放在提取名词短语上。关键词短语长度更长，具有比关键词更强的描述能力。
+    在介绍关键词短语之前首先介绍关键词提取的概念。关键词提取指的是从一篇或者一批文档中提取出来的词语，这些词语可以概括文档的中心思想，被广泛的用在建立索引，文档概要等应用中。关键词短语指的是由两个及以上的词语组成基于关键词提取的方法，不再关注提取单一的词语而是将关注点放在提取名词短语上。关键词短语长度更长，具有比关键词更强的描述能力。
 
-关键词短语的提取的方法可以分为有监督学习的方法以及无监督学习的方法，接下来将简略的介绍有监督学习以及无监督学习的概念。有监督学习是需要人工标注一批数据，然后将数据划分成训练集以及测试集，利用机器学习的算法在训练集上训练出模型，在测试集上测试模型的效果进而反馈给训练方法修改模型参数，使得最终的模型具有很好的泛化能力。有监督学习中最普遍的一类机器学习算法就是分类以及回归算法。无监督学习指的是不需要人工标注数据，让计算机自己去学习，无监督学习算法中最普遍的一类算法就是聚类算法。
-在关键词短语提取中，有监督学习的方法将关键词提取看作是一个分类的任务，通过使用语料集训练模型来判断候选的关键词短语是否是真正的关键词短语，在无监督方法中基于图的排序算法是学术上效果最好的方法[copy]。在当今时代，互联网发展迅速可以很容易方便的获取大量的数据，如果对大规模的数据进行标注，需要付出很大的人工成本以及时间代价，在实际工作中几乎是不可能完成的，所以有监督的方法不太实用，因此基于无监督学习的方法越来越受到重视。接下来我们将利用这篇paper$"Automatic Keyphrase Extraction via Topic Decomposition"$里面提到的算法，在新浪微博的语料上尝试提取关键词。
+    关键词短语的提取的方法可以分为有监督学习的方法以及无监督学习的方法，接下来将简略的介绍有监督学习以及无监督学习的概念。有监督学习是需要人工标注一批数据，然后将数据划分成训练集以及测试集，利用机器学习的算法在训练集上训练出模型，在测试集上测试模型的效果进而反馈给训练方法修改模型参数，使得最终的模型具有很好的泛化能力。有监督学习中最普遍的一类机器学习算法就是分类以及回归算法。无监督学习指的是不需要人工标注数据，让计算机自己去学习，无监督学习算法中最普遍的一类算法就是聚类算法。
 
-本章接下来的组织如下，首先介绍基于TFIDF模型的关键词短语提取算法，接着介绍基于TextRank模型的关键词短语提取算法。
+    在关键词短语提取中，有监督学习的方法将关键词提取看作是一个分类的任务，通过使用语料集训练模型来判断候选的关键词短语是否是真正的关键词短语，在无监督方法中基于图的排序算法是学术上效果最好的方法。在当今时代，互联网发展迅速可以很容易方便的获取大量的数据，如果对大规模的数据进行标注，需要付出很大的人工成本以及时间代价，在实际工作中几乎是不可能完成的，所以有监督的方法不太实用，因此基于无监督学习的方法越来越受到重视。接下来我们将利用这篇论文"Automatic Keyphrase Extraction via Topic Decomposition里面提到的算法，在新浪微博的语料上尝试提取关键词。
+
+本章接下来介绍基于TFIDF模型的关键词短语提取算法。
 
 \subsection{基于TFIDF的关键词短语提取方法}
 
-TFIDF是一种统计方法，在信息检索中使用比较广泛，可以用来评估一个词对于一个文件集合的重要程度。TFIDF主要思想就是，如果某个词在一篇文档中出现的频率高，在其它文档中出现的次数比较少，就认为这个词具有很好的区分能力。TFIDF中TF（term frequency）指的是某个词在文档中出现的频率，IDF（inverse document frequency）指的是如果包含某个词条t的文档n数目很少，那么IDF就越大，同时可以说明词条t具有很好的区分能力。
+    TFIDF是一种统计方法，在信息检索中使用比较广泛，可以用来评估一个词对于一个文件集合的重要程度。TFIDF主要思想就是，如果某个词在一篇文档中出现的频率高，在其它文档中出现的次数比较少，就认为这个词具有很好的区分能力。TFIDF中TF（term frequency）指的是某个词在文档中出现的频率，IDF（inverse document frequency）指的是如果包含某个词条t的文档n数目很少，那么IDF就越大，同时可以说明词条t具有很好的区分能力。
 
-TFIDF的计算公式是TFIDF= TF*IDF，词频(TF)指的是某一个给定的词语在该文件中出现的频率。这个数字是对词数的归一化，以防止它偏向长的文件。[copy],对于在某一个特定文件里的词语$t_i$来说，它的重要性可表示为$tf_i,_j = \frac{n_i,_j}{\sum_{k} n_k,_j}$，以上$n_i,_j$是该词在文件$d_j$中的出现次数，而分母则是在文件$d_j$中所有字词的出现次数之和。逆向文件频率(IDF)是一个词语普遍重要性的度量，可以表示为$idf_i = log\frac{\vert D \vert}{\vert \{j:t_i \in d_j \}\vert}$，其中$\vert D \vert:$ 是语料库中的文件总数。$\vert\{ j:t_i \in d_j\}\vert:$，包含词语$t_i$的文件数目。[copy]
+    TFIDF的计算公式是TFIDF= TF*IDF，词频(TF)指的是某一个给定的词语在该文件中出现的频率。这个数字是对词数的归一化，以防止它偏向长的文件。[copy],对于在某一个特定文件里的词语$t_i$来说，它的重要性可表示为$tf_i,_j = \frac{n_i,_j}{\sum_{k} n_k,_j}$，以上$n_i,_j$是该词在文件$d_j$中的出现次数，而分母则是在文件$d_j$中所有字词的出现次数之和。逆向文件频率(IDF)是一个词语普遍重要性的度量，可以表示为$idf_i = log\frac{\vert D \vert}{\vert \{j:t_i \in d_j \}\vert}$，其中$\vert D \vert:$ 是语料库中的文件总数。$\vert\{ j:t_i \in d_j\}\vert:$，包含词语$t_i$的文件数目。[copy]
 
-基于TFIDF的关键词短语提取算法流程如下，
+    基于TFIDF的关键词短语提取算法流程如下，
 
-\begin{enumerate}
-\item 将所有微博合并至一篇文档
-\item 使用正则表达式提取文档中的名词短语
-\item 计算名词短语的TFIDF值，进行排序
-\item 提取top N的名词短语作为关键词短语
-\end{enumerate}
+\fbox{\begin{minipage}{32em}
+  \begin{enumerate}
+    \item 将所有微博合并至一篇文档
+    \item 使用正则表达式提取文档中的名词短语
+    \item 计算名词短语的TFIDF值，进行排序
+    \item 提取top N的名词短语作为关键词短语
+  \end{enumerate}
+ \end{minipage}}
 
-TFIDF的优点是实现简单并且效果不错因而在实际中使用非常广泛，缺点就是TFIDF算法中并没有体现出单词的位置信息，因此存在改进的机会。
+    TFIDF的优点是实现简单并且效果不错因而在实际中使用非常广泛，缺点就是TFIDF算法中并没有体现出单词的位置信息，因此存在改进的机会。
 
 \section{基于LDA以及PageRank的关键词短语提取算法}
 
-基于LDA以及PageRank的关键词短语提取算法基本流程是，首先基于微博构建词图(word graph)，后面会介绍词图的构建方法。其次基于LDA模型，给定n个主题，在词图上得到n个主题的概率分布以及每个单词在每一个主题下的概率值。接着基于词图,文档的主题分布,每一个主题下单词的概率值，在词图(word graph)上运行改进的PageRank算法。由于改进的PageRank算法可以利用文档的主题分布以及n个不同的主题下的单词分布，经过迭代收敛之后可以获取n个具有已经排好序的单词的词图。接着使用基于LDA以及PageRank的关键词短语提取算法提取关键词短语。
-本章的组织如下，首先介绍算法中涉及到的LDA以及PageRank模型，然后介绍关键词短语提取算法。
+    基于LDA以及PageRank的关键词短语提取算法基本流程是，首先基于微博构建词图(word graph)，后面会介绍词图的构建方法。其次基于LDA模型，给定n个主题，在词图上得到n个主题的概率分布以及每个单词在每一个主题下的概率值。接着基于词图,文档的主题分布,每一个主题下单词的概率值，在词图(word graph)上运行改进的PageRank算法。由于改进的PageRank算法可以利用文档的主题分布以及n个不同的主题下的单词分布，经过迭代收敛之后可以获取n个具有已经排好序的单词的词图。接着使用基于LDA以及PageRank的关键词短语提取算法提取关键词短语。
+
+   本章的组织如下，首先介绍算法中涉及到的LDA以及PageRank模型，然后介绍关键词短语提取算法。
 
 \subsection{LDA模型介绍}
 
-    LDA是一种典型的词袋模型，即它认为一篇文档是由一组词构成的一个集合，词与词之间没有顺序以及先后的关系。一篇文档可以包含多个主题，文档中每一个词都由其中的一个主题生成。正如Beta分布是二项式分布的共轭先验概率分布，狄利克雷分布作为多项式分布的共轭先验概率分布。因此正如LDA‎贝叶斯网络结构中所描述的，在LDA模型中一篇文档生成的方式如下:
+    LDA是一种典型的词袋模型，即它认为一篇文档是由一组词构成的一个集合，词与词之间没有顺序以及先后的关系。一篇文档可以包含多个主题，文档中每一个词都由其中的一个主题生成。正如Beta分布是二项式分布的共轭先验概率分布，狄利克雷分布作为多项式分布的共轭先验概率分布。因此正如LDA‎贝叶斯网络结构中所描述的，在LDA模型中一篇文档生成的方式如下，
+
 \fbox{\begin{minipage}{32em}
   \begin{enumerate}
     \item 从狄利克雷分布$\alpha$中取样生成文档i的主题分布$\theta_i$
@@ -286,6 +294,7 @@ TFIDF的优点是实现简单并且效果不错因而在实际中使用非常广
     \item 从词语的多项式分布$\phi_{z_{i, j}}$中采样最终生成词语$w_{i, j}$
   \end{enumerate}
  \end{minipage}}
+
     因此整个模型中所有可见变量以及隐藏变量的联合分布是
 
     $p(w_i, z_i, \theta_i, \Phi | \alpha, \beta) = \prod_{j = 1}^{N} p(\theta_i|\alpha)p(z_{i, j}|\theta_i)p(\Phi|\beta)p(w_{i, j}|\theta_{z_{i, j}})$
@@ -294,35 +303,34 @@ TFIDF的优点是实现简单并且效果不错因而在实际中使用非常广
 
     $p(w_i | \alpha, \beta)  = \int_{\theta_i}\int_{\Phi }\sum_{z_i}p(w_i, z_i, \theta_i, \Phi | \alpha, \beta)$
 
-    根据$p(w_i | \alpha, \beta)$的最大似然估计，最终可以通过吉布斯采样等方法估计出模型中的参数
-
-    下面简单的介绍吉布斯采样算法，
+    根据$p(w_i | \alpha, \beta)$的最大似然估计，最终可以通过吉布斯采样等方法估计出模型中的参数，下面简单的介绍吉布斯采样算法，
     
     Gibbs Sampling算法的运行方式是每次选取概率向量的一个维度，给定其他维度的变量值采样当前维度的值。不断迭代，直到收敛输出待估计的参数，初始时随机给文本中的每个单词分配主题$z\left(0\right)$，然后统计每个主题z下出现term t的数量以及每个文档m下出现主题z中的词的数量，每一轮计算$p\left(z_i|z_{-i},d,w\right)$，即排除当前词的主题分配：根据其他所有词的主题分配估计当前词分配各个主题的概率。当得到当前词属于所有主题z的概率分布后，根据这个概率分布为该词采样一个新的主题。然后用同样的方法不断更新下一个词的主题，直到发现每个文档下Topic分布$\theta$和每个Topic下词的分布$\phi$收敛，算法停止，输出待估计的参数$\theta$和$\phi$，最终每个单词的主题zmn也同时得出。
 实际应用中会设置最大迭代次数。每一次计算p(zi|z-i,d,w)的公式称为Gibbs updating rule。
-\
-subsection{PAGERANK模型介绍}
 
-PageRank算法是Google用来进行对网页进行排序的算法，PageRank算法是一种链接分析的算法，它将会给予超链接网页集合中的每一个网页一个数值权重，这个权重可以用来衡量此网页在超链接网页集合中的重要性。PageRank算法的做法首先将网页建模成图，图中的每个节点(网页)都有入度以及出度，每一个点的权重是由指向这些点来决定的，然后再加上一项是随机因子，保证每个节点有相同的概率挑往其他节点。经过迭代之后每一个节点可以得到稳定的权值。PageRank每个节点的入度是指向此节点的节点数量，每个节点的出度指的是当前节点指向的其它节点的数量。
+\subsection{PageRank模型介绍}
 
-PageRank算法输出一个概率分布，用来表示人们随机点击一个链接的概率。Pagerank算法的数学公式表示是，$ PR\left(p_i\right) = \frac{1-d}{N}+d\sum_{p_j \in M\left(p_i\right)} \frac{PR\left(p_j\right)}{L\left(p_j\right)}$$p_1,p_2,...,p_N$是被研究的页面，$M\left(p_i\right)$是链入$p_i$的页面的集合， $L\left(p_j\right)$是$p_j$链出页面的数量，$N$是所有页面的集合。
+    PageRank算法是Google用来进行对网页进行排序的算法，PageRank算法是一种链接分析的算法，它将会给予超链接网页集合中的每一个网页一个数值权重，这个权重可以用来衡量此网页在超链接网页集合中的重要性。PageRank算法的做法首先将网页建模成图，图中的每个节点(网页)都有入度以及出度，每一个点的权重是由指向这些点来决定的，然后再加上一项是随机因子，保证每个节点有相同的概率挑往其他节点。经过迭代之后每一个节点可以得到稳定的权值。PageRank每个节点的入度是指向此节点的节点数量，每个节点的出度指的是当前节点指向的其它节点的数量。
+
+    PageRank算法输出一个概率分布，用来表示人们随机点击一个链接的概率。Pagerank算法的数学公式表示是，$ PR\left(p_i\right) = \frac{1-d}{N}+d\sum_{p_j \in M\left(p_i\right)} \frac{PR\left(p_j\right)}{L\left(p_j\right)}$$p_1,p_2,...,p_N$是被研究的页面，$M\left(p_i\right)$是链入$p_i$的页面的集合， $L\left(p_j\right)$是$p_j$链出页面的数量，$N$是所有页面的集合。
 
 \subsection{关键词提取算法}
 
-基于LDA和PageRank的关键词短语算法中使用的LDA模型以及PageRank模型已经在上面两节中介绍过了。下面我们阐述具体的算法。
+    基于LDA和PageRank的关键词短语算法中使用的LDA模型以及PageRank模型已经在上面两节中介绍过了。下面我们阐述具体的算法。
 
-首先在微博上运行LDA算法，得到微博上的n个主题分布以及每个主题下面的单词分布。我们已经在上面的章节中介绍过LDA模型。
-其次基于微博构建词图，在词图上运行修改后的PageRank算法，原始的PageRank每个节点跳往其他节点是概率是相同的，这里做出的修改是，将这一项修改为单词(节点)在某个topic下面的概率分布，这样单词在跳转时候会倾向于跳转跟此topic相关的词语，我们使用$G=\left(V,E\right)$来表示有文档表示的图，
+    首先在微博上运行LDA算法，得到微博上的n个主题分布以及每个主题下面的单词分布。我们已经在上面的章节中介绍过LDA模型。其次基于微博构建词图，在词图上运行修改后的PageRank算法，原始的PageRank每个节点跳往其他节点是概率是相同的，这里做出的修改是，将这一项修改为单词(节点)在某个topic下面的概率分布，这样单词在跳转时候会倾向于跳转跟此topic相关的词语，我们使用$G=\left(V,E\right)$来表示有文档表示的图，其中的节点集合$V=\{w_1,w_2,\dots,w_N\}$，边的集合$E$,$\left(w_i,w_j\right) \in E$如果$w_i$和$w_j$之间有一条链接，在词图中每一个节点表示单词，每一条边表示单词之间的边，接下来我们使用$e\left(w_i,w_j\right)$来表示链接$\left(w_i,w_j\right)$之间的权重，节点$w_i$的初度表示为$O\left(w_i\right) = \sum_{j:w_i \rightarrow w_j} e\left(w_i,w_j\right)$，在原始的PageRank中单词$w_i$的得分$R\left(w_i\right)$的数学公式是
+  
+    $R\left( w_i \right) = \lambda \sum_{j:w_j \rightarrow w_i} \frac{e\left(w_j,w_i\right)}{O\left(w_j\right)}+\left(1-\lambda\right)\frac{1}{\vert V \vert}$，
 
-其中的节点集合$V=\{w_1,w_2,\dots,w_N\}$，边的集合$E$,$\left(w_i,w_j\right) \in E$如果$w_i$和$w_j$之间有一条链接，在词图中每一个节点表示单词，每一条边表示单词之间的边，接下来我们使用$e\left(w_i,w_j\right)$来表示链接$\left(w_i,w_j\right)$之间的权重，节点$w_i$的初度表示为$O\left(w_i\right) = \sum_{j:w_i \rightarrow w_j} e\left(w_i,w_j\right)$，在原始的PageRank中单词$w_i$的得分$R\left(w_i\right)$的数学公式是
+    其中$\lambda$指的是衰减因子，取值范围0到1，$\vert V \vert$指的是节点的总数，衰减因子暗示每一个节点都有相同的概率$\left(1-\lambda\right)\frac{1}{\vert V \vert}$跳转到其它的节点。修改后的PageRank数学公式是
 
-$R\left( w_i \right) = \lambda \sum_{j:w_j \rightarrow w_i} \frac{e\left(w_j,w_i\right)}{O\left(w_j\right)}+\left(1-\lambda\right)\frac{1}{\vert V \vert}$，其中$\lambda$指的是衰减因子，取值范围0到1，$\vert V \vert$指的是节点的总数，衰减因子暗示每一个节点都有相同的概率$\left(1-\lambda\right)\frac{1}{\vert V \vert}$跳转到其它的节点。修改后的PageRank数学公式是$R_z\left( w_i \right) = \lambda \sum_{j:w_j \rightarrow w_i} \frac{e\left(w_j, w_i\right)}{O\left(w_j\right)}R_z\left(w_j\right)+\left( 1-\lambda \right)p_z\left(w_i\right)$。这里我们将$\left(1-\lambda\right)\frac{1}{\vert V \vert}$修改为$\left( 1-\lambda\right)p_z\left(w_i\right)$。这里跳转的概率不再是一致的，而是使用了单词在某一个主题下面的概率，这样节点在跳转时会倾向于跳转到同一个主题下面的单词。
-
-在词图上运行改进的PageRank算法之后，可以得到每个主题下面的单词排序。基于关键词短语一般是名词短语这个假设，对经过分词之后的语料进行词性标注，词性标注指的是对于句子中的每个词都指派一个合适的词性，也就是要确定每个词是名词、动词、形容词或者其它词性的过程。[copy]接着使用正则表达式$\left(adjective\right)*\left(noun\right)+$抽取所有的名词短语，对于某一个名词短语首先计算一个主题下面的权重，使用的公式如下$R_z\left(p\right) = \sum_{w_i \in p} R_z\left(w_i\right)$，这里的$p$指的是名词短语，$w_i$指的是名词短语中的单词，$R_z\left(w_i\right)$指的是单词$w_i$在主题$z$上的经过排序之后的权重。考虑到文档中的n个主题分布，那么名词短语的最终权重需要考虑n个不同的主题分布，最终使用下面这个公式对所有的关键词短语排序，$R\left(p\right) = \sum_{z=1}^k R_z\left(p\right) \times pr\left(z \vert d \right)$。这里的$R_z\left(p\right)$指的是名词短语在一个主题下的权重，$pr\left(z\vert d\right)$指的是某个主题在文档的概率分布，$R\left(p\right)$指的是考虑了文档中的主题分布之后，名词短语最终的权重。
+    $R_z\left( w_i \right) = \lambda \sum_{j:w_j \rightarrow w_i} \frac{e\left(w_j, w_i\right)}{O\left(w_j\right)}R_z\left(w_j\right)+\left( 1-\lambda \right)p_z\left(w_i\right)$。
+ 
+    这里将$\left(1-\lambda\right)\frac{1}{\vert V \vert}$修改为$\left( 1-\lambda\right)p_z\left(w_i\right)$。这里跳转的概率不再是一致的，而是使用了单词在某一个主题下面的概率，这样节点在跳转时会倾向于跳转到同一个主题下面的单词。在词图上运行改进的PageRank算法之后，可以得到每个主题下面的单词排序。基于关键词短语一般是名词短语这个假设，对经过分词之后的语料进行词性标注，词性标注指的是对于句子中的每个词都指派一个合适的词性，也就是要确定每个词是名词、动词、形容词或者其它词性的过程。[copy]接着使用正则表达式$\left(adjective\right)*\left(noun\right)+$抽取所有的名词短语，对于某一个名词短语首先计算一个主题下面的权重，使用的公式如下$R_z\left(p\right) = \sum_{w_i \in p} R_z\left(w_i\right)$，这里的$p$指的是名词短语，$w_i$指的是名词短语中的单词，$R_z\left(w_i\right)$指的是单词$w_i$在主题$z$上的经过排序之后的权重。考虑到文档中的n个主题分布，那么名词短语的最终权重需要考虑n个不同的主题分布，最终使用下面这个公式对所有的关键词短语排序，$R\left(p\right) = \sum_{z=1}^k R_z\left(p\right) \times pr\left(z \vert d \right)$。这里的$R_z\left(p\right)$指的是名词短语在一个主题下的权重，$pr\left(z\vert d\right)$指的是某个主题在文档的概率分布，$R\left(p\right)$指的是考虑了文档中的主题分布之后，名词短语最终的权重。
 
 \section{关键词短语提取系统设计}
 
-关键键词短语提取系统总共包括数据获取模块，关键词短语提取模块，前端展示模块。下面将简单的介绍
+    关键键词短语提取系统总共包括数据获取模块，关键词短语提取模块，前端展示模块。下面将简单的介绍
 \begin{enumerate}
 \item 数据获取模块
 \begin{enumerate}
@@ -344,39 +352,46 @@ $R\left( w_i \right) = \lambda \sum_{j:w_j \rightarrow w_i} \frac{e\left(w_j,w_i
 本章接下来将依次简略介绍这3个模块。
 
 \subsection{数据获取模块}
-数据获取模块，主要包括微博登陆模块，爬取模块，存储模块，主要使用python语言结合MongoDB数据库进行开发。接下来将简单介绍每个模块功能，
+    
+    数据获取模块，主要包括微博登陆模块，爬取模块，存储模块，主要使用python语言结合MongoDB数据库进行开发。接下来将简单介绍每个模块功能，
 \begin{enumerate}
 \item 微博登录模块负责模拟登录微博，接下来就可以正常的爬取数据。
 \item 爬取模块负责根据关键字进行微博爬取，将爬取数据到的数据存储到数据库。
 \item 存储模块负责模拟存储爬取的微博，并且确保存储安全，效率高
 \end{enumerate}
 
-由于存储微博类似于存取文档，因此这里选择使用文档数据库MongoDB，MongoDB是一种文件导向数据库管理系统，MongoDB是一种非结构化数据库，也称为文档型数据库，MongoDB支持key-value的存储模式，这里key可以是我们的搜索关键字，value是基于关键词搜索出来的weibo。
+    由于存储微博类似于存取文档，因此这里选择使用文档数据库MongoDB，MongoDB是一种文件导向数据库管理系统，MongoDB是一种非结构化数据库，也称为文档型数据库，MongoDB支持key-value的存储模式，这里key可以是我们的搜索关键字，value是基于关键词搜索出来的weibo。
 
 \subsection{关键词短语提取模块}
-关键词短语提取模块，主要包括数据预处理模块，关键词短语算法模块，主要使用python语言结合gensim开发。接下来将简单的介绍每个模块的功能，
+
+    关键词短语提取模块，主要包括数据预处理模块，关键词短语算法模块，主要使用python语言结合gensim开发。接下来将简单的介绍每个模块的功能，
 \begin{enumerate}
 \item 数据预处理模块负责清理数据，包括分词，去除停用词等。
 \item 关键词短语模块负责使用相关算法计算名词短语权重，并且依据权重排序
 \end{enumerate}
-在关键词短语算法模块中使用了LDA模型，我们利用开源工具包Gensim中的LDA实现，Gemsim是Radim 힀eh킁힂ek开发的python包，里面有丰富的接口。对于Gensim的LDA的使用如下，
+
+    在关键词短语算法模块中使用了LDA模型，我们利用开源工具包Gensim中的LDA实现，Gemsim是Radim 힀eh킁힂ek开发的python包，里面有丰富的接口。对于Gensim的LDA的使用如下，
 \begin{enumerate}
 \item LDA训练使用方法,LDA train usage: Lda = ldaModel(corpus, num\_topics=100)
 \item LDA预测使用方法，LDA inference usage 。。。。。。
 \end{enumerate}
 
 \subsection{前端展示模块}
-前端展示模块需要将关键词短语可视化，这里使用了python的tornado库结合boostrap库以及D3.js库开发。前端开发使用的是Tornado以及boostrap库，可视化使用的D3.js库。下面将依次介绍。
-Tornado是FriendFeed开发并且由Facebook开源的Web服务框架，它是非阻塞形式的服务器，而且速度相当快。
-Bootstrap库由Twitter开发并且开源的前端开发框架，具有简洁，直观，强悍的特点，对于我们开发帮助很大。
-D3.js是由stanford大学开发的开源工具，应用非常广泛，可视化操作简单，是主流的数据可视化工具。D3.js是一个基于数据的操作文档的JavaScript库，可以让你绑定任何数据到DOM，支持DIV这种图案生成，也支持SVG这种图案的生成，D3帮助使用者屏蔽了浏览器差异，因此可以做到代码简洁[cpoy]。
+
+    前端展示模块需要将关键词短语可视化，这里使用了python的tornado库结合boostrap库以及D3.js库开发。前端开发使用的是Tornado以及boostrap库，可视化使用的D3.js库。下面将依次介绍。
+
+    Tornado是FriendFeed开发并且由Facebook开源的Web服务框架，它是非阻塞形式的服务器，而且速度相当快。Bootstrap库由Twitter开发并且开源的前端开发框架，具有简洁，直观，强悍的特点，对于我们开发帮助很大。D3.js是由stanford大学开发的开源工具，应用非常广泛，可视化操作简单，是主流的数据可视化工具。D3.js是一个基于数据的操作文档的JavaScript库，可以让你绑定任何数据到DOM，支持DIV这种图案生成，也支持SVG这种图案的生成，D3帮助使用者屏蔽了浏览器差异，因此可以做到代码简洁。
 
 
 \section{实验设计及分析}
-在关键词短语提取的实验中，我们尝试了2种方法，接下来依次介绍基于TFIDF关键词短语提取算法，基于LDA和PageRank方法的关键词短语提取算法的实验设计以及结果。
+ 
+    在关键词短语提取的实验中，我们尝试了2种方法，接下来依次介绍基于TFIDF关键词短语提取算法，基于LDA和PageRank方法的关键词短语提取算法的实验设计以及结果。
 
 \subsection{基于TFIDF的关键词短语提取方法}
-基于TFIDF的关键词短语提取算法流程，如下，
+
+    基于TFIDF的关键词短语提取算法流程，如下，
+
+\fbox{\begin{minipage}{32em}
 \begin{enumerate}
 \item 新浪微博数据预处理，包括，
 \begin{enumerate}
@@ -391,9 +406,13 @@ D3.js是由stanford大学开发的开源工具，应用非常广泛，可视化�
 \end{enumerate}
 \item 对于名词短语根据TFIDF计算公式计算的权重
 \end{enumerate} 
+\end{minipage}}
 
 \subsection{基于LDA以及PageRank的关键词短语提取算法}
+
 基于LDA以及PageRank的关键词短语提取算法流程，如下，
+
+\fbox{\begin{minipage}{32em}
 \begin{enumerate}
 \item 新浪微博数据预处理,与TFIDF的方法一致
 \item 使用处理后的微博构建词图,后面将详细介绍词图构建
@@ -403,16 +422,16 @@ D3.js是由stanford大学开发的开源工具，应用非常广泛，可视化�
 \item 使用正则表达式抽取名词短语，正则表达式跟TFIDF方法一致
 \item 依据上文中的名词短语权重计算公式计算最终的权重
 \end{enumerate}
-在算法流程中提到了词图的构建，下面介绍怎么构建词图，
+\end{minipage}}
 
-首先介绍窗口概念，窗口是以当前词作为源点，以接下里的若干个词作为终点，接着以"I Love Nanjing University very much"中的单词I为例介绍词图。假设窗口为1，那么可以得到边是["I->love"]，窗口为2，可以得到的边是["I->Nanjing"，"I->university"]，窗口为3，可以得到的边是["I->love"，"I->Nanjing"，"I-university"]。在构建基于微博的词图时候，需要将一定数量的微博放在同一个文本里，以此文本为单位构建词图。
+    在算法流程中提到了词图的构建，下面介绍怎么构建词图，首先介绍窗口概念，窗口是以当前词作为源点，以接下里的若干个词作为终点，接着以"I Love Nanjing University very much"中的单词I为例介绍词图。假设窗口为1，那么可以得到边是["I->love"]，窗口为2，可以得到的边是["I->Nanjing"，"I->university"]，窗口为3，可以得到的边是["I->love"，"I->Nanjing"，"I-university"]。在构建基于微博的词图时候，需要将一定数量的微博放在同一个文本里，以此文本为单位构建词图。
 
 \section{总结}
 
-在本章节中，我们在新浪微博语料集上实现了基于LDA和PageRank的关键词短语提取算法，算法效果不错。
+在本章节中，我们在新浪微博语料集上实现了基于LDA和PageRank的关键词短语提取算法，通过引入话题分布模型，使用PageRank算法进行排序，最终我们的算法效果不错。
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{domain classification using slot feature based SVM}\label{chapter_smallworld}
+\chapter{slot实体在领域分类模型中的使用}\label{chapter_classification}
 
 \section{研究背景}
 
@@ -463,11 +482,14 @@ D3.js是由stanford大学开发的开源工具，应用非常广泛，可视化�
     \begin{figure}[htbp]
       \centering
       \includegraphics[width=1.0\textwidth]{L.jpg}\\
-      \caption{}\label{fig:L}
+      \caption{}\label{fig:test}
     \end{figure}
     
     在图a)中，黑色正方形表示$L_1$正则项的可行解区域，在图b)中，黑色圆形区域代表$L_2$的可行解区域。对于图a)来讲可行解更可能发生在坐标，因为图a)跟坐标轴相交。这将意味着在高维空间中，求解系数的大部分维度为0，只有一小部分系数参数保留，从而可以得到稀疏的解。
-   
+    \\
+    \\
+    \\
+
     在SVM中引入核函数，具体说就是可以将非线性可分的数据扩展到更高维空间使得可以线性可分，这大大的扩展了SVM的能力，使得SVM应用更加广泛。然而对于数据规模大，特征数量多并且比较稀疏的语料来说，引入核函数固然可以取得不错的结果，但是却要付出很大的时间代价。有研究表名，在处理这种数据时，使用线性核的SVM可以取得相似的准确率，同时可以极大的减少训练时间。因此对于我们要解决的基于短文本的领域来说，可以使用结合线性的SVM，处理时间非常快并且可以获得不错的准确率。
 
     传统上SVM是用来解决二分类的，怎么将SVM用于多分类呢，方法有如下集中，one-vs-rest，one-vs-one等等，假设我们有n个类，one-vs-one指的是我们从这n个类中选取两个类$n_i,n_j$出来，然后利用这两个类的数据训练出一个二分类器。以此类推，我们将会有$n^2/2$个分类器。当有测试数据时候，同时使用这么多分类器，然后得到$n^2/2$个分数，选取分值最高所属的类作为测试数据的类。One-vs-rest指的是将其中的一个类作为正例，其余n-1个类作为负例，训练出一个二分类器。依次类推，最后我们将会得到n个二分类器。当遇到一个测试数据时候，同时使用n个二分类器，这样将会得到n个分值，选取分值最高所属的类作为测试数据的类。实际中LibLinear使用的是one-vs-rest方法来做多分类。
@@ -519,6 +541,8 @@ D3.js是由stanford大学开发的开源工具，应用非常广泛，可视化�
 \subsection{实验设计}
 
     我们使用支持向量机模型来做领域分类任务。使用微软给定的语料集来实验，其中有400万查询作为训练数据，1.8万查询作为测试数据。我们使用LIBLINEAR来训练支持向量机模型，LIBLINEAR是台湾大学林智仁组开发的一种线性分类器，可以用来处理具有数以百万计实例和特征的数据。LIBLINEAR支持L2正则L2损失的线性SVM分类器，L2正则L1损失的线性SVM分类器，L1正则L2损失的线性SVM分类器等等。LIBLINEAR跟LIBSVM具有很多相似地方，比如跟LIBSVM处理数据格式一致，使用方法类似。对于多分类算法，LIBLINEAR支持使用one-vs-rest，Crammer\&Singer等等策略。同时LIBLINEAR接口丰富，支持MATLAB/Octave，Java，Python以及Ruby等等。LIBLINEAR使用分为训练过程以及预测过程如下，
+
+ \fbox{\begin{minipage}{32em}
 \begin{enumerate}
     \item 训练过程的使用方式Usage: train [options] training\_set\_file [model\_file]
      \begin{enumerate}
@@ -534,8 +558,11 @@ D3.js是由stanford大学开发的开源工具，应用非常广泛，可视化�
 	   \item output\_file是trai测试语料test\_file上的预测输出
       \end{enumerate}
 \end{enumerate}
+\end{minipage}}
     
      为了防止随机性对于实验结果的影响，我们重复实验50次，取准确度的平均值作为最终的准确率。实验设计流程如下，
+
+\fbox{\begin{minipage}{32em}
 \begin{enumerate}
   \item 对于给定语料进行数据预处理，处理过程如下，
     \begin{enumerate}
@@ -560,41 +587,46 @@ D3.js是由stanford大学开发的开源工具，应用非常广泛，可视化�
       \item 在测试集上测试支持向量机模型，记录模型的准确率
     \end{enumerate}
 \end{enumerate}
+\end{minipage}}
     
     基于以上实验流程，我们分别实现了baseline模型以及基于generic slot tagger的模型。这两种模型的区别仅仅是使用的特征不同，对于baseline模型来讲，我们仅仅使用了文本特征，对于基于generic slot tagger的模型来讲，我们将query中的slot看成跟词一样的项，在特征提取过程中，提取了三种类型的特征。在特征提取的策略上，对于两种模型都是提取了ngram的特征，不同的地方是基于generic slot tagger的模型利用了slot实体。我们以查询"闹铃 设 在 <start\_date> 明 </start\_date> <start\_time> 早 2 点 </start\_time>"为例，讲述两种模型的特征提取方法。
     对于baseline模型的特征提取，我们提取了文本的unigram，bigram以及trigram特征，具体如下，
-    \begin{enumerate}
-      \item unigram特征[“闹铃”，“设”，“在”，“明”，“早”，“2”，“点”]
-      \item bigram特征[“闹铃 设”，“设 在”，“在 明”，“明 早”，“早 2”，“2 点”]
-      \item trigram特征[“闹铃 设 在”，“设 在 明”，“在 明 早”，“明 早 2”，“早 2 点”]
-    \end{enumerate}
+    
+    \fbox{\begin{minipage}{32em}
+
+      1 unigram特征["闹铃","设"，"在","明","早","2","点"]\\
+      2 bigram特征["闹铃 设","设 在","在 明","明 早","早 2","2 点"]\\
+      3 trigram特征["闹铃 设 在","设 在 明","在 明 早,，...]\\
+    
+    \end{minipage}}
 
    
-    对于基于generic slot tagger模型的特征提取，首先提取查询本身的ngram特征，其次提取slot集合的ngram特征，最后提取查询跟slot一起的ngram特征。具体如下表示。
-\begin{enumerate}
-  \item 基于查询本身的特征
-    \begin{enumerate}
-      \item unigram特征是[“闹铃”，“设”，“在”，“明”，“早”，“2”，“点”]
-      \item bigram特征是[“闹铃 设”，“设 在”，“在 明”，“明 早”，“早 2”，“2点”]
-      \item trigram特征是[“闹铃 设 在”，“设 在 明”，“在 明 早”，“明 早 2”，“早 2 点”]
-    \end{enumerate}
-  \item 基于slot本身的特征
+    对于基于generic slot tagger模型的特征提取，首先提取查询本身的ngram特征，其次提取slot集合的ngram特征，最后提取查询跟slot一起的ngram特征。具体如下表示,
+
+\fbox{\begin{minipage}{32em}
+     
+    1 基于查询本身的特征\\
+    1.1 unigram特征["闹铃","设"，"在","明","早","2","点"]\\
+    1.2 bigram特征["闹铃 设","设 在","在 明","明 早","早 2","2 点"]\\
+    1.3 trigram特征["闹铃 设 在","设 在 明","在 明 早,，...]\\
+   
+    2 基于slot本身的特征
     
-   基于上述query提取的slot集合是"<start\_date> </start\_date> <start\_time> </start\_time>",对此slot集合提取unigram，bigram，trigram特征
-    \begin{enumerate}
-      \item unigram特征是["<start\_date>", "</start\_date>","<start\_time>", "</start\_time>"]
-      \item bigram特征是["<start\_date> </start\_date>","</start\_date> <start\_time>", "<start\_time> </start\_time>"]
-      \item trigram特征是["<start\_date> </start\_date> <start\_time>", "</start\_date> <start\_time> </start\_time>"]
-    \end{enumerate} 
-  \item 基于查询以及slot的特征
+    基于上述query提取的slot集合是"<start\_date> </start\_date> <start\_time> </start\_time>",对此slot集合提取unigram，bigram，trigram特征
+    
+    2.1 unigram特征是["<start\_date>", "</start\_date>","<start\_time>", "</start\_time>"]\\
+    2.2 bigram特征是["<start\_date> </start\_date>","</start\_date> <start\_time>", "<start\_time> </start\_time>"]\\
+    2.3 trigram特征是["<start\_date> </start\_date> <start\_time>", "</start\_date> <start\_time> </start\_time>"]\\
+
+    3 基于查询以及slot的特征
    
    在上述的查询中，我们将slot跟单词同样对待，对此查询提取unigram，bigram，trigram特征。
-   \begin{enumerate}
-     \item unigram特征是["闹铃"，"设"，"在"，"<start\_date>"，"明"，"</start\_date>"，"<start\_time>"，"早"，"2"，"点"，"</start\_time>"]
-     \item bigram特征是["闹铃 设"，"设 在"，"在 <start\_date>"，"<start\_date> 明"，"明 </start\_date>"，"<start\_date> <start\_time>",],
-     \item trigram特征是[]
-   \end{enumerate}
-\end{enumerate}
+
+    3.1 unigram特征是["闹铃"，"设"，"在"，"<start\_date>"，"明"，"</start\_date>"，"<start\_time>"，"早"，"2"，"点"，"</start\_time>"]\\
+    3.2 bigram特征是["闹铃 设"，"设 在"，"在 <start\_date>"，"<start\_date> 明"，"明 </start\_date>"，"<start\_date> <start\_time>",]\\
+    3.2 trigram特征是["闹铃 设 在", "设 在 <start\_date>", "在 <start\_date> 明",...]\\
+\end{minipage}}
+ 
 \section{实验结果分析}
 
     对于baseline模型，我们取得了86.3\%的准确率。
@@ -678,8 +710,9 @@ D3.js是由stanford大学开发的开源工具，应用非常广泛，可视化�
 
 \section{总结}
 
+    通过我们的模拟实验可以得知slot实体对于分类是有提高作用的，然而对于如何使用slot确有不同的方法。我们在实验过程中尝试了基于generic slot tagger的分类模型以及基于in-domain slot tagger的分类模型。基于generic slot tagger的分类模型没有达到预期，基于in-domain的slot tagger的分类模型可以提高分类的准确率，并且由于slot标注时间很短，可以满足线上的使用。
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{incremental learning using SVM}\label{chapter_smallworld}
+\chapter{增量式学习在线性支持向量机中的使用}\label{chapter_smallworld}
 
 \section{研究背景}
 
@@ -782,6 +815,14 @@ D3.js是由stanford大学开发的开源工具，应用非常广泛，可视化�
     \end{algorithmic}
     \end{algorithm}
 
+    $D^{'}_i\left(z\right) = w^{k,i}_i + z -2C \sum_{j \in I\left(w^{k,i}+ze_i\right)} y_jx_{ji}\left(b_j\left(w^{k,i}+ze_i\right)\right)$
+    
+    $D^{''}_i = 1 + 2C\sum_{j \in I\left(w^{k,i}+ze_i\right) x^{2}_{ji}}$
+\\
+\\
+\\
+\\
+\\
     
 \subsection{置信域牛顿优化算法}
    
@@ -793,6 +834,7 @@ D3.js是由stanford大学开发的开源工具，应用非常广泛，可视化�
     $\min_{d} q\left(d\right)$ subject to $\Vert d \Vert \le \Delta$， where $q\left(d\right) \equiv \Delta f\left(w\right)^\intercal+\frac{1}{2} d^\intercal \Delta^2 f\left(w\right)d$。
     
     这个子问题是通过共轭梯度下降进行求解的。置信域牛顿算法过程如下，
+    
     \begin{algorithm}
     \caption{Trust region algorithm for L2-SVM}\label{TRON}
     \begin{algorithmic}[1]
@@ -802,16 +844,30 @@ D3.js是由stanford大学开发的开源工具，应用非常广泛，可视化�
          \If{$\Delta f\left(w^k\right)=0$},stop
            \State Find an approximate solution $s^k$ of the trust region sub-problem
            \State $\min\limits_{s} q_k\left(s\right)$,subject to $\Vert s \Vert \le \Delta_k$
-           \State Compute $\rho_k$ via $\left(6\right)$
-           \State Update$w_k$ to $w_{k+1}$ according to $\left(7\right)$
-           \State Obtain $\Delta_{k+1}$ according to $\left(8\right)$
+           \State Compute $\rho_k$ via $\left(1\right)$
+           \State Update$w_k$ to $w_{k+1}$ according to $\left(2\right)$
+           \State Obtain $\Delta_{k+1}$ according to $\left(3\right)$
          \EndIf
        \EndFor
     \EndProcedure
     \end{algorithmic}
     \end{algorithm}
+  
+    $\left(1\right)$  $\rho_k = \frac{f\left(w^k + s^k\right)-f\left(w^k\right)}{q_k\left(s^k\right)}$
+   
+    $\left(2\right)$  $w^{k+1} =  \begin{cases} 
+      w^k+s^k & if~~\rho_k > \eta \\
+      w^k & if~~ \rho_k \le \eta
+   \end{cases}$
 
+    $\left(3\right)$ $\Delta_{k+1} \in [\sigma_1\min\{\Vert s^k \Vert,\Delta_k]~~~~if~~ \rho \le \eta_1,$
+
+    ~~~~$\Delta_{k+1} \in [\sigma_1\Delta_k,\sigma_3\Delta_k]~~~~~~~~~~~if~~\rho_k \in \left(\eta_1,\eta_2\right)$
+
+    ~~~~$\Delta_{k+1} \in [\Delta_k,\sigma_3\Delta_k]~~~~~~~~~~~~~~~if~~\rho_k \ge \eta_2$
+    
     在求解置信域的牛顿算法过程中需要求解子问题，子问题可以通过共轭梯度算法求解，共轭梯度下降算法如下描述，
+    
     \begin{algorithm}
     \caption{Conjugate gradient procedure for approximately solving the trust region sub-problem}\label{CG}
     \begin{algorithmic}[1]
